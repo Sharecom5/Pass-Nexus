@@ -1,58 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import { Pass } from '@/models/Pass';
+import { Visitor } from '@/models/Visitor';
 import { Event } from '@/models/Event';
 import { nanoid } from 'nanoid';
+import { generateQRCodeBase64 } from '@/lib/qrcode';
+import { sendPassEmail } from '@/lib/resend';
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
-    const { eventSlug, name, email, phone, company, designation } = data;
+    await connectDB();
+    const { name, email, phone, company, designation, passType, eventSlug, eventId, eventName } = await req.json();
 
-    if (!eventSlug || !name || !email) {
+    if (!name || !email || (!eventSlug && !eventId)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    await connectDB();
-
-    // Verify event exists
-    const event = await Event.findOne({ slug: eventSlug });
-    if (!event) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
-    }
-
-    // Check if attendee already registered for this event
-    const existing = await Pass.findOne({ eventSlug, email });
-    if (existing) {
-      return NextResponse.json({ 
-        message: 'Attendee already registered', 
-        passId: existing.passId 
-      });
-    }
-
-    // Generate unique pass ID
+    // Generate unique Pass ID
     const passId = `PN-${nanoid(8).toUpperCase()}`;
 
-    const newPass = await Pass.create({
+    // Create the visitor record
+    const visitor = await Visitor.create({
       passId,
-      eventSlug,
       name,
-      email,
+      email: email.toLowerCase().trim(),
       phone,
       company,
       designation,
-      passType: 'Visitor', // Default type
-      status: 'active'
+      passType: passType || 'Visitor',
+      eventName: eventName || 'Registration',
+      eventId: eventId || null,
+      status: 'pending'
     });
 
-    return NextResponse.json({ 
-      success: true, 
-      passId: newPass.passId,
-      message: 'Registration successful'
+    // Generate QR Code
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/pass/${passId}`;
+    const qrCodeBase64 = await generateQRCodeBase64(verificationUrl);
+
+    // Send Email (Non-blocking ideally, but we'll wait for confirmation)
+    try {
+      await sendPassEmail({
+        to: visitor.email,
+        visitorName: visitor.name,
+        passId: visitor.passId,
+        passType: visitor.passType,
+        eventName: visitor.eventName,
+        eventDate: 'See Ticket', // Replace with real event date if eventId exists
+        eventVenue: 'Venue',     // Replace with real venue
+        qrCodeBase64
+      });
+    } catch (emailError) {
+      console.error("Email send failed:", emailError);
+      // We don't fail the registration if email fails, but we log it
+    }
+
+    return NextResponse.json({
+      success: true,
+      visitor: {
+        ...visitor.toObject(),
+        qrCode: qrCodeBase64
+      }
     });
 
   } catch (error: any) {
-    console.error('Registration Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Registration API Error:', error);
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }

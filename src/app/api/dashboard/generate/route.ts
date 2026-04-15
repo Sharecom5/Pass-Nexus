@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { connectDB } from "@/lib/mongodb";
 import { Visitor } from "@/models/Visitor";
+import { Event } from "@/models/Event";
 import { nanoid } from "nanoid";
+import { generateQRCodeBase64 } from "@/lib/qrcode";
+import { sendPassEmail } from "@/lib/resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,10 +35,32 @@ export async function POST(req: NextRequest) {
 
     const result = await Visitor.insertMany(visitorsToCreate);
 
+    // Background processing for emails (non-blocking for the bulk response)
+    (async () => {
+      for (const visitor of result) {
+        try {
+          const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/pass/${visitor.passId}`;
+          const qrCode = await generateQRCodeBase64(verificationUrl);
+          await sendPassEmail({
+            to: visitor.email,
+            visitorName: visitor.name,
+            passId: visitor.passId,
+            passType: visitor.passType,
+            eventName: visitor.eventName,
+            eventDate: 'See Ticket', 
+            eventVenue: 'Venue',     
+            qrCodeBase64: qrCode
+          });
+        } catch (e) {
+          console.error(`Failed to send bulk email to ${visitor.email}`, e);
+        }
+      }
+    })();
+
     return NextResponse.json({
       success: true,
       count: result.length,
-      message: `${result.length} passes generated successfully`,
+      message: `${result.length} passes generated and queued for delivery.`,
     });
 
   } catch (error) {

@@ -45,10 +45,10 @@ export default function DashboardPage() {
   }
 
   const stats = [
-    { label: 'Registered', value: data?.stats?.totalVisitors || 0, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Checked In', value: data?.stats?.enteredCount || 0, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Waiting', value: data?.stats?.pendingCount || 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Scan Rate', value: data?.stats?.scanRate || '0%', icon: TrendingUp, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Total Registered', value: data?.stats?.totalVisitors || 0, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Total Checked In', value: data?.stats?.enteredCount || 0, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Wait List', value: data?.stats?.pendingCount || 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Entry Rate', value: data?.stats?.scanRate || '0%', icon: TrendingUp, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   ];
 
   return (
@@ -56,16 +56,24 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Project Overview</h1>
-          <p className="text-slate-500 font-medium mt-1">Real-time performance of your live event.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Ecosystem Overview</h1>
+          <p className="text-slate-500 font-medium mt-1">Unified analytics across all your active projects.</p>
         </div>
-        <button 
-          onClick={fetchStats}
-          className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
-        >
-          <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-          Refresh Data
-        </button>
+        <div className="flex gap-4">
+          <Link 
+            href="/dashboard/events" 
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all"
+          >
+            Manage Events
+          </Link>
+          <button 
+            onClick={fetchStats}
+            className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
+          >
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Stats Grid */}

@@ -11,7 +11,9 @@ import {
   PlusCircle, 
   LogOut, 
   Menu, 
-  X 
+  X,
+  CalendarDays,
+  UserPlus
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -41,8 +43,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Events', href: '/dashboard/events', icon: CalendarDays },
     { name: 'Attendees', href: '/dashboard/visitors', icon: Users },
-    { name: 'Generate Passes', href: '/dashboard/generate', icon: PlusCircle },
+    { name: 'Bulk Gen', href: '/dashboard/generate', icon: PlusCircle },
+    { name: 'On-Spot Desk', href: '/dashboard/on-spot', icon: UserPlus },
     { name: 'Gate Portal', href: '/gate', icon: DoorOpen },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
