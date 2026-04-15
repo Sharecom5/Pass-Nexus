@@ -203,7 +203,7 @@ export default function LandingPage() {
             </p>
 
             <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-              <Link href="#" className="hover:text-blue-600 transition-colors">Privacy</Link>
+              <Link href="mailto:hello@passnexus.in" className="hover:text-blue-600 transition-colors">hello@passnexus.in</Link>
               <Link href="#" className="hover:text-blue-600 transition-colors">Terms</Link>
               <Link href="#" className="hover:text-blue-600 transition-colors">Contact</Link>
             </div>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import { Pass } from '@/models/Pass';
 import { Event } from '@/models/Event';
 import { nanoid } from 'nanoid';
