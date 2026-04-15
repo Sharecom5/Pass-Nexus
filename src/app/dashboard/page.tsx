@@ -11,7 +11,8 @@ import {
   Calendar, 
   MapPin, 
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Ticket
 } from 'lucide-react';
 
 export default function DashboardPage() {
