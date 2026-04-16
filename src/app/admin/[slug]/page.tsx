@@ -162,10 +162,10 @@ export default function AdminDashboard() {
 
       {/* Sidebar (Simple Desktop Navigation) */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col p-6 z-20 shadow-sm">
-         <div className="flex items-center gap-3 mb-10 px-2 cursor-pointer" onClick={() => router.push('/admin/dashboard')}>
-            <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white">E</div>
-            <span className="font-black text-lg tracking-tight">Entry<span className="text-blue-600">Flow</span></span>
-         </div>
+         <Link href="/pass" className="flex items-center gap-3 group font-sans mb-10 px-2">
+          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+          <span className="font-black text-slate-900 text-lg tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
+        </Link>
 
          <nav className="space-y-1">
             <button 

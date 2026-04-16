@@ -44,12 +44,12 @@ const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key",
 };
 
-export async function DELETE(req: NextRequest, props: { params: Promise<{}> }) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions) as any;
     if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const {  } = await props.params;
+    const { id } = await props.params;
     await connectDB();
 
     const visitor = await Visitor.findById(id);

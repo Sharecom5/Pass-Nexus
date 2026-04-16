@@ -3,9 +3,9 @@ import { connectDB } from '@/lib/mongodb';
 import { Visitor } from '@/models/Visitor';
 import { Event } from '@/models/Event';
 
-export async function GET(req: NextRequest, props: { params: Promise<{}> }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ slug: string }> }) {
   try {
-    const {  } = await props.params;
+    const { slug } = await props.params;
     await connectDB();
 
     // Verify event exists

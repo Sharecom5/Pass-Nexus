@@ -107,9 +107,9 @@ export default function RegistrationPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative">
       {/* Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-4 flex items-center gap-3">
-        <Link href="/pass" className="flex items-center gap-3 group">
-          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
-          <span className="font-black text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
+        <Link href="/pass" className="flex items-center gap-3 group font-sans">
+          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+          <span className="font-black text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
       </div>
 
