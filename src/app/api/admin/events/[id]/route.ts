@@ -45,12 +45,12 @@ const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key",
 };
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: NextRequest, props: { params: Promise<{}> }) {
   try {
     const session = await getServerSession(authOptions) as any;
     if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { id } = await params;
+    const {  } = await props.params;
     const body = await req.json();
 
     await connectDB();
@@ -76,12 +76,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{}> }) {
   try {
     const session = await getServerSession(authOptions) as any;
     if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { id } = await params;
+    const {  } = await props.params;
     await connectDB();
 
     const event = await Event.findOne({ _id: id, organizerId: session.user.id });

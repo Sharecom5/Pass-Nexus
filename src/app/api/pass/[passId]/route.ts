@@ -5,9 +5,9 @@ import { Event } from '@/models/Event';
 import { ScanLog } from '@/models/ScanLog';
 
 // GET visitor details by passId
-export async function GET(req: NextRequest, { params }: { params: Promise<{ passId: string }> }) {
+export async function GET(req: NextRequest, props: { params: Promise<{}> }) {
   try {
-    const { passId } = await params;
+    const {  } = await props.params;
     await connectDB();
 
     const visitor = await Visitor.findOne({ passId });
@@ -30,9 +30,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ pass
 }
 
 // POST to mark as entered
-export async function POST(req: NextRequest, { params }: { params: Promise<{ passId: string }> }) {
+export async function POST(req: NextRequest, props: { params: Promise<{}> }) {
   try {
-    const { passId } = await params;
+    const {  } = await props.params;
     const body = await req.json().catch(() => ({}));
     const { eventSlug, checkinPin } = body;
 

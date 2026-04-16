@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Calendar, MapPin, Globe, Settings, Loader2, Search,
   PlusCircle, LayoutDashboard, LogOut, ChevronRight, Camera, X, AlertCircle, Upload, Image as ImageIcon,
-  Zap, TrendingUp, Pencil, Trash2, Smartphone, CheckCircle
+  Zap, TrendingUp, Pencil, Trash2, Smartphone, CheckCircle, Phone
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -143,8 +143,8 @@ export default function MyEventsDashboard() {
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
         <Link href="/pass" className="flex items-center gap-3">
-          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
-          <span className="font-black text-slate-900 text-lg tracking-tight">Entry<span className="text-blue-600">Flow</span></span>
+          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">P</div>
+          <span className="font-black text-slate-900 text-lg tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
         <div className="flex items-center gap-6">
           <div className="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest">
