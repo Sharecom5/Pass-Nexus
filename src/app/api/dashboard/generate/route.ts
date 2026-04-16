@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
             visitorName: visitor.name,
             passId: visitor.passId,
             passType: visitor.passType,
-            eventName: visitor.eventName,
+            eventName: visitor.eventName || 'Your Event',
             eventDate: 'See Ticket', 
             eventVenue: 'Venue',     
             qrCodeBase64: qrCode
