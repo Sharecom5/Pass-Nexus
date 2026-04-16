@@ -118,19 +118,47 @@ export default function EventRegistrationPage() {
                 key="success"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-6"
+                className="text-center animate-in zoom-in-95 data-[state=pass]:duration-500 w-full"
               >
-                <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 text-emerald-600">
+                <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600">
                   <CheckCircle2 size={48} />
                 </div>
-                <h2 className="text-3xl font-black text-slate-900 mb-2">You're Registered!</h2>
-                <p className="text-slate-500 font-bold text-sm mb-10 leading-relaxed uppercase tracking-widest italic">"{success.name}, see you at the event!"</p>
-                <button 
-                  onClick={() => router.push(`/pass/${success.passId}`)}
-                  className="w-full h-16 bg-blue-600 text-white rounded-[2rem] font-black flex items-center justify-center gap-2 shadow-xl shadow-blue-500/20 active:scale-95"
-                >
-                  View Digital Pass <ArrowRight size={20} />
-                </button>
+                <h3 className="font-extrabold text-slate-900 text-3xl tracking-tight">Pass is Ready!</h3>
+                <p className="text-sm font-bold text-slate-500 mt-2 mb-8 uppercase tracking-widest italic">Take a screenshot or download below.</p>
+
+                {/* Pass Mini-Card */}
+                <div className="bg-slate-900 text-white rounded-[2rem] p-6 sm:p-8 relative overflow-hidden mb-6 text-left shadow-2xl">
+                  <div className="flex justify-between items-start mb-6 border-b border-white/10 pb-6">
+                    <div>
+                      <span className="bg-blue-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">{success.passType || 'Visitor'}</span>
+                      <h4 className="text-3xl font-black mt-4 mb-1">{success.name}</h4>
+                      <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{success.eventName || 'Event Entry'}</p>
+                    </div>
+                    <div className="bg-white p-2 rounded-2xl flex-shrink-0 shadow-lg">
+                      <img src={success.qrCode} alt="Pass QR" className="w-[100px] h-[100px] sm:w-32 sm:h-32 object-contain mix-blend-multiply" />
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="font-mono text-xs font-black text-blue-400 bg-blue-500/10 px-3 py-1 rounded-lg">{success.passId}</span>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Valid Entry</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button 
+                    onClick={() => router.push(`/pass/${success.passId}`)}
+                    className="flex-1 py-4 bg-blue-600 text-white font-black rounded-[1.5rem] hover:bg-blue-700 transition-colors shadow-xl shadow-blue-500/30 flex justify-center items-center gap-2"
+                  >
+                    Save Digital Pass <ArrowRight size={18} />
+                  </button>
+                  <button 
+                    onClick={() => { setSuccess(null); setForm({ ...form, name: '', email: '', phone: '', company: '' }); }}
+                    className="py-4 px-6 bg-slate-100 text-slate-600 font-black rounded-[1.5rem] hover:bg-slate-200 transition-colors flex justify-center items-center gap-2"
+                  >
+                    Register Another
+                  </button>
+                </div>
               </motion.div>
             ) : (
               <motion.div key="form" className="space-y-8">

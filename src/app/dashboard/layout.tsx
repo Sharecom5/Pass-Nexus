@@ -13,7 +13,8 @@ import {
   Menu, 
   X,
   CalendarDays,
-  UserPlus
+  UserPlus,
+  History
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -47,6 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Attendees', href: '/dashboard/visitors', icon: Users },
     { name: 'Bulk Gen', href: '/dashboard/generate', icon: PlusCircle },
     { name: 'On-Spot Desk', href: '/dashboard/on-spot', icon: UserPlus },
+    { name: 'Scan Logs', href: '/dashboard/scan-logs', icon: History },
     { name: 'Gate Portal', href: '/gate', icon: DoorOpen },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];

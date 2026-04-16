@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Visitor } from "@/models/Visitor";
-// import { sendPassEmail } from "@/lib/resend"; // Need to implement this next
+import { sendPassEmail } from "@/lib/resend";
+import { generateQRCodeBase64 } from "@/lib/qrcode";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,12 +20,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No passes found for this email" }, { status: 404 });
     }
 
-    // In a real setup, we would trigger sendPassEmail here for all found active passes
-    // For now, we'll return success to the UI
+    const latestVisitor = visitors[0];
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/pass/${latestVisitor.passId}`;
+    const qrCode = await generateQRCodeBase64(verificationUrl);
+
+    // Send Email via Resend in the background
+    try {
+      await sendPassEmail({
+        to: latestVisitor.email,
+        visitorName: latestVisitor.name,
+        passId: latestVisitor.passId,
+        passType: latestVisitor.passType,
+        eventName: latestVisitor.eventName,
+        eventDate: 'See Ticket',
+        eventVenue: 'Venue',    
+        qrCodeBase64: qrCode
+      });
+    } catch (e) {
+      console.error("Recovery email failed to send", e);
+    }
 
     return NextResponse.json({ 
       success: true, 
-      message: `We found ${visitors.length} passes and sent them to your email.` 
+      message: `We found ${visitors.length} passes and sent them to your email.`,
+      visitor: {
+        ...latestVisitor.toObject(),
+        qrCode
+      }
     });
 
   } catch (error) {
