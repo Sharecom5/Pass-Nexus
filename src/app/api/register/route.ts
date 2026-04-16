@@ -1,68 +1,110 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import { Visitor } from '@/models/Visitor';
 import { Event } from '@/models/Event';
-import { nanoid } from 'nanoid';
-import { generateQRCodeBase64 } from '@/lib/qrcode';
+import { Visitor } from '@/models/Visitor';
+import { Organizer } from '@/models/Organizer';
 import { sendPassEmail } from '@/lib/resend';
+import { getPlanLimits, isWithinLimit, PlanId } from '@/lib/plans';
+import QRCode from 'qrcode';
+import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
-    const { name, email, phone, company, designation, passType, eventSlug, eventId, eventName } = await req.json();
+    const { name, email, phone, company, address, designation, passType, eventSlug } = await req.json();
 
-    if (!name || !email || (!eventSlug && !eventId)) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!name || !email || !eventSlug) {
+      return NextResponse.json({ error: 'Missing required fields (name, email, eventSlug)' }, { status: 400 });
     }
 
-    // Generate unique Pass ID
-    const passId = `PN-${nanoid(8).toUpperCase()}`;
+    await connectDB();
 
-    // Create the visitor record
-    const visitor = await Visitor.create({
-      passId,
-      name,
-      email: email.toLowerCase().trim(),
-      phone,
-      company,
-      designation,
+    // Find the event
+    let event = await Event.findOne({ slug: eventSlug });
+
+    if (!event && eventSlug === 'demo-event') {
+      event = await Event.create({ name: 'Demo Event', slug: 'demo-event', venue: 'Virtual/Local Venue', date: '2026-12-31' });
+    }
+
+    if (!event) {
+      return NextResponse.json({ error: 'Event not found.' }, { status: 404 });
+    }
+
+    // ─── Plan Limit Gate ──────────────────────────────────────────────────
+    if (event.organizerId) {
+      const organizer = await Organizer.findById(event.organizerId).select('plan');
+      const plan = (organizer?.plan ?? 'free') as PlanId;
+      const limits = getPlanLimits(plan);
+
+      // Count total passes across all organizer's events
+      const allEventIds = (await Event.find({ organizerId: event.organizerId }).select('_id')).map((e: any) => e._id);
+      const totalPasses = await Visitor.countDocuments({ eventId: { $in: allEventIds } });
+
+      if (!isWithinLimit(totalPasses, limits.passLimit)) {
+        return NextResponse.json({
+          error: 'PLAN_LIMIT_REACHED',
+          message: `This event has reached its pass limit (${limits.passLimit} passes on the ${limits.name} plan). The organizer needs to upgrade.`,
+          totalPasses,
+          limit: limits.passLimit,
+          plan,
+        }, { status: 402 });
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Check if already registered for this event
+    const existing = await Visitor.findOne({ email: email.toLowerCase(), eventId: event._id });
+    if (existing) {
+      return NextResponse.json({ success: true, message: 'Already registered', passId: existing.passId, qrCodeUrl: existing.qrCodeUrl });
+    }
+
+    // Generate unique passId
+    let passId = "";
+    let isUnique = false;
+    const prefix = (event.name || "EVT").substring(0, 3).toUpperCase();
+    while (!isUnique) {
+      const uniquePart = crypto.randomBytes(3).toString('hex').toUpperCase();
+      passId = `${prefix}-${uniquePart}`;
+      const existingPass = await Visitor.findOne({ passId });
+      if (!existingPass) isUnique = true;
+    }
+
+    // Generate QR code with full verification URL
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.andinnovatech.com';
+    const verificationUrl = `${baseUrl}/pass/verify/${passId}`;
+    const qrCodeDataUri = await QRCode.toDataURL(verificationUrl);
+
+    const newVisitor = new Visitor({
+      passId, name, email: email.toLowerCase(), phone, company, address, designation,
       passType: passType || 'Visitor',
-      eventName: eventName || 'Registration',
-      eventId: eventId || null,
-      status: 'pending'
+      status: 'registered',
+      qrCodeUrl: qrCodeDataUri,
+      eventId: event._id,
+      eventName: event.name,
+      eventDate: event.date,
+      eventVenue: event.venue,
     });
+    await newVisitor.save();
 
-    // Generate QR Code
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/pass/${passId}`;
-    const qrCodeBase64 = await generateQRCodeBase64(verificationUrl);
-
-    // Send Email (Non-blocking ideally, but we'll wait for confirmation)
+    // Send pass email
     try {
       await sendPassEmail({
-        to: visitor.email,
-        visitorName: visitor.name,
-        passId: visitor.passId,
-        passType: visitor.passType,
-        eventName: visitor.eventName,
-        eventDate: 'See Ticket', // Replace with real event date if eventId exists
-        eventVenue: 'Venue',     // Replace with real venue
-        qrCodeBase64
+        to: email.toLowerCase(),
+        visitorName: name,
+        passId,
+        passType: passType || 'Visitor',
+        eventName: event.name,
+        eventDate: event.date,
+        eventVenue: event.venue,
+        qrCodeBase64: qrCodeDataUri
       });
-    } catch (emailError) {
-      console.error("Email send failed:", emailError);
-      // We don't fail the registration if email fails, but we log it
+    } catch (emailErr) {
+      console.error('Failed to send pass email:', emailErr);
     }
 
-    return NextResponse.json({
-      success: true,
-      visitor: {
-        ...visitor.toObject(),
-        qrCode: qrCodeBase64
-      }
-    });
+    return NextResponse.json({ success: true, passId, qrCodeUrl: qrCodeDataUri, message: 'Registration successful' });
 
   } catch (error: any) {
-    console.error('Registration API Error:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    console.error('Registration error:', error.message);
+    return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
   }
 }

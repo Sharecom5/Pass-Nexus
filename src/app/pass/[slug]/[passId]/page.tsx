@@ -1,0 +1,195 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { CheckCircle2, User, Building2, MapPin, Calendar, Loader2, AlertCircle, Download, Smartphone, QrCode, ArrowLeft } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import Link from "next/link";
+
+export default function PassPage() {
+  const { slug, passId } = useParams();
+  const router = useRouter();
+  const [visitor, setVisitor] = useState<any>(null);
+  const [settings, setSettings] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    const fetchPass = async () => {
+      try {
+        const res = await fetch(`/api/pass/${passId}`);
+        if (!res.ok) throw new Error("Pass not found");
+        const data = await res.json();
+        setVisitor(data.visitor);
+        const ev = data.eventSettings;
+        setSettings(ev ? { ...ev.passSettings, endDate: ev.endDate } : null);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (passId) fetchPass();
+  }, [passId]);
+
+  const markAsUsed = async () => {
+    setUpdating(true);
+    try {
+      const res = await fetch(`/api/pass/${passId}`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update status");
+      setVisitor({ ...visitor, status: "entered" });
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const downloadPass = async () => {
+    const element = document.getElementById("pass-card");
+    if (!element) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`PassNexus_Pass_${passId}.pdf`);
+    } catch (err) {
+      alert("Failed to generate PDF.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error || !visitor) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Invalid Pass</h1>
+        <p className="text-slate-500 mb-6">This event pass could not be found or has been revoked.</p>
+        <button onClick={() => router.push(`/pass/${slug}`)} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold">
+          Register New Pass
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-100 px-6 py-4">
+        <Link href="/pass" className="flex items-center gap-3">
+          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
+          <span className="font-black text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
+        </Link>
+      </div>
+
+      <div className="flex flex-col items-center py-12 px-6">
+        <motion.div
+          id="pass-card"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className={`w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden relative ${settings?.customBackgroundUrl ? 'aspect-[2.25/3.5]' : ''}`}
+        >
+          {settings?.customBackgroundUrl && (
+            <img 
+              src={settings.customBackgroundUrl} 
+              alt="Pass Background" 
+              className="absolute inset-0 w-full h-full object-fill z-0" 
+            />
+          )}
+
+          <div className="relative z-10 w-full h-full">
+            {!settings?.customBackgroundUrl && (
+              <div className="bg-blue-600 py-4 text-center">
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-200">PassNexus Digital Pass</p>
+                <p className="text-white font-black text-xl mt-1">{visitor.eventName || "Event Pass"}</p>
+              </div>
+            )}
+
+            <div className={`w-full h-full flex flex-col items-center ${settings?.customBackgroundUrl ? 'p-0' : 'p-8'}`}>
+              
+              {/* QR Code */}
+              <div 
+                className={`${settings?.customBackgroundUrl ? 'absolute left-1/2 -translate-x-1/2 bg-white p-3 rounded-2xl border-4' : 'bg-white p-4 rounded-2xl border-4 mb-6'} ${visitor.status === 'entered' ? 'border-green-500 shadow-lg shadow-green-200' : settings?.customBackgroundUrl ? 'border-slate-100 shadow-lg' : 'border-blue-500 shadow-lg shadow-blue-200'}`}
+                style={settings?.customBackgroundUrl ? { top: `${settings.qrPosition}%` } : {}}
+              >
+                <img src={visitor.qrCodeUrl} alt="QR Code" className={`${settings?.customBackgroundUrl ? 'w-32 h-32 md:w-36 md:h-36' : 'w-48 h-48 md:w-56 md:h-56'}`} />
+              </div>
+
+              {/* Attendee Info */}
+              <div 
+                className={`${settings?.customBackgroundUrl ? 'absolute left-0 w-full px-6' : 'mb-8'} text-center`}
+                style={settings?.customBackgroundUrl ? { top: `${settings.infoPosition}%` } : {}}
+              >
+                {settings?.showName !== false && (
+                  <h2 className="text-2xl font-black text-slate-900 mb-1 drop-shadow-sm">{visitor.name}</h2>
+                )}
+                {settings?.showDesignation !== false && visitor.designation && (
+                  <p className="text-blue-700 font-bold text-sm uppercase tracking-widest drop-shadow-sm">{visitor.designation}</p>
+                )}
+                {settings?.showCompany !== false && visitor.company && (
+                  <p className="text-slate-800 text-sm mt-1 font-semibold">{visitor.company}</p>
+                )}
+              </div>
+
+
+            </div>
+
+            {!settings?.customBackgroundUrl && (
+              <div className="px-8 pb-8 grid grid-cols-2 gap-4 border-t border-slate-100 pt-6 bg-slate-50 mt-8">
+                <div>
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Venue</p>
+                  <p className="text-sm font-bold text-slate-800 truncate">{visitor.eventVenue}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Pass ID</p>
+                  <p className="text-sm font-mono font-bold text-blue-600">{visitor.passId}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Utility Buttons */}
+        <div className="mt-8 flex flex-wrap justify-center gap-6">
+          <button
+            onClick={downloadPass}
+            disabled={downloading}
+            className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors text-sm font-bold"
+          >
+            {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            SAVE PASS
+          </button>
+          <Link
+            href="/pass/recover"
+            className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors text-sm font-bold"
+          >
+            <Smartphone className="w-4 h-4" /> RECOVER PASS
+          </Link>
+        </div>
+
+        <p className="mt-8 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+          Verified Digital Pass • PassNexus Protocol
+        </p>
+      </div>
+    </div>
+  );
+}

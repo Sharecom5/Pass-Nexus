@@ -1,0 +1,35 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/lib/mongodb';
+import { Visitor } from '@/models/Visitor';
+import { Event } from '@/models/Event';
+
+export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+  try {
+    const { slug } = params;
+    await connectDB();
+
+    // Verify event exists
+    const event = await Event.findOne({ slug });
+    if (!event) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    }
+
+    // Fetch all attendees for this event
+    const attendees = await Visitor.find({ eventId: event._id }).sort({ createdAt: -1 });
+
+    return NextResponse.json({ 
+      success: true, 
+      event, 
+      attendees,
+      stats: {
+        total: attendees.length,
+        entered: attendees.filter(a => a.status === 'entered').length,
+        pending: attendees.filter(a => a.status === 'registered').length
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Admin fetch error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}

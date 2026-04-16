@@ -23,9 +23,9 @@ export default function EventPassLandingPage() {
       {/* Sticky Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-6 py-4 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="bg-blue-600 w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md">P</div>
-            <span className="text-xl font-black tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
+          <Link href="/pass" className="flex items-center gap-3">
+            <div className="bg-blue-600 w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md">E</div>
+            <span className="text-xl font-black tracking-tight text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/admin/login" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
@@ -55,7 +55,7 @@ export default function EventPassLandingPage() {
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg hover:shadow-xl w-full sm:w-auto flex items-center justify-center gap-2 text-lg">
               Start for Free <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/event/demo-event"
+            <Link href="/pass/demo-event"
               className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-8 py-4 rounded-2xl font-semibold transition-all w-full sm:w-auto text-lg">
               Try Live Demo
             </Link>
@@ -171,14 +171,14 @@ export default function EventPassLandingPage() {
       <footer className="border-t border-slate-100 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">P</div>
+            <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
             <span className="font-black tracking-tight text-slate-900">PassNexus</span>
           </div>
           <p className="text-sm text-slate-400 text-center">
             A product by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
           </p>
           <div className="flex gap-6 text-sm text-slate-500">
-            <Link href="/recover" className="hover:text-blue-600 transition-colors">Recover Pass</Link>
+            <Link href="/pass/recover" className="hover:text-blue-600 transition-colors">Recover Pass</Link>
             <Link href="/admin/login" className="hover:text-blue-600 transition-colors">Organizer Login</Link>
           </div>
         </div>

@@ -1,19 +1,19 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IScanLog extends Document {
-  passId: string;
-  visitorName: string;
-  result: 'granted' | 'denied' | 'duplicate';
-  deviceInfo?: string;
-  createdAt: Date;
+  passId: string
+  visitorName?: string
+  scannedAt: Date
+  result: 'granted' | 'denied' | 'duplicate'
+  deviceInfo?: string
 }
 
-const ScanLogSchema: Schema = new Schema({
-  passId: { type: String, required: true },
+const ScanLogSchema = new Schema<IScanLog>({
+  passId:      { type: String, required: true },
   visitorName: { type: String },
-  result: { type: String, required: true },
-  deviceInfo: { type: String },
-  createdAt: { type: Date, default: Date.now }
-});
+  scannedAt:   { type: Date, default: Date.now },
+  result:      { type: String, enum: ['granted','denied','duplicate'], required: true },
+  deviceInfo:  { type: String },
+})
 
-export const ScanLog = mongoose.models.ScanLog || mongoose.model<IScanLog>('ScanLog', ScanLogSchema);
+export const ScanLog = (mongoose.models.ScanLog as mongoose.Model<IScanLog>) || mongoose.model<IScanLog>('ScanLog', ScanLogSchema)

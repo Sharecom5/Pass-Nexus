@@ -1,39 +1,53 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import { User } from "@/models/User";
-import bcrypt from "bcryptjs";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/lib/mongodb';
+import { Organizer } from '@/models/Organizer';
+import { sendWelcomeEmail } from '@/lib/resend';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, password, companyName } = await req.json();
 
     if (!name || !email || !password) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json({ error: 'Name, email, and password are required.' }, { status: 400 });
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json({ error: 'Password must be at least 8 characters.' }, { status: 400 });
     }
 
     await connectDB();
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return NextResponse.json({ error: "Email already registered" }, { status: 400 });
+    const existing = await Organizer.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 409 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const newUser = await User.create({
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const organizer = await Organizer.create({
       name,
-      email,
-      password: hashedPassword,
+      email: email.toLowerCase(),
+      passwordHash,
+      companyName: companyName || name,
       plan: 'free',
     });
 
-    return NextResponse.json({ 
-      success: true, 
-      message: "Organizer account created successfully",
-      user: { id: newUser._id, email: newUser.email }
+    // Send Welcome Email
+    try {
+      await sendWelcomeEmail(email.toLowerCase(), name);
+    } catch (e) {
+      console.error('Failed to send welcome email:', e);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Account created successfully.',
+      organizerId: organizer._id.toString(),
     });
 
-  } catch (error) {
-    console.error("Signup Error:", error);
-    return NextResponse.json({ error: "Internal server error during signup" }, { status: 500 });
+  } catch (error: any) {
+    console.error('Signup error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
