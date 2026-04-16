@@ -58,17 +58,20 @@ const handler = NextAuth({
         const dbUser = await User.findOne({ email: user.email });
         if (dbUser) {
           token.plan = dbUser.plan;
+          token.id = dbUser._id.toString();
         } else {
           token.plan = 'free';
         }
       } else if (user) {
         token.plan = (user as any).plan;
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).plan = token.plan;
+        (session.user as any).id = token.id;
       }
       return session;
     }
