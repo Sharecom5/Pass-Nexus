@@ -25,7 +25,7 @@ export default function EventPassLandingPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <div className="bg-blue-600 w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md">P</div>
-            <span className="text-xl font-black tracking-tight text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
+            <span className="text-xl font-black tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/login" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
