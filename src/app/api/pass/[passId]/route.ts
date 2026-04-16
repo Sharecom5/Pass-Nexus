@@ -74,6 +74,10 @@ export async function POST(req: NextRequest, props: { params: Promise<{ passId: 
       { new: true }
     );
 
+    if (!visitor) {
+      return NextResponse.json({ error: 'Pass not found' }, { status: 404 });
+    }
+
     // Record entry in ScanLog
     await ScanLog.create({
       passId,
@@ -81,10 +85,6 @@ export async function POST(req: NextRequest, props: { params: Promise<{ passId: 
       result: 'granted', // Always granted if the pass is valid
       scannedAt: new Date()
     });
-
-    if (!visitor) {
-      return NextResponse.json({ error: 'Pass not found' }, { status: 404 });
-    }
 
     return NextResponse.json({ success: true, visitor });
   } catch (error: any) {
