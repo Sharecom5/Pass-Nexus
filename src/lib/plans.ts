@@ -24,7 +24,7 @@ export const PLANS: Record<PlanId, PlanConfig> = {
     price: '₹0',
     priceValue: 0,
     period: 'forever',
-    description: 'Try EntryFlow with no commitment.',
+    description: 'Try PassNexus with no commitment.',
     eventLimit: 1,
     passLimit: 10,
     features: [

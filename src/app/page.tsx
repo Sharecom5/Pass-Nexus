@@ -147,7 +147,7 @@ export default function EventPassLandingPage() {
                     ))}
                   </ul>
 
-                  <Link href={plan.id === 'enterprise' ? 'mailto:contact@andinnovatech.com?subject=EntryFlow Enterprise' : '/signup'}
+                  <Link href={plan.id === 'enterprise' ? 'mailto:contact@andinnovatech.com?subject=PassNexus Enterprise' : '/signup'}
                     className={`w-full py-3.5 rounded-2xl font-bold text-center transition-all block text-sm ${plan.highlight ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}`}>
                     {plan.cta}
                   </Link>
@@ -172,7 +172,7 @@ export default function EventPassLandingPage() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
-            <span className="font-black tracking-tight text-slate-900">EntryFlow</span>
+            <span className="font-black tracking-tight text-slate-900">PassNexus</span>
           </div>
           <p className="text-sm text-slate-400 text-center">
             A product by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
