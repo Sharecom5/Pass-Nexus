@@ -9,6 +9,7 @@ import {
   Building2, Briefcase, Mail, Phone, User,
   Loader2, RefreshCcw, ChevronRight, LogOut, Ticket, Lock, Globe, Copy, Printer, ClipboardList, Trash2
 } from "lucide-react";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const { slug } = useParams();
