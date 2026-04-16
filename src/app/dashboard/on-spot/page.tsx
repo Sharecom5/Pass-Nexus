@@ -13,7 +13,8 @@ import {
   Loader2,
   Printer,
   PlusCircle,
-  AlertCircle
+  AlertCircle,
+  Ticket
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
