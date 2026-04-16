@@ -22,6 +22,8 @@ export async function sendPassEmail(options: PassEmailOptions) {
   }
 
   try {
+    if (!resend) return; 
+
     const { data, error } = await resend.emails.send({
       from: 'Pass Nexus <hello@passnexus.in>',
       to: [options.to],
