@@ -1,23 +1,34 @@
-import QRCode from 'qrcode';
+import QRCode from 'qrcode'
 
-/**
- * Generates a Base64 Data URL for a given string (usually a verification URL)
- */
-export async function generateQRCodeBase64(text: string): Promise<string> {
-  try {
-    const options: QRCode.QRCodeToDataURLOptions = {
-      margin: 1,
-      width: 400,
-      color: {
-        dark: '#0f172a',  // slate-900 for premium high-contrast
-        light: '#ffffff'
-      },
-      errorCorrectionLevel: 'H'
-    };
-    
-    return await QRCode.toDataURL(text, options);
-  } catch (err) {
-    console.error('QR Generation Error:', err);
-    throw new Error('Could not generate QR code');
-  }
+interface QRData {
+  passId: string
+  name: string
+  event: string
+  type: string
+}
+
+// Returns base64 PNG data URL — embed directly in email/PDF
+export async function generateQRCodeBase64(payload: string): Promise<string> {
+  const dataUrl = await QRCode.toDataURL(payload, {
+    errorCorrectionLevel: 'M',
+    type: 'image/png',
+    width: 300,
+    margin: 2,
+    color: {
+      dark: '#0a1628',
+      light: '#ffffff',
+    },
+  })
+  return dataUrl
+}
+
+// Returns Buffer — for saving to Cloudinary
+export async function generateQRCodeBuffer(payload: string): Promise<Buffer> {
+  const buffer = await QRCode.toBuffer(payload, {
+    errorCorrectionLevel: 'M',
+    type: 'png',
+    width: 400,
+    margin: 2,
+  })
+  return buffer
 }
