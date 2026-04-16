@@ -6,17 +6,18 @@ export interface IVisitor extends Document {
   email: string
   phone?: string
   company?: string
-  passType: 'VIP' | 'Speaker' | 'Press' | 'Exhibitor' | 'Visitor'
+  passType: 'VIP' | 'Speaker' | 'Press' | 'Exhibitor' | 'Visitor' | 'Instant Badge'
   status: 'registered' | 'entered' | 'cancelled'
   qrCodeUrl?: string
   passImageUrl?: string
   passPdfUrl?: string
   eventId?: mongoose.Types.ObjectId
   eventName?: string
-  eventDate: string
-  eventVenue: string
+  eventDate?: string
+  eventVenue?: string
   designation?: string
   address?: string
+  organizerId?: mongoose.Types.ObjectId | string
   createdAt: Date
   enteredAt?: Date
   scanCount: number
@@ -30,17 +31,18 @@ const VisitorSchema = new Schema<IVisitor>({
   email:        { type: String, required: true, lowercase: true, trim: true },
   phone:        { type: String, trim: true },
   company:      { type: String, trim: true },
-  passType:     { type: String, enum: ['Visitor','Speaker','VIP','Press','Exhibitor'], default: 'Visitor' },
+  passType:     { type: String, enum: ['Visitor','Speaker','VIP','Press','Exhibitor','Instant Badge'], default: 'Visitor' },
   status:       { type: String, enum: ['registered','entered','cancelled'], default: 'registered' },
   qrCodeUrl:    { type: String },
   passImageUrl: { type: String },
   passPdfUrl:   { type: String },
   eventId:      { type: Schema.Types.ObjectId, ref: 'Event' },
   eventName:    { type: String },
-  eventDate:    { type: String, required: true },
-  eventVenue:   { type: String, required: true },
+  eventDate:    { type: String },
+  eventVenue:   { type: String },
   designation:  { type: String, trim: true },
   address:      { type: String, trim: true },
+  organizerId:  { type: Schema.Types.ObjectId, ref: 'Organizer' },
   createdAt:    { type: Date, default: Date.now },
   enteredAt:    { type: Date },
   scanCount:    { type: Number, default: 0 },
