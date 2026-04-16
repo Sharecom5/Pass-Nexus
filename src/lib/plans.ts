@@ -1,101 +1,132 @@
-export type PlanId = 'free' | 'pro' | 'business' | 'enterprise';
+// Central source of truth for all plan limits
+// Update here and it applies everywhere automatically
 
-export interface PlanLimits {
+export type PlanId = 'free' | 'starter' | 'pro' | 'business' | 'enterprise';
+
+export interface PlanConfig {
   id: PlanId;
   name: string;
   price: string;
-  priceValue: number;
+  priceValue: number; // in INR
   period: string;
   description: string;
-  eventLimit: number;
-  passLimit: number;
+  eventLimit: number;   // -1 = unlimited
+  passLimit: number;    // -1 = unlimited
   features: string[];
   highlight: boolean;
   cta: string;
 }
 
-export const PLANS: Record<PlanId, PlanLimits> = {
+export const PLANS: Record<PlanId, PlanConfig> = {
   free: {
     id: 'free',
-    name: 'Standard',
-    price: 'Free',
+    name: 'Free',
+    price: '₹0',
     priceValue: 0,
     period: 'forever',
-    description: 'Perfect for small communities and individual meetups.',
+    description: 'Try EntryFlow with no commitment.',
     eventLimit: 1,
-    passLimit: 50,
+    passLimit: 10,
     features: [
-      '1 Active Event',
-      '50 Digital Passes',
-      'QR Verification',
-      'Basic Email Support',
+      '1 Event',
+      '10 Passes',
+      'QR Pass Generation',
+      'Pass Recovery Portal',
+      'Email Delivery',
     ],
     highlight: false,
-    cta: 'Get Started',
+    cta: 'Start Free',
+  },
+  starter: {
+    id: 'starter',
+    name: 'Starter',
+    price: '₹4,999',
+    priceValue: 4999,
+    period: 'one-time',
+    description: 'Perfect for small seminars and workshops.',
+    eventLimit: 1,
+    passLimit: 300,
+    features: [
+      '1 Event',
+      '300 Passes',
+      'QR Pass Generation',
+      'Email Delivery',
+      'Pass Recovery Portal',
+      'CSV Export',
+    ],
+    highlight: false,
+    cta: 'Buy Starter',
   },
   pro: {
     id: 'pro',
     name: 'Pro',
-    price: '$99',
-    priceValue: 99,
+    price: '₹9,999',
+    priceValue: 9999,
     period: 'one-time',
-    description: 'For corporate events and business conferences.',
-    eventLimit: 5,
-    passLimit: 500,
+    description: 'For mid-size conferences and conventions.',
+    eventLimit: 3,
+    passLimit: 1000,
     features: [
-      '5 Active Events',
-      '500 Digital Passes',
-      'CSV Bulk Generation',
-      'Custom Pass Types',
-      'Priority Email Support',
+      '3 Events',
+      '1,000 Passes',
+      'Custom Pass Background',
+      'Email Delivery',
+      'Pass Recovery Portal',
+      'CSV Export',
+      'Priority Support',
     ],
     highlight: true,
-    cta: 'Choose Pro',
+    cta: 'Buy Pro',
   },
   business: {
     id: 'business',
     name: 'Business',
-    price: '$249',
-    priceValue: 249,
+    price: '₹19,999',
+    priceValue: 19999,
     period: 'one-time',
-    description: 'For large expos and recurring events.',
-    eventLimit: 15,
-    passLimit: 2500,
+    description: 'For large expos, trade shows and summits.',
+    eventLimit: 10,
+    passLimit: 5000,
     features: [
-      '15 Active Events',
-      '2,500 Digital Passes',
-      'Team Access',
-      'Full Export Control',
-      'Dedicated Manager',
+      '10 Events',
+      '5,000 Passes',
+      'Custom Branding',
+      'Email Delivery',
+      'CSV Export',
+      'WhatsApp Integration',
+      'Dedicated Support',
     ],
     highlight: false,
-    cta: 'Choose Business',
+    cta: 'Buy Business',
   },
   enterprise: {
     id: 'enterprise',
     name: 'Enterprise',
-    price: 'Custom',
-    priceValue: 999,
-    period: 'per year',
-    description: 'Unlimited power for high-volume event companies.',
+    price: '₹39,999+',
+    priceValue: 39999,
+    period: 'custom',
+    description: 'Unlimited usage for event management companies.',
     eventLimit: -1,
     passLimit: -1,
     features: [
       'Unlimited Events',
       'Unlimited Passes',
-      'White-label Scanning',
-      'API Integration',
-      'On-site Training',
+      'White-label Portal',
+      'Custom Domain',
+      'Self-host Option',
+      'SLA Support',
     ],
     highlight: false,
-    cta: 'Sales Inquiry',
+    cta: 'Contact Sales',
   },
 };
 
-export function getPlanLimits(planId: PlanId): PlanLimits {
-  return PLANS[planId] || PLANS.free;
+// Helper: get limits for a given plan
+export function getPlanLimits(plan: PlanId) {
+  return PLANS[plan] ?? PLANS.free;
 }
 
+// Helper: check if a value exceeds plan limit (-1 = unlimited)
 export function isWithinLimit(current: number, limit: number): boolean {
   if (limit === -1) return true;
   return current < limit;

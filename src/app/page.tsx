@@ -1,212 +1,185 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Ticket, Zap, Shield, Globe, ArrowRight, CheckCircle2 } from 'lucide-react';
-import Link from 'next/link';
+import React from "react";
+import { motion } from "framer-motion";
+import { CheckCircle2, LogIn, ArrowRight, Star, Zap, QrCode, Users, Download, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { PLANS } from "@/lib/plans";
 
-export default function LandingPage() {
+export default function EventPassLandingPage() {
+  const features = [
+    { icon: <Zap className="w-6 h-6 text-blue-600" />, title: "Lightning Fast Setup", description: "Create an event URL in seconds and start accepting registrations immediately. No coding required." },
+    { icon: <QrCode className="w-6 h-6 text-blue-600" />, title: "Instant QR Generation", description: "Every attendee automatically receives a unique, scannable QR ticket directly on their device." },
+    { icon: <Users className="w-6 h-6 text-blue-600" />, title: "Multi-Event Scalability", description: "Host multiple events simultaneously with separate data silos and customized configurations." },
+    { icon: <ShieldCheck className="w-6 h-6 text-blue-600" />, title: "Secure Verification", description: "Scan QR codes at the gate to instantly verify authenticity and prevent duplication." },
+    { icon: <Download className="w-6 h-6 text-blue-600" />, title: "One-Click Exports", description: "Download your entire attendee list as a CSV file to import into your CRM easily." },
+  ];
+
+  const pricingPlans = Object.values(PLANS);
+
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 overflow-x-hidden">
-      {/* Navbar */}
-      <nav className="fixed w-full z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <Ticket className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-black tracking-tighter text-slate-900">
-              PASS<span className="text-blue-600">NEXUS</span>
-            </span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-500">
-            <Link href="#features" className="hover:text-blue-600 transition-colors">Features</Link>
-            <Link href="#how-it-works" className="hover:text-blue-600 transition-colors">How it Works</Link>
-            <Link href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</Link>
-          </div>
+    <div className="min-h-screen bg-white text-slate-900 font-sans">
 
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">
-              Login
+      {/* Sticky Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-6 py-4 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="bg-blue-600 w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md">E</div>
+            <span className="text-xl font-black tracking-tight text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
+              <LogIn className="w-4 h-4" /> Sign In
             </Link>
-            <Link 
-              href="/signup" 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-blue-500/25"
-            >
-              Get Started
+            <Link href="/signup" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md flex items-center gap-2">
+              Get Started <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <main className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="hero-glow opacity-50" />
-        <div className="bg-mesh absolute inset-0 opacity-100" />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-widest mb-8">
-                <Zap size={14} className="fill-current" />
-                Next-Gen Event System
-              </div>
-              
-              <h1 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight mb-8 text-slate-900">
-                Premium <br />
-                <span className="gradient-text">Event Pass</span> <br />
-                Management.
-              </h1>
-              
-              <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-lg font-medium">
-                The evolution of EntryFlow. Experience the most aesthetic and high-performance digital ticketing platform for elite corporate events.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <Link 
-                  href="/signup" 
-                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white h-16 px-10 rounded-2xl flex items-center justify-center gap-3 text-lg font-black transition-all hover:scale-105 shadow-xl shadow-blue-500/30"
-                >
-                  Create Event <ArrowRight size={20} />
-                </Link>
-                <Link 
-                  href="/demo" 
-                  className="w-full sm:w-auto h-16 px-10 rounded-2xl border border-slate-200 flex items-center justify-center gap-3 text-lg font-bold hover:bg-slate-50 transition-all text-slate-600"
-                >
-                  See Demo
-                </Link>
-              </div>
-
-              <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 gap-8 border-t border-slate-100 pt-12">
-                {[
-                  { label: 'Cloud Hosted', icon: Zap },
-                  { label: 'Secure QR', icon: Shield },
-                  { label: 'Real-time Stats', icon: Globe }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 text-slate-400">
-                    <item.icon size={18} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="relative hidden lg:block"
-            >
-              {/* Premium Light Pass Mockup */}
-              <div className="glass-card p-1 rounded-[3rem] relative z-20 overflow-hidden group">
-                <div className="bg-white rounded-[2.8rem] p-10 shadow-inner">
-                  <div className="flex justify-between items-start mb-16">
-                    <div>
-                      <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">
-                        EXHIBITOR PASS
-                      </div>
-                      <h3 className="text-3xl font-black text-slate-900">Sarah Jenkins</h3>
-                      <p className="text-slate-500 text-sm font-bold">Innovation Summit 2026</p>
-                    </div>
-                    <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center">
-                      <Ticket size={32} className="text-blue-600" />
-                    </div>
-                  </div>
-
-                  <div className="aspect-square w-full max-w-[240px] mx-auto bg-slate-50 rounded-3xl p-6 mb-12 border border-slate-100 shadow-sm relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                    <img 
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=PASSNEXUS-LIGHT" 
-                      alt="Sample QR Code" 
-                      className="w-full h-full relative z-10 mix-blend-multiply"
-                    />
-                  </div>
-
-                  <div className="border-t border-slate-50 pt-8 grid grid-cols-2 gap-8">
-                    <div>
-                      <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black mb-1">Pass ID</p>
-                      <p className="text-sm font-bold text-blue-600 font-mono">PN-4402-LX</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black mb-1">Access</p>
-                      <p className="text-sm font-bold text-slate-900">Main Arena - B4</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Decorative elements */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-100 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl" />
-            </motion.div>
+      {/* Hero */}
+      <section className="pt-36 pb-24 px-6 max-w-7xl mx-auto text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-semibold tracking-wide mb-6">
+            ✨ Smart Event Management, Simplified
+          </span>
+          <h1 className="text-5xl md:text-7xl font-black leading-tight mb-8 text-slate-900">
+            The Ultimate <span className="text-blue-600">Event Pass</span> System
+          </h1>
+          <p className="text-lg md:text-xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Create events, distribute QR passes, and handle gate check-ins — all from one clean, powerful dashboard.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/signup"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg hover:shadow-xl w-full sm:w-auto flex items-center justify-center gap-2 text-lg">
+              Start for Free <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/event/demo-event"
+              className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-8 py-4 rounded-2xl font-semibold transition-all w-full sm:w-auto text-lg">
+              Try Live Demo
+            </Link>
           </div>
+          <p className="mt-6 text-sm text-slate-400 font-medium">Free to start. No credit card required.</p>
+        </motion.div>
+      </section>
+
+      {/* Stats Bar */}
+      <section className="py-10 px-6 bg-slate-50 border-y border-slate-100">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[{ value: "500+", label: "Events Hosted" }, { value: "50K+", label: "Passes Generated" }, { value: "99.9%", label: "Uptime" }, { value: "< 2s", label: "Gate Scan Time" }].map((stat, i) => (
+            <div key={i}>
+              <p className="text-3xl font-black text-blue-600 mb-1">{stat.value}</p>
+              <p className="text-sm text-slate-500 font-medium">{stat.label}</p>
+            </div>
+          ))}
         </div>
-      </main>
+      </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-32 relative bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-black mb-6 text-slate-900">Simplicity <span className="text-blue-600">Perfected.</span></h2>
-            <p className="text-slate-500 font-medium max-w-2xl mx-auto">We took the best parts of our previous systems and rebuilt them with a focus on speed, reliability, and modern aesthetics.</p>
+      {/* Features */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black text-slate-900 mb-4">Everything You Need</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-lg">A complete event pass system replacing complex ticketing platforms with a fast, minimal experience.</p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { 
-                title: 'Clean Interface', 
-                desc: 'A distraction-free Light Theme designed for ultra-clear visibility in any environment.',
-                icon: Zap 
-              },
-              { 
-                title: 'High-Density QR', 
-                desc: 'Optimized QR patterns for 100% first-scan success rates on any smartphone screen.',
-                icon: CheckCircle2 
-              },
-              { 
-                title: 'Data Sovereignty', 
-                desc: 'Total control over your attendee data with secure export and encrypted database logs.',
-                icon: Globe 
-              }
-            ].map((f, i) => (
-              <div key={i} className="bg-white border border-slate-200 p-10 rounded-3xl hover:shadow-xl hover:translate-y-[-5px] transition-all group">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-8 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                  <f.icon size={28} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="bg-white border border-slate-100 p-8 rounded-3xl hover:border-blue-200 hover:shadow-lg transition-all group">
+                <div className="bg-blue-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 group-hover:bg-blue-100 transition-colors">
+                  {feature.icon}
                 </div>
-                <h3 className="text-xl font-black mb-4 text-slate-900">{f.title}</h3>
-                <p className="text-slate-500 font-medium text-sm leading-relaxed">{f.desc}</p>
-              </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-20 border-t border-slate-100 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-10">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Ticket className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-                PASS<span className="text-blue-600">NEXUS</span>
-              </span>
-            </div>
-            
-            <p className="text-slate-400 text-xs font-black uppercase tracking-widest">
-              © 2026 Pass Nexus AI. Elevating Events.
+      {/* Pricing */}
+      <section id="pricing" className="py-24 px-6 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black text-slate-900 mb-4">Simple, Pass-Based Pricing</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-lg">
+              Pay once per plan. No monthly fees, no per-attendee surprises. Your passes, your way.
             </p>
+          </div>
 
-            <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-              <Link href="mailto:hello@passnexus.in" className="hover:text-blue-600 transition-colors">hello@passnexus.in</Link>
-              <Link href="#" className="hover:text-blue-600 transition-colors">Terms</Link>
-              <Link href="#" className="hover:text-blue-600 transition-colors">Contact</Link>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
+            {pricingPlans.map((plan, i) => (
+              <motion.div key={plan.id} initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}
+                className={`relative rounded-3xl overflow-hidden flex flex-col ${plan.highlight ? 'ring-2 ring-blue-600 shadow-2xl shadow-blue-200' : 'border border-slate-200 shadow-sm'} bg-white`}>
+                {plan.highlight && (
+                  <div className="bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest text-center py-2 flex items-center justify-center gap-1">
+                    <Star className="w-3 h-3" /> Most Popular
+                  </div>
+                )}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-xl font-black text-slate-900 mb-1">{plan.name}</h3>
+                  <p className="text-slate-400 text-xs mb-5 min-h-[32px]">{plan.description}</p>
+
+                  <div className="mb-5 pb-5 border-b border-slate-100">
+                    <span className="text-4xl font-black text-slate-900">{plan.price}</span>
+                    <span className="text-slate-400 ml-1.5 text-xs">/ {plan.period}</span>
+                  </div>
+
+                  {/* Key Limits Highlight */}
+                  <div className="grid grid-cols-2 gap-2 mb-5 bg-blue-50 rounded-xl p-3 border border-blue-100">
+                    <div className="text-center">
+                      <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Events</p>
+                      <p className="text-lg font-black text-blue-700">{plan.eventLimit === -1 ? '∞' : plan.eventLimit}</p>
+                    </div>
+                    <div className="text-center border-l border-blue-200">
+                      <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Passes</p>
+                      <p className="text-lg font-black text-blue-700">{plan.passLimit === -1 ? '∞' : plan.passLimit.toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-2.5 mb-6 flex-grow">
+                    {plan.features.map((item, j) => (
+                      <li key={j} className="flex items-center gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                        <span className="text-slate-600 text-xs">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link href={plan.id === 'enterprise' ? 'mailto:contact@andinnovatech.com?subject=EntryFlow Enterprise' : '/signup'}
+                    className={`w-full py-3.5 rounded-2xl font-bold text-center transition-all block text-sm ${plan.highlight ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}`}>
+                    {plan.cta}
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center max-w-2xl mx-auto bg-blue-50 border border-blue-100 p-6 rounded-2xl">
+            <p className="text-sm text-slate-600">
+              <span className="font-bold text-slate-900">Need a custom quote?</span> We offer white-label reseller panels, custom licensing, and annual contracts.{" "}
+              <a href="mailto:contact@andinnovatech.com" className="text-blue-600 hover:text-blue-700 underline font-semibold">
+                Talk to our team
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-100 py-12 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
+            <span className="font-black tracking-tight text-slate-900">EntryFlow</span>
+          </div>
+          <p className="text-sm text-slate-400 text-center">
+            A product by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
+          </p>
+          <div className="flex gap-6 text-sm text-slate-500">
+            <Link href="/recover" className="hover:text-blue-600 transition-colors">Recover Pass</Link>
+            <Link href="/login" className="hover:text-blue-600 transition-colors">Organizer Login</Link>
           </div>
         </div>
       </footer>
