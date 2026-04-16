@@ -19,7 +19,7 @@ export default function MyEventsDashboard() {
   const [search, setSearch] = useState("");
   const [usage, setUsage] = useState<{ plan: string; totalPasses: number; freeLimit: number; totalEvents: number; eventLimit: number; isPassLimited: boolean; isEventLimited: boolean; isLimited: boolean } | null>(null);
   const [formData, setFormData] = useState({
-    name: "", slug: "", date: "", endDate: "", venue: "", description: "", checkinPin: "1234",
+    name: "", slug: "", date: "", endDate: "", venue: "", description: "", checkinPin: "1234", phone: "",
     passSettings: { showName: true, showDesignation: true, showPhone: true, showCompany: true, customBackgroundUrl: "", qrPosition: 40, infoPosition: 65 }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +65,7 @@ export default function MyEventsDashboard() {
     if (!showModal) {
       setIsEditing(false);
       setEditEventId(null);
-      setFormData({ name: "", slug: "", date: "", endDate: "", venue: "", description: "", checkinPin: "1234", passSettings: { showName: true, showDesignation: true, showPhone: true, showCompany: true, customBackgroundUrl: "", qrPosition: 40, infoPosition: 65 } });
+      setFormData({ name: "", slug: "", date: "", endDate: "", venue: "", description: "", checkinPin: "1234", phone: "", passSettings: { showName: true, showDesignation: true, showPhone: true, showCompany: true, customBackgroundUrl: "", qrPosition: 40, infoPosition: 65 } });
     }
     return () => { document.body.style.overflow = 'unset'; };
   }, [showModal]);
@@ -79,6 +79,7 @@ export default function MyEventsDashboard() {
       venue: event.venue,
       description: event.description || "",
       checkinPin: event.checkinPin || "1234",
+      phone: event.phone || "",
       passSettings: event.passSettings || { showName: true, showDesignation: true, showPhone: false, showCompany: true, customBackgroundUrl: "", qrPosition: 40, infoPosition: 65 }
     });
     setEditEventId(event._id);
@@ -142,8 +143,8 @@ export default function MyEventsDashboard() {
     <div className="min-h-screen bg-slate-50 font-sans">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
-        <Link href="/pass" className="flex items-center gap-3">
-          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">P</div>
+        <Link href="/pass" className="flex items-center gap-3 font-sans">
+          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
           <span className="font-black text-slate-900 text-lg tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
         <div className="flex items-center gap-6">
