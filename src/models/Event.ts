@@ -22,6 +22,8 @@ export interface IEvent extends Document {
     infoPosition?: number // Percentage from top
   }
   checkinPin?: string
+  ticketPrice?: number
+  currency?: string
   createdAt: Date
 }
 
@@ -47,6 +49,8 @@ const EventSchema = new Schema<IEvent>({
     infoPosition: { type: Number, default: 65 }
   },
   checkinPin: { type: String, default: '1234' },
+  ticketPrice: { type: Number, default: 0 },
+  currency: { type: String, default: 'INR' },
   createdAt: { type: Date, default: Date.now },
 })
 

@@ -24,6 +24,10 @@ export interface IVisitor extends Document {
   otp?: string
   otpExpiry?: Date
   registrationSource: 'public' | 'manual' | 'instant'
+  paymentStatus: 'pending' | 'paid' | 'failed'
+  razorpayOrderId?: string
+  razorpayPaymentId?: string
+  amountPaid?: number
 }
 
 const VisitorSchema = new Schema<IVisitor>({
@@ -50,6 +54,10 @@ const VisitorSchema = new Schema<IVisitor>({
   otp:          { type: String },
   otpExpiry:    { type: Date },
   registrationSource: { type: String, enum: ['public', 'manual', 'instant'], default: 'public' },
+  paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
+  razorpayOrderId: { type: String },
+  razorpayPaymentId: { type: String },
+  amountPaid: { type: Number, default: 0 },
 })
 
 // Compound index: Email must be unique per Event, but allowed across different Events

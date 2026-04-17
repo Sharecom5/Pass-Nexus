@@ -10,7 +10,11 @@ import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, phone, company, address, designation, passType, eventSlug, registrationSource } = await req.json();
+    const { 
+      name, email, phone, company, address, designation, 
+      passType, eventSlug, registrationSource,
+      paymentStatus, razorpayOrderId, razorpayPaymentId, amountPaid
+    } = await req.json();
 
     if (!name || !email || !eventSlug) {
       return NextResponse.json({ error: 'Missing required fields (name, email, eventSlug)' }, { status: 400 });
@@ -83,6 +87,10 @@ export async function POST(req: NextRequest) {
       eventName: event.name,
       eventDate: event.date,
       eventVenue: event.venue,
+      paymentStatus: paymentStatus || 'pending',
+      razorpayOrderId,
+      razorpayPaymentId,
+      amountPaid: amountPaid || 0,
     });
     await newVisitor.save();
 
