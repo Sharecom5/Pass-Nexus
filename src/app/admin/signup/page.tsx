@@ -46,8 +46,8 @@ export default function SignupPage() {
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link href="/pass" className="inline-flex items-center gap-3 mb-8 group">
-            <div className="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center font-black text-white shadow-md group-hover:scale-110 transition-transform text-lg">E</div>
-            <span className="text-2xl font-black tracking-tight text-slate-900">Entry<span className="text-blue-600">Flow</span> <span className="text-slate-400 font-normal text-lg">Portal</span></span>
+            <img src="/icon.png" alt="PassNexus" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+            <span className="text-2xl font-black tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span> <span className="text-slate-400 font-normal text-lg">Portal</span></span>
           </Link>
           <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Create your account</h1>
           <p className="text-slate-500 text-sm">Start managing events — free, no credit card required.</p>
