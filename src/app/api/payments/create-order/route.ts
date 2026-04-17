@@ -3,14 +3,18 @@ import Razorpay from "razorpay";
 import { connectDB } from "@/lib/mongodb";
 import { Event } from "@/models/Event";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
-
 export async function POST(req: NextRequest) {
   try {
     const { eventSlug, amount, currency = "INR" } = await req.json();
+
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json({ error: "Razorpay keys not configured" }, { status: 500 });
+    }
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
 
     if (!eventSlug || !amount) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
