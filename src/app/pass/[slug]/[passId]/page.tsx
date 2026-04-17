@@ -55,16 +55,27 @@ export default function PassPage() {
     if (!element) return;
     setDownloading(true);
     try {
-      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
-      const imgData = canvas.toDataURL("image/png");
+      // Small delay to ensure all images are ready
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const canvas = await html2canvas(element, { 
+        scale: 2.5, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
       const pdf = new jsPDF("p", "mm", "a4");
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`PassNexus_Pass_${passId}.pdf`);
     } catch (err) {
-      alert("Failed to generate PDF.");
+      console.error("PDF Error:", err);
+      alert("Failed to generate PDF. Please check your connection and try again.");
     } finally {
       setDownloading(false);
     }
@@ -96,8 +107,8 @@ export default function PassPage() {
       {/* Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-4">
         <Link href="/pass" className="flex items-center gap-3">
-          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
-          <span className="font-black text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
+          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+          <span className="font-black text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
       </div>
 
@@ -112,6 +123,7 @@ export default function PassPage() {
             <img 
               src={settings.customBackgroundUrl} 
               alt="Pass Background" 
+              crossOrigin="anonymous"
               className="absolute inset-0 w-full h-full object-fill z-0" 
             />
           )}

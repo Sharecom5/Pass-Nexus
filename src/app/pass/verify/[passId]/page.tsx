@@ -84,10 +84,7 @@ export default function PublicVerificationPage() {
         // It is not entered yet. Check if device has PIN saved
         const savedPin = localStorage.getItem(`entryflow_pin_${data.eventSettings._id}`);
         
-        if (savedPin) {
-          // Immediately try to check them in automatically
-          await attemptCheckIn(data.eventSettings._id, savedPin);
-        } else {
+        if (!savedPin) {
           // No PIN saved, show the PIN screen
           setShowPinScreen(true);
         }
@@ -100,8 +97,8 @@ export default function PublicVerificationPage() {
 
   const handlePinSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput.length < 4) {
-      setPinError("PIN must be at least 4 digits");
+    if (pinInput.length < 1) {
+      setPinError("Please enter the PIN");
       return;
     }
     await attemptCheckIn(event._id, pinInput);
@@ -137,8 +134,8 @@ export default function PublicVerificationPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans flex flex-col items-center py-20 px-6">
       {/* Header */}
       <div className="bg-white border-b border-slate-100 fixed top-0 left-0 right-0 px-6 py-4 flex items-center gap-3 z-10 shadow-sm">
-        <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
-        <span className="font-black text-slate-900">Entry<span className="text-blue-600">Flow</span> <span className="font-normal text-slate-400 text-sm hidden sm:inline">· Verifier Terminal</span></span>
+        <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+        <span className="font-black text-slate-900">Pass<span className="text-blue-600">Nexus</span> <span className="font-normal text-slate-400 text-sm hidden sm:inline">· Verifier Terminal</span></span>
       </div>
 
       <AnimatePresence mode="wait">
@@ -163,7 +160,7 @@ export default function PublicVerificationPage() {
                 <input
                   type="password"
                   inputMode="numeric"
-                  placeholder="Enter 4-Digit PIN"
+                  placeholder="Event Check-in PIN"
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 text-center text-2xl tracking-[0.2em] font-black rounded-2xl py-5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-900"
@@ -173,7 +170,7 @@ export default function PublicVerificationPage() {
               </div>
               <button
                 type="submit"
-                disabled={verifying || pinInput.length < 4}
+                disabled={verifying || pinInput.length < 1}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-70 disabled:active:scale-100"
               >
                 {verifying ? <Loader2 className="w-6 h-6 animate-spin" /> : "Verify Staff PIN"}
@@ -209,10 +206,10 @@ export default function PublicVerificationPage() {
               </div>
 
               <div className="text-center mb-8">
-                <h1 className={`text-4xl font-black tracking-tight mb-1 ${isEntered ? 'text-green-600' : 'text-slate-900'}`}>
-                  {verifying ? "VERIFYING..." : isEntered ? "ACCESS GRANTED" : "PENDING ENTRY"}
+                <h1 className={`text-3xl font-black tracking-tight mb-1 ${isEntered ? 'text-green-600' : 'text-slate-900'}`}>
+                   {verifying ? "VERIFYING..." : isEntered ? "ACCESS GRANTED" : "READY FOR CHECK-IN"}
                 </h1>
-                <p className="text-slate-400 text-sm">{verifying ? "Processing digital signature" : "Attendee Official Verification"}</p>
+                <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">{verifying ? "Processing digital signature" : "Security Checkpoint Terminal"}</p>
               </div>
 
               {/* Info Block */}
@@ -234,13 +231,35 @@ export default function PublicVerificationPage() {
               </div>
 
               {/* Action Result */}
-              {isEntered && (
+              {isEntered ? (
                 <div className="w-full bg-green-600 text-white font-black py-5 rounded-2xl flex flex-col items-center border-b-4 border-green-800 shadow-lg">
                   <span className="text-lg">ENTRY VERIFIED</span>
                   <span className="text-[10px] font-bold uppercase mt-1 opacity-90 tracking-widest">
                     {visitor.enteredAt ? new Date(visitor.enteredAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'Just Now'}
                   </span>
                 </div>
+              ) : (
+                <button
+                   onClick={() => {
+                     const savedPin = localStorage.getItem(`entryflow_pin_${event._id}`);
+                     if (savedPin) {
+                       attemptCheckIn(event._id, savedPin);
+                     } else {
+                       setShowPinScreen(true);
+                     }
+                   }}
+                   disabled={verifying}
+                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl flex flex-col items-center border-b-4 border-blue-800 shadow-lg transition-all active:scale-95 disabled:opacity-70"
+                >
+                   {verifying ? <Loader2 className="w-6 h-6 animate-spin" /> : (
+                      <>
+                        <span className="text-lg">CONFIRM ATTENDEE ENTRY</span>
+                        <span className="text-[10px] font-bold uppercase mt-1 opacity-90 tracking-widest mx-auto flex items-center gap-1">
+                           <UserCheck size={12} /> Secure Verification
+                        </span>
+                      </>
+                   )}
+                </button>
               )}
             </div>
 

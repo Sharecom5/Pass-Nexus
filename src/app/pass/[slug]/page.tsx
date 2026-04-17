@@ -26,7 +26,7 @@ export default function RegistrationPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await fetch(`/api/events/${slug}`);
+        const res = await fetch(`/api/events/public?slug=${slug}`);
         if (!res.ok) throw new Error("Event not found");
         const data = await res.json();
         setEvent(data.event);
@@ -48,7 +48,7 @@ export default function RegistrationPage() {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, eventSlug: slug }),
+        body: JSON.stringify({ ...formData, eventSlug: slug, registrationSource: 'public' }),
       });
 
       const data = await res.json();

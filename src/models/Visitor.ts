@@ -23,6 +23,7 @@ export interface IVisitor extends Document {
   scanCount: number
   otp?: string
   otpExpiry?: Date
+  registrationSource: 'public' | 'manual' | 'instant'
 }
 
 const VisitorSchema = new Schema<IVisitor>({
@@ -48,6 +49,7 @@ const VisitorSchema = new Schema<IVisitor>({
   scanCount:    { type: Number, default: 0 },
   otp:          { type: String },
   otpExpiry:    { type: Date },
+  registrationSource: { type: String, enum: ['public', 'manual', 'instant'], default: 'public' },
 })
 
 // Compound index: Email must be unique per Event, but allowed across different Events

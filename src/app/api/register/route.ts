@@ -10,7 +10,7 @@ import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, phone, company, address, designation, passType, eventSlug } = await req.json();
+    const { name, email, phone, company, address, designation, passType, eventSlug, registrationSource } = await req.json();
 
     if (!name || !email || !eventSlug) {
       return NextResponse.json({ error: 'Missing required fields (name, email, eventSlug)' }, { status: 400 });
@@ -76,6 +76,7 @@ export async function POST(req: NextRequest) {
     const newVisitor = new Visitor({
       passId, name, email: email.toLowerCase(), phone, company, address, designation,
       passType: passType || 'Visitor',
+      registrationSource: registrationSource || 'public',
       status: 'registered',
       qrCodeUrl: qrCodeDataUri,
       eventId: event._id,
