@@ -176,7 +176,6 @@ export default function EventPassLandingPage() {
             A product by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
           </p>
           <div className="flex gap-6 text-sm text-slate-500">
-            <Link href="/recover" className="hover:text-blue-600 transition-colors">Recover Pass</Link>
             <Link href="/admin/login" className="hover:text-blue-600 transition-colors">Organizer Login</Link>
           </div>
         </div>
