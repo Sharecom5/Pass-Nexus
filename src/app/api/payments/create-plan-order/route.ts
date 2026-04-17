@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb";
-import { Organizer } from "@/models/Organizer";
 import { PLANS } from "@/lib/plans";
 
 export async function POST(req: NextRequest) {
@@ -24,23 +22,19 @@ export async function POST(req: NextRequest) {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
-    const plan = (PLANS as any)[planId];
-    if (!plan || planId === 'free') {
-      return NextResponse.json({ error: "Invalid plan selected" }, { status: 400 });
+    if (!planId) {
+      return NextResponse.json({ error: "Missing planId" }, { status: 400 });
     }
 
-    const amount = plan.priceValue; // Price in INR from lib/plans.ts
+    const plan = (PLANS as any)[planId];
+    if (!plan || plan.priceValue <= 0) {
+      return NextResponse.json({ error: "Invalid plan for purchase" }, { status: 400 });
+    }
 
-    // Amount in Razorpay is in Paisa (1 INR = 100 Paisa)
     const options = {
-      amount: amount * 100,
+      amount: plan.priceValue * 100, // INR in Paisa
       currency: "INR",
-      receipt: `plan_upgrade_${session.user.email}_${Date.now()}`,
-      notes: {
-        planId,
-        email: session.user.email,
-        type: 'plan_upgrade'
-      }
+      receipt: `plan_${planId}_${Date.now()}`,
     };
 
     const order = await razorpay.orders.create(options);
@@ -49,10 +43,9 @@ export async function POST(req: NextRequest) {
       orderId: order.id,
       amount: order.amount,
       currency: order.currency,
-      planName: plan.name
     });
   } catch (err: any) {
     console.error("Razorpay Plan Order Error:", err);
-    return NextResponse.json({ error: "Failed to create upgrade order" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to create payment order" }, { status: 500 });
   }
 }
