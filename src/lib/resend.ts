@@ -342,3 +342,69 @@ export async function sendPlanUpgradeNotification(
   }
 }
 
+/**
+ * Send a Thank You / Receipt email to the organizer after a plan upgrade
+ */
+export async function sendThankYouForUpgradeEmail(
+  toEmail: string,
+  organizerName: string,
+  planName: string,
+  amount: number
+): Promise<boolean> {
+  const html = `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f4f4f5;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:32px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <tr>
+           <td style="background:#0a1628;padding:32px 40px;text-align:center;">
+             <h1 style="margin:0;font-size:24px;color:#ffffff;font-weight:700;">Upgrade Successful! 🎉</h1>
+             <p style="margin:8px 0 0;font-size:14px;color:#85B7EB;">Thank you for upgrading PassNexus</p>
+           </td>
+        </tr>
+        <tr>
+          <td style="padding:40px;">
+             <p style="margin:0 0 16px;font-size:16px;color:#111827;">Hello <strong>${organizerName}</strong>,</p>
+             <p style="margin:0 0 24px;font-size:14px;color:#4B5563;line-height:1.6;">
+                Your PassNexus workspace has been successfully upgraded to the <strong>${planName.toUpperCase()}</strong> plan. 
+                Your new limits and premium features have been unlocked immediately!
+             </p>
+
+             <div style="background:#F0FDF4;border:2px solid #86EFAC;color:#166534;padding:24px;border-radius:16px;text-align:center;margin-bottom:32px;">
+                <p style="margin:0;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7;">Total Paid</p>
+                <p style="margin:4px 0 0;font-size:40px;font-weight:900;">₹${amount.toLocaleString()}</p>
+             </div>
+
+             <div style="text-align:center;margin-top:24px;">
+               <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/dashboard" style="display:inline-block;background:#1D4ED8;color:#ffffff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:600;font-size:14px;">Go to Dashboard</a>
+             </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#F9FAFB;padding:20px 40px;text-align:center;border-top:1px solid #E5E7EB;">
+             <p style="margin:0;font-size:11px;color:#9CA3AF;font-weight:bold;letter-spacing:0.05em;">
+                Powered by PassNexus Protocol
+             </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+
+  try {
+    await resend.emails.send({
+      from: \`PassNexus <hello@passnexus.in>\`,
+      to: [toEmail],
+      subject: \`Thank You! Your account is now on the \${planName.toUpperCase()} Plan 🚀\`,
+      html,
+    })
+    return true
+  } catch (err) {
+    console.error('Upgrade Thank You email error:', err)
+    return false
+  }
+}

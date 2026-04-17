@@ -4,8 +4,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import { Organizer } from "@/models/Organizer";
+import { Transaction } from "@/models/Transaction";
 import { PLANS } from "@/lib/plans";
-import { sendPlanUpgradeNotification } from "@/lib/resend";
+import { sendPlanUpgradeNotification, sendThankYouForUpgradeEmail } from "@/lib/resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,10 +49,25 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Organizer not found to upgrade" }, { status: 404 });
       }
 
-      // Send admin notification
+      // Send notifications and log transaction
       const plan = (PLANS as any)[planId];
       if (plan) {
+        // Track the transaction permanently in the DB
+        await Transaction.create({
+          organizerEmail: session.user.email,
+          planId: planId,
+          amount: plan.priceValue,
+          razorpayOrderId: razorpay_order_id,
+          razorpayPaymentId: razorpay_payment_id,
+          razorpaySignature: razorpay_signature,
+          status: 'success'
+        });
+
+        // Notify the robust nexus admin
         await sendPlanUpgradeNotification(session.user.email, planId, plan.priceValue);
+
+        // Send beautiful html-styled thank you email + receipt to the organizer who just paid
+        await sendThankYouForUpgradeEmail(session.user.email, result.name, plan.name, plan.priceValue);
       }
 
       return NextResponse.json({ 
