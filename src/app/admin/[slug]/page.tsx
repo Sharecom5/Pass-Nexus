@@ -550,44 +550,11 @@ export default function AdminDashboard() {
                      <p className="text-xs font-bold text-slate-500 text-right">{stats.total} / 1000 Passes Used</p>
                   </div>
 
-                  {/* Pricing Settings Card */}
-                  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-                     <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">
-                        <DollarSign className="w-5 h-5 text-blue-600" /> Ticket Pricing Settings
-                     </h3>
-                     <div className="space-y-4">
-                        <div className="flex gap-4">
-                           <div className="flex-1">
-                              <label className="text-[10px] font-bold text-slate-500 uppercase">Currency</label>
-                              <select 
-                                value={priceData.currency} 
-                                onChange={(e) => setPriceData({...priceData, currency: e.target.value})}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none font-bold"
-                              >
-                                 <option value="INR">INR (₹)</option>
-                                 <option value="USD">USD ($)</option>
-                                 <option value="AED">AED (د.إ)</option>
-                              </select>
-                           </div>
-                           <div className="flex-1">
-                              <label className="text-[10px] font-bold text-slate-500 uppercase">Base Price</label>
-                                 <input 
-                                   type="number" 
-                                   value={priceData.ticketPrice} 
-                                   onChange={(e) => setPriceData({...priceData, ticketPrice: Number(e.target.value)})}
-                                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none font-bold"
-                                 />
-                           </div>
-                        </div>
-                        <button 
-                          onClick={handleUpdatePrice}
-                          disabled={updatingPrice}
-                          className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center justify-center gap-2"
-                        >
-                           {updatingPrice ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Pricing Changes'}
-                        </button>
-                     </div>
-                  </div>
+                   </div>
+                </div>
+             )}
+          </div>
+       </main>
                </div>
             )}
          </div>
