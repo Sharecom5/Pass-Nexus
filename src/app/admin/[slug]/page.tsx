@@ -49,7 +49,14 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (slug) fetchData();
+    if (slug) {
+      fetchData();
+      // Auto-refresh the dashboard every 15 seconds to pull new public registrations
+      const interval = setInterval(() => {
+        fetchData();
+      }, 15000);
+      return () => clearInterval(interval);
+    }
   }, [slug]);
 
   const handleCopyLink = () => {
