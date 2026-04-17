@@ -13,6 +13,7 @@ import {
   QrCode
 } from "lucide-react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export default function AdminDashboard() {
   const { slug } = useParams();
@@ -248,9 +249,11 @@ export default function AdminDashboard() {
          </nav>
 
          <div className="mt-auto pt-10 border-t border-slate-100">
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-700 font-bold transition-all">
-               <LogOut className="w-4 h-4" /> Logout
-            </button>
+          <button
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-700 font-bold transition-all">
+             <LogOut className="w-4 h-4" /> Logout
+          </button>
          </div>
       </aside>
 
