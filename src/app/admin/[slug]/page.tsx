@@ -84,7 +84,18 @@ export default function AdminDashboard() {
       
       setSuccessPassId(data.passId);
       setNewAttendee({ name: "", email: "", phone: "", company: "", designation: "" });
-      fetchData(); // Refresh list
+      
+      // Update stats locally for instant feedback
+      setData((prev: any) => ({
+        ...prev,
+        stats: {
+          ...prev.stats,
+          total: (prev.stats.total || 0) + 1,
+          pending: (prev.stats.pending || 0) + 1
+        }
+      }));
+
+      fetchData(); // Refresh list in background
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -101,6 +112,15 @@ export default function AdminDashboard() {
         setData((prev: any) => ({
           ...prev,
           attendees: prev.attendees.filter((a: any) => a._id !== id)
+        }));
+        // Update stats locally for instant feedback
+        setData((prev: any) => ({
+          ...prev,
+          stats: {
+            ...prev.stats,
+            total: Math.max(0, (prev.stats.total || 0) - 1),
+            pending: Math.max(0, (prev.stats.pending || 0) - 1)
+          }
         }));
         if (selectedAttendee?._id === id) setSelectedAttendee(null);
       } else {
@@ -695,20 +715,45 @@ export default function AdminDashboard() {
         )}
       </AnimatePresence>
 
-      {/* Hidden Print Layout */}
+      {/* Hidden Print Layout (Strict 1-Page, No Branding) */}
       {printData && (
-        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] justify-center pt-10">
-          <div className="w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black relative">
-             <h1 className="text-3xl font-black uppercase text-black leading-tight">{printData.name}</h1>
-             {printData.company && <h2 className="text-base font-bold text-gray-800 mt-1">{printData.company}</h2>}
+        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0 overflow-hidden">
+          <style dangerouslySetInnerHTML={{ __html: `
+            @page { margin: 0; size: 3.5in 2.25in; }
+            @media print {
+              body { 
+                visibility: hidden !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                -webkit-print-color-adjust: exact;
+              }
+              .print-container { 
+                visibility: visible !important; 
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 3.5in !important;
+                height: 2.25in !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+              }
+            }
+          `}} />
+          <div className="print-container w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black overflow-hidden m-0">
+             <h1 className="text-3xl font-black uppercase text-black leading-none mb-1 break-words max-w-full">{printData.name}</h1>
+             {printData.company && <h2 className="text-sm font-bold text-gray-800 leading-tight mb-1">{printData.company}</h2>}
              {printData.qrCodeUrl && (
                <img 
-                 src={printData.qrCodeUrl} 
+                 src={printData.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${printData.passId}`}
                  alt="QR Code" 
-                 className="w-[1in] h-[1in] mt-3 mb-1 border border-gray-100 p-0.5" 
+                 className="w-[0.9in] h-[0.9in] mt-1 mb-1 border border-gray-100 p-0.5 object-contain" 
                />
              )}
-             <span className="text-[10px] font-mono font-bold text-black mt-1 tracking-tighter">{printData.passId}</span>
+             <span className="text-[10px] font-mono font-bold text-black tracking-tighter uppercase">{printData.passId}</span>
           </div>
         </div>
       )}
