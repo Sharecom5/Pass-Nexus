@@ -286,3 +286,59 @@ export async function sendWelcomeEmail(to: string, name: string): Promise<boolea
     return false
   }
 }
+
+/**
+ * Send an alert to the admin when a new plan is purchased
+ */
+export async function sendPlanUpgradeNotification(
+  organizerEmail: string,
+  planId: string,
+  amount: number
+): Promise<boolean> {
+  const html = `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f4f4f5;font-family:sans-serif;">
+  <div style="max-width:600px;margin:40px auto;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.1);border:1px solid #e2e8f0;">
+    <div style="background:#0a1628;padding:40px;text-align:center;">
+       <h1 style="margin:0;font-size:32px;color:#ffffff;font-weight:900;">NEW SALE! 🚀</h1>
+       <p style="margin:10px 0 0;font-size:16px;color:#85B7EB;">A new plan upgrade just happened</p>
+    </div>
+    <div style="padding:40px;">
+       <div style="background:#F0FDF4;border:2px solid #86EFAC;color:#166534;padding:24px;border-radius:16px;text-align:center;margin-bottom:32px;">
+          <p style="margin:0;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7;">Revenue Collected</p>
+          <p style="margin:4px 0 0;font-size:48px;font-weight:900;">₹${amount.toLocaleString()}</p>
+       </div>
+       <table width="100%" style="border-collapse:collapse;">
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-weight:bold;font-size:12px;text-transform:uppercase;">Plan Tier</td>
+            <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;text-align:right;font-weight:900;color:#0f172a;text-transform:uppercase;">${planId}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-weight:bold;font-size:12px;text-transform:uppercase;">Organizer</td>
+            <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;text-align:right;font-weight:bold;color:#1d4ed8;">${organizerEmail}</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 0;color:#64748b;font-weight:bold;font-size:12px;text-transform:uppercase;">Status</td>
+            <td style="padding:12px 0;text-align:right;font-weight:900;color:#059669;">CONFIRMED ✅</td>
+          </tr>
+       </table>
+    </div>
+  </div>
+</body>
+</html>`
+
+  try {
+    await resend.emails.send({
+      from: `PassNexus Sales <hello@passnexus.in>`,
+      to: ['hello@passnexus.in'],
+      subject: `📈 NEW SALE: ${planId.toUpperCase()} Plan — ₹${amount}`,
+      html,
+    })
+    return true
+  } catch (err) {
+    console.error('Plan notification error:', err)
+    return false
+  }
+}
+

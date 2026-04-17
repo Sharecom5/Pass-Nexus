@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import { Organizer } from "@/models/Organizer";
+import { PLANS } from "@/lib/plans";
+import { sendPlanUpgradeNotification } from "@/lib/resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,6 +46,12 @@ export async function POST(req: NextRequest) {
 
       if (!result) {
         return NextResponse.json({ error: "Organizer not found to upgrade" }, { status: 404 });
+      }
+
+      // Send admin notification
+      const plan = (PLANS as any)[planId];
+      if (plan) {
+        await sendPlanUpgradeNotification(session.user.email, planId, plan.priceValue);
       }
 
       return NextResponse.json({ 
