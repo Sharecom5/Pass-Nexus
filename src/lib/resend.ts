@@ -397,9 +397,9 @@ export async function sendThankYouForUpgradeEmail(
 
   try {
     await resend.emails.send({
-      from: \`PassNexus <hello@passnexus.in>\`,
+      from: `PassNexus <hello@passnexus.in>`,
       to: [toEmail],
-      subject: \`Thank You! Your account is now on the \${planName.toUpperCase()} Plan 🚀\`,
+      subject: `Thank You! Your account is now on the ${planName.toUpperCase()} Plan 🚀`,
       html,
     })
     return true
