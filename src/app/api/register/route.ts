@@ -3,7 +3,6 @@ import { connectDB } from '@/lib/mongodb';
 import { Event } from '@/models/Event';
 import { Visitor } from '@/models/Visitor';
 import { Organizer } from '@/models/Organizer';
-import { sendPassEmail } from '@/lib/resend';
 import { getPlanLimits, isWithinLimit, PlanId } from '@/lib/plans';
 import QRCode from 'qrcode';
 import crypto from 'crypto';
@@ -93,22 +92,6 @@ export async function POST(req: NextRequest) {
       amountPaid: amountPaid || 0,
     });
     await newVisitor.save();
-
-    // Send pass email
-    try {
-      await sendPassEmail({
-        to: email.toLowerCase(),
-        visitorName: name,
-        passId,
-        passType: passType || 'Visitor',
-        eventName: event.name,
-        eventDate: event.date,
-        eventVenue: event.venue,
-        qrCodeBase64: qrCodeDataUri
-      });
-    } catch (emailErr) {
-      console.error('Failed to send pass email:', emailErr);
-    }
 
     return NextResponse.json({ success: true, passId, qrCodeUrl: qrCodeDataUri, message: 'Registration successful' });
 
