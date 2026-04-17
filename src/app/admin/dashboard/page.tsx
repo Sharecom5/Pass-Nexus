@@ -291,7 +291,6 @@ export default function MyEventsDashboard() {
                 </div>
               </div>
               <p className="text-xs text-red-600 font-medium">Upgrade your plan to unlock unlimited events and passes.</p>
-              )}
             </div>
             <button onClick={() => setShowUpgradeModal(true)}
               className="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black px-5 py-3 rounded-xl shadow-md transition-all text-sm">
