@@ -232,28 +232,16 @@ export default function AdminDashboard() {
                <Printer className="w-4 h-4" /> Instant Badge
             </button>
             <button 
-               onClick={() => setActiveTab("instant-log")}
-               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'instant-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
-            >
-               <ClipboardList className="w-4 h-4" /> Walk-Ins Database
-            </button>
-            <button 
-               onClick={() => setActiveTab("public-log")}
-               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'public-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
-            >
-               <Globe className="w-4 h-4" /> Public Registration
-            </button>
-            <button 
                onClick={() => setActiveTab("checked-in")}
                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'checked-in' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
             >
-               <UserCheck className="w-4 h-4" /> Checked-In Log
+               <UserCheck className="w-4 h-4" /> Entry Log
             </button>
             <button 
                onClick={() => setActiveTab("stats")}
                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'stats' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
             >
-               <ShieldAlert className="w-4 h-4" /> License Stats
+               <ShieldAlert className="w-4 h-4" /> License & Settings
             </button>
          </nav>
 
@@ -426,7 +414,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* List View */}
-            {(activeTab === 'attendees' || activeTab === 'instant-log' || activeTab === 'public-log' || activeTab === 'checked-in') && (
+            {(activeTab === 'attendees' || activeTab === 'checked-in') && (
                <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                      <table className="w-full text-left">
@@ -434,6 +422,7 @@ export default function AdminDashboard() {
                            <tr className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                               <th className="px-6 py-4">Attendee Info</th>
                               <th className="px-6 py-4">Contact Details</th>
+                              {activeTab === 'checked-in' && <th className="px-6 py-4">Entry Time</th>}
                               <th className="px-6 py-4">Pass ID</th>
                               {activeTab === 'attendees' && <th className="px-6 py-4">Source</th>}
                               <th className="px-6 py-4 text-right">Actions</th>
@@ -465,6 +454,14 @@ export default function AdminDashboard() {
                                        <p className="text-slate-700 font-medium">{attendee.email}</p>
                                        <p className="text-slate-500 text-[10px] uppercase font-bold tracking-tight opacity-50">{attendee.phone}</p>
                                     </td>
+                                    {activeTab === 'checked-in' && (
+                                       <td className="px-6 py-5">
+                                          <div className="flex items-center gap-2 text-green-600 font-black text-xs">
+                                             <Clock className="w-3 h-3" />
+                                             {attendee.enteredAt ? new Date(attendee.enteredAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently'}
+                                          </div>
+                                       </td>
+                                    )}
                                     <td className="px-6 py-5">
                                        <code className="text-blue-600 font-mono text-xs font-bold tracking-tight bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
                                           {attendee.passId}
