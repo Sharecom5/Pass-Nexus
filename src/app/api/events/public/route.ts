@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    const event = await Event.findOne({ slug, status: 'active' }).lean();
+    const event = await Event.findOne({ slug }).lean();
 
     if (!event) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
