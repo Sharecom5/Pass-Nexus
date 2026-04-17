@@ -244,12 +244,7 @@ export default function AdminDashboard() {
             >
                <UserCheck className="w-4 h-4" /> Entry Log
             </button>
-            <button 
-               onClick={() => setActiveTab("stats")}
-               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'stats' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
-            >
-               <ShieldAlert className="w-4 h-4" /> License & Settings
-            </button>
+
          </nav>
 
          <div className="mt-auto pt-10 border-t border-slate-100">
@@ -578,56 +573,7 @@ export default function AdminDashboard() {
                </div>
             )}
             
-            {activeTab === 'stats' && (
-               <div className="space-y-6">
-                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
-                       <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">
-                          <BarChart3 className="w-5 h-5 text-blue-600" /> License Consumption
-                       </h3>
-                       <div className="space-y-6">
-                          <div>
-                             <div className="flex justify-between items-end mb-2">
-                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Global Capacity Usage</span>
-                                <span className="text-sm font-black text-slate-900">{stats.total} / 1000 Passes</span>
-                             </div>
-                             <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                <motion.div 
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${(stats.total / 1000) * 100}%` }}
-                                  className="h-full bg-blue-600"
-                                />
-                             </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 pt-4">
-                             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Public Organic</p>
-                                <p className="text-2xl font-black text-slate-900">{publicCount}</p>
-                             </div>
-                             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Staff Manual</p>
-                                <p className="text-2xl font-black text-slate-900">{manualCount + instantCount}</p>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
 
-                    <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm flex flex-col justify-center">
-                       <h3 className="text-lg font-black text-slate-900 mb-2 flex items-center gap-2">
-                          <Ticket className="w-5 h-5 text-green-600" /> Plan Stability
-                       </h3>
-                       <p className="text-slate-500 text-sm font-medium mb-6">Your event is running on the <strong>Pro Tier</strong> license. Bandwidth and registration limits are automatically managed.</p>
-                       <div className="flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-100">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                          <div>
-                             <p className="text-sm font-black text-green-800 tracking-tight">System Status: Optimal</p>
-                             <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest opacity-80">All gate scanning nodes are active</p>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-               </div>
-            )}
          </div>
       </main>
 

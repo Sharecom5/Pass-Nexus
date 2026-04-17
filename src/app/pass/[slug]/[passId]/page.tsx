@@ -4,8 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, User, Building2, MapPin, Calendar, Loader2, AlertCircle, Download, Smartphone, QrCode, ArrowLeft } from "lucide-react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import Link from "next/link";
 
 export default function PassPage() {
@@ -50,35 +48,9 @@ export default function PassPage() {
     }
   };
 
-  const downloadPass = async () => {
-    const element = document.getElementById("pass-card");
-    if (!element) return;
-    setDownloading(true);
-    try {
-      // Small delay to ensure all images are ready
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const canvas = await html2canvas(element, { 
-        scale: 2.5, 
-        useCORS: true, 
-        backgroundColor: "#ffffff",
-        logging: false
-      });
-      
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`PassNexus_Pass_${passId}.pdf`);
-    } catch (err) {
-      console.error("PDF Error:", err);
-      alert("Failed to generate PDF. Please check your connection and try again.");
-    } finally {
-      setDownloading(false);
-    }
+  const downloadPass = () => {
+    // Rely on native browser print sheet which handles CORS images correctly and can "Save as PDF" natively on mobile/desktop
+    window.print();
   };
 
   if (loading) {
@@ -103,9 +75,9 @@ export default function PassPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative print:bg-white print:min-h-0 print:-m-8">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-6 py-4">
+      <div className="bg-white border-b border-slate-100 px-6 py-4 print:hidden">
         <Link href="/pass" className="flex items-center gap-3">
           <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
           <span className="font-black text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
@@ -181,7 +153,7 @@ export default function PassPage() {
         </motion.div>
 
         {/* Utility Buttons */}
-        <div className="mt-8 flex flex-wrap justify-center gap-6">
+        <div className="mt-8 flex flex-wrap justify-center gap-6 print:hidden">
           <button
             onClick={downloadPass}
             disabled={downloading}
@@ -198,7 +170,7 @@ export default function PassPage() {
           </Link>
         </div>
 
-        <p className="mt-8 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+        <p className="mt-8 text-[10px] text-slate-400 uppercase tracking-widest font-bold print:hidden">
           Verified Digital Pass • PassNexus Protocol
         </p>
       </div>
