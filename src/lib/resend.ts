@@ -177,7 +177,7 @@ export async function sendPassEmail(data: PassEmailData): Promise<boolean> {
 
   try {
     await resend.emails.send({
-      from: `${process.env.RESEND_FROM_NAME} <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `${process.env.RESEND_FROM_NAME || 'PassNexus'} <${process.env.RESEND_FROM_EMAIL || 'contact@andinnovatech.com'}>`,
       to: [to],
       subject: `Your Entry Pass — ${eventName}`,
       html,
@@ -228,7 +228,7 @@ export async function sendOTPEmail(
 
   try {
     await resend.emails.send({
-      from: `${process.env.RESEND_FROM_NAME} <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `${process.env.RESEND_FROM_NAME || 'PassNexus'} <${process.env.RESEND_FROM_EMAIL || 'contact@andinnovatech.com'}>`,
       to: [to],
       subject: `Your OTP: ${otp} — Pass Recovery`,
       html,
@@ -275,7 +275,7 @@ export async function sendWelcomeEmail(to: string, name: string): Promise<boolea
 
   try {
     await resend.emails.send({
-      from: `${process.env.RESEND_FROM_NAME} <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `${process.env.RESEND_FROM_NAME || 'PassNexus'} <${process.env.RESEND_FROM_EMAIL || 'contact@andinnovatech.com'}>`,
       to: [to],
       subject: `Welcome to PassNexus! — Account Confirmed`,
       html,
