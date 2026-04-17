@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Event } from '@/models/Event';
 import { Visitor } from '@/models/Visitor';
+import { Organizer } from '@/models/Organizer';
 import { getServerSession } from 'next-auth/next';
 import { connectDB } from '@/lib/mongodb';
 import { authOptions } from '@/lib/auth';
+import { getPlanLimits, PlanId } from '@/lib/plans';
 
 export async function GET(req: NextRequest) {
   try {
