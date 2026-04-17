@@ -10,6 +10,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Pass Nexus | Premium Event Ticketing Platform",
   description: "The next generation of digital event management and QR pass generation.",
+  verification: {
+    google: "FC9ifnmeRuLSZKFivlB5E3PDDb3ZBobo3cDy0uRAh4E",
+  },
 };
 
 export default function RootLayout({
