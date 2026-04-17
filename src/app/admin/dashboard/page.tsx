@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { PLANS } from "@/lib/plans";
+import Script from "next/script";
 
 export default function MyEventsDashboard() {
   const router = useRouter();
@@ -29,6 +30,83 @@ export default function MyEventsDashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [editEventId, setEditEventId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePlanUpgrade = async (plan: any) => {
+    try {
+      setIsSubmitting(true);
+      
+      // 1. Create Plan Order
+      const orderRes = await fetch("/api/payments/create-plan-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId: plan.id }),
+      });
+      const orderData = await orderRes.json();
+      if (!orderRes.ok) throw new Error(orderData.error);
+
+      // 2. Initialize Razorpay
+      const res = await loadRazorpay();
+      if (!res) {
+        alert("Razorpay SDK failed to load. Please check your connection.");
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "PassNexus",
+        description: `Upgrade to ${plan.name} Plan`,
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          // 3. Verify Payment
+          const verifyRes = await fetch("/api/payments/verify-plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              planId: plan.id
+            }),
+          });
+          const verifyData = await verifyRes.json();
+          
+          if (verifyData.success) {
+            alert(verifyData.message);
+            setShowUpgradeModal(false);
+            fetchEvents(); // Refresh usage limits
+          } else {
+            alert("Payment verification failed: " + verifyData.error);
+          }
+        },
+        prefill: {
+          name: usage?.plan || "",
+          email: "", // User is already logged in, backend uses session email
+        },
+        theme: {
+          color: "#2563eb",
+        },
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+    } catch (err: any) {
+      alert("Upgrade failed: " + err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const fetchEvents = async () => {
     try {
@@ -581,14 +659,15 @@ export default function MyEventsDashboard() {
                        ))}
                     </div>
 
-                    <a 
-                      href={`mailto:hello@passnexus.in?subject=Upgrade to ${plan.name} Plan`}
-                      className={`w-full py-4 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm ${
+                    <button 
+                      onClick={() => handlePlanUpgrade(plan)}
+                      disabled={isSubmitting}
+                      className={`w-full py-4 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm disabled:opacity-60 ${
                         plan.highlight ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-900'
                       }`}
                     >
-                      {plan.cta}
-                    </a>
+                      {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : plan.cta}
+                    </button>
                   </motion.div>
                 ))}
               </div>

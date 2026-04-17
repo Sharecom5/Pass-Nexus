@@ -18,7 +18,7 @@ const OrganizerSchema = new Schema<IOrganizer>({
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   passwordHash: { type: String },
   companyName: { type: String },
-  plan: { type: String, enum: ['free', 'pro', 'enterprise'], default: 'free' },
+  plan: { type: String, enum: ['free', 'starter', 'pro', 'business', 'enterprise'], default: 'free' },
   stripeCustomerId: { type: String },
   stripeSubscriptionId: { type: String },
   stripeSubscriptionStatus: { type: String },
