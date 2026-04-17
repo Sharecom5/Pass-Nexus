@@ -1,0 +1,11 @@
+# PassNexus
+PassNexus is an ultra-modern, lightning-fast digital event pass and ticketing system designed for seamless attendee management.
+
+## Key Features
+- Dynamic Quick QR Code Pass Generation
+- Multi-tier Roles (VIP, Speaker, Attendee, Exhibitor)
+- Native Print layout for downloading robust passes as PDF
+- Built-in Analytics & Usage tracking.
+- Zero-infrastructure Checkin via unique Gate Checkin URLs.
+
+Built with Next.js 14 App Router, Tailwind CSS, Resend (for beautiful HTML email receipts and OTPs) and Razorpay integration for Organizer tier upgrades.

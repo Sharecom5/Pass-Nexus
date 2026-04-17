@@ -168,15 +168,20 @@ export default function EventPassLandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-slate-100 py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="PassNexus" className="h-6 w-auto object-contain min-w-[100px]" />
-          </div>
-          <p className="text-sm text-slate-400 text-center">
-            A product by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
-          </p>
-          <div className="flex gap-6 text-sm text-slate-500">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-between gap-6">
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-500 font-medium">
+            <Link href="/about" className="hover:text-blue-600 transition-colors">About Us</Link>
+            <Link href="/contact" className="hover:text-blue-600 transition-colors">Contact</Link>
+            <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog</Link>
+            <Link href="/privacy" className="hover:text-blue-600 transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-blue-600 transition-colors">Terms</Link>
             <Link href="/admin/login" className="hover:text-blue-600 transition-colors">Organizer Login</Link>
+          </div>
+          <div className="flex flex-col md:flex-row w-full items-center justify-between mt-6 pt-6 border-t border-slate-100">
+            <img src="/logo.png" alt="PassNexus" className="h-6 w-auto object-contain min-w-[100px] mb-4 md:mb-0" />
+            <p className="text-sm text-slate-400 text-center">
+              A product purposefully built by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-bold" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
+            </p>
           </div>
         </div>
       </footer>
