@@ -555,10 +555,14 @@ export default function MyEventsDashboard() {
                            className="absolute left-1/2 -translate-x-1/2 w-28 h-28 bg-white p-2 rounded-lg shadow-md flex items-center justify-center border border-slate-100"
                            style={{ top: `${formData.passSettings.qrPosition}%` }}
                          >
-                            <div className="w-full h-full bg-slate-900 flex flex-col items-center justify-center gap-1 opacity-20">
-                               <div className="flex gap-1"><div className="w-2 h-2 bg-white" /><div className="w-2 h-2 bg-white" /></div>
-                               <div className="flex gap-1"><div className="w-2 h-2 bg-white" /><div className="w-2 h-2 bg-white" /></div>
-                            </div>
+                         {/* Proper QR mock */}
+                         <div className="w-full h-full bg-white p-1.5 rounded">
+                           <div className="w-full h-full grid grid-cols-5 grid-rows-5 gap-[2px]">
+                             {Array.from({ length: 25 }).map((_, i) => (
+                               <div key={i} className={`rounded-[1px] ${[0,1,5,6,10,4,9,14,20,21,24,23,22,3,15,11,16,8].includes(i) ? 'bg-slate-900' : 'bg-slate-200'}`} />
+                             ))}
+                           </div>
+                         </div>
                          </div>
                          
                          {/* Mock Attendee Info */}
@@ -566,10 +570,11 @@ export default function MyEventsDashboard() {
                            className="absolute left-0 right-0 text-center px-4 pointer-events-none"
                            style={{ top: `${formData.passSettings.infoPosition}%` }}
                          >
-                            <div className={`${formData.passSettings.customBackgroundUrl ? 'bg-white/90 backdrop-blur-sm py-2 rounded-xl shadow-sm border border-slate-100' : ''}`}>
-                               <div className="h-4 bg-slate-900/20 rounded w-2/3 mx-auto mb-1" />
-                               <div className="h-2 bg-slate-900/10 rounded w-1/2 mx-auto" />
-                            </div>
+                             <div className={`${formData.passSettings.customBackgroundUrl ? 'bg-white/90 backdrop-blur-sm rounded-xl shadow border border-slate-100' : 'bg-white/80 rounded-xl border border-slate-100'} px-3 py-2`}>
+                               <div className="text-[9px] font-black text-slate-800 truncate text-center">{formData.name || 'Attendee Name'}</div>
+                               {formData.passSettings.showDesignation && <div className="text-[8px] text-slate-500 text-center">Designation</div>}
+                               {formData.passSettings.showCompany && <div className="text-[8px] text-slate-400 text-center">Company</div>}
+                             </div>
                          </div>
                       </div>
                       
