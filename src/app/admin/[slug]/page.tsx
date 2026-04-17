@@ -13,7 +13,8 @@ import {
   QrCode,
   CreditCard,
   Settings,
-  DollarSign
+  DollarSign,
+  MapPin
 } from "lucide-react";
 import Link from "next/link";
 
@@ -223,7 +224,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans text-sm pb-20">
 
-      {/* Sidebar */}
+      {/* Sidebar (Simple Desktop Navigation) */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col p-6 z-20 shadow-sm">
          <Link href="/pass" className="flex items-center gap-3 group font-sans mb-10 px-2">
           <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
@@ -231,46 +232,121 @@ export default function AdminDashboard() {
         </Link>
 
          <nav className="space-y-1">
-            <button onClick={() => setActiveTab("attendees")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'attendees' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}>
+            <button 
+               onClick={() => setActiveTab("attendees")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'attendees' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
                <Users className="w-4 h-4" /> Attendees
             </button>
-            <button onClick={() => setActiveTab("instant-badge")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'instant-badge' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}>
+            <button 
+               onClick={() => setActiveTab("instant-badge")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'instant-badge' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
                <Printer className="w-4 h-4" /> Instant Badge
             </button>
-            <button onClick={() => setActiveTab("instant-log")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'instant-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}>
-               <ClipboardList className="w-4 h-4" /> Walk-Ins
+            <button 
+               onClick={() => setActiveTab("instant-log")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'instant-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
+               <ClipboardList className="w-4 h-4" /> Walk-Ins Database
             </button>
-            <button onClick={() => setActiveTab("public-log")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'public-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}>
-               <Globe className="w-4 h-4" /> Public Log
+            <button 
+               onClick={() => setActiveTab("public-log")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'public-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
+               <Globe className="w-4 h-4" /> Public Registration
             </button>
-            <button onClick={() => setActiveTab("checked-in")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'checked-in' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}>
-               <UserCheck className="w-4 h-4" /> Checked-In
+            <button 
+               onClick={() => setActiveTab("checked-in")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'checked-in' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
+               <UserCheck className="w-4 h-4" /> Checked-In Log
             </button>
-            <button onClick={() => setActiveTab("stats")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'stats' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}>
-               <ShieldAlert className="w-4 h-4" /> License & Price
+            <button 
+               onClick={() => setActiveTab("stats")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'stats' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
+               <Settings className="w-4 h-4" /> License & Price
             </button>
          </nav>
+
+         <div className="mt-auto pt-10 border-t border-slate-100">
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-700 font-bold transition-all" onClick={() => router.push('/admin/login')}>
+               <LogOut className="w-4 h-4" /> Logout
+            </button>
+         </div>
       </aside>
 
       {/* Main Content */}
       <main className="lg:ml-64 p-6 lg:p-10 relative z-10">
+         {/* Top Header */}
          <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
             <div>
                <h1 className="text-3xl font-black mb-1 text-slate-900">{data?.event?.name || 'Loading...'}</h1>
-               <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">{currentTitle}</p>
+               <p className="text-slate-500 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                 Admin Dashboard <ChevronRight className="w-3.5 h-3.5 opacity-40" /> {currentTitle}
+               </p>
+               {data?.event && (
+                 <div className="mt-4 flex flex-col md:flex-row md:items-center gap-3">
+                   <div className="flex items-center gap-2 bg-blue-50 w-max px-3 py-1.5 rounded-xl border border-blue-100">
+                      <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest flex items-center gap-1.5">
+                        <Lock className="w-3 h-3" /> Gate Scanner PIN:
+                      </span>
+                      <code className="text-sm font-mono font-black text-slate-900 tracking-wider">
+                        {data.event.checkinPin || '1234'}
+                      </code>
+                   </div>
+
+                   <div className="flex items-center gap-2 bg-slate-50 w-max pr-1.5 pl-3 py-1.5 rounded-xl border border-slate-200">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Globe className="w-3 h-3" /> Public link:
+                      </span>
+                      <a href={`/pass/${slug}`} target="_blank" rel="noreferrer" className="text-sm font-mono font-bold text-blue-600 hover:text-blue-700 hover:underline tracking-tight ml-1 mr-2">
+                         /{slug}
+                      </a>
+                      <button 
+                        onClick={handleCopyLink} 
+                        className={`p-1.5 rounded-lg transition-all border ${copied ? 'bg-green-100 border-green-200 text-green-700 scale-105' : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-700'}`}
+                        title="Copy Public Link"
+                      >
+                         {copied ? <CheckCircle className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                   </div>
+                 </div>
+               )}
             </div>
             <div className="flex items-center gap-4 relative">
                <div className="relative group hidden md:block">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600" />
-                  <input type="text" placeholder="Global Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 w-80 outline-none focus:ring-4 focus:ring-blue-100 transition-all font-medium text-slate-900 shadow-sm" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                  <input 
+                    type="text" 
+                    placeholder="Global Search..." 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 w-80 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-900 shadow-sm"
+                  />
+                  
+                  {/* Search Results Dropdown */}
                   <AnimatePresence>
                     {searchResults.length > 0 && (
-                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl z-[50] overflow-hidden">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl z-[50] overflow-hidden"
+                      >
                          <div className="p-2 space-y-1">
                            {searchResults.map((a: any) => (
-                             <button key={a._id} onClick={() => { setSelectedAttendee(a); setSearch(""); }} className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-all text-left">
-                               <div><p className="font-bold text-slate-900 text-sm">{a.name}</p><p className="text-slate-500 text-[10px] uppercase font-bold">{a.passId}</p></div>
-                               <ChevronRight className="w-4 h-4 text-slate-300" />
+                             <button 
+                               key={a._id}
+                               onClick={() => { setSelectedAttendee(a); setSearch(""); }}
+                               className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-all text-left group"
+                             >
+                               <div>
+                                 <p className="font-bold text-slate-900 text-sm">{a.name}</p>
+                                 <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">{a.passId}</p>
+                               </div>
+                               <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                              </button>
                            ))}
                          </div>
@@ -278,8 +354,24 @@ export default function AdminDashboard() {
                     )}
                   </AnimatePresence>
                </div>
-               <button onClick={() => setShowAddModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg">
+               <button 
+                onClick={() => { setRefreshing(true); fetchData(); }}
+                disabled={refreshing}
+                className="bg-white hover:bg-slate-50 p-3 rounded-xl border border-slate-200 transition-all text-slate-600 shadow-sm"
+               >
+                  <RefreshCcw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+               </button>
+               <button 
+                 onClick={() => setShowAddModal(true)}
+                 className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+               >
                   <PlusCircle className="w-4 h-4" /> New Pass
+               </button>
+               <button 
+                 onClick={handleExport}
+                 className="bg-white hover:bg-slate-50 text-slate-700 px-5 py-3 rounded-xl font-bold flex items-center gap-2 border border-slate-200 shadow-sm transition-all"
+               >
+                  <Download className="w-4 h-4" /> Export CSV
                </button>
             </div>
          </div>
@@ -305,54 +397,146 @@ export default function AdminDashboard() {
             </div>
          </div>
 
-         {/* Content Tabs */}
+         {/* Section Content */}
          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+               <h2 className="text-2xl font-black text-slate-900">{currentTitle}</h2>
+               
+               {activeTab === 'attendees' && (
+                  <div className="flex items-center gap-2">
+                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-1 flex items-center">
+                        <button 
+                           onClick={() => setFilter("all")}
+                           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === 'all' ? 'bg-white shadow-sm text-slate-900 border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                           All
+                        </button>
+                        <button 
+                           onClick={() => setFilter("entered")}
+                           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === 'entered' ? 'bg-green-100 text-green-700 shadow-sm border border-green-200' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                           Entered
+                        </button>
+                        <button 
+                           onClick={() => setFilter("pending")}
+                           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === 'pending' ? 'bg-orange-100 text-orange-700 shadow-sm border border-orange-200' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                           Pending
+                        </button>
+                     </div>
+                  </div>
+               )}
+            </div>
+
+            {/* List View */}
             {(activeTab === 'attendees' || activeTab === 'instant-log' || activeTab === 'public-log' || activeTab === 'checked-in') && (
                <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                      <table className="w-full text-left">
                         <thead>
                            <tr className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase text-slate-500 font-bold">
-                              <th className="px-6 py-4">Attendee</th>
-                              <th className="px-6 py-4">Contact</th>
+                              <th className="px-6 py-4">Attendee Info</th>
+                              <th className="px-6 py-4">Contact Details</th>
                               <th className="px-6 py-4">Payment</th>
                               <th className="px-6 py-4">Pass ID</th>
                               <th className="px-6 py-4 text-right">Actions</th>
                            </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                           {currentPasses?.map((attendee: any) => (
-                              <tr key={attendee._id} onClick={() => setSelectedAttendee(attendee)} className="hover:bg-slate-50 transition-colors group cursor-pointer">
-                                 <td className="px-6 py-5">
-                                    <div className="flex items-center gap-3">
-                                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black ${attendee.paymentStatus === 'paid' ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-slate-400'}`}>
-                                          {attendee.name.charAt(0)}
+                           <AnimatePresence>
+                              {currentPasses?.map((attendee: any, i: number) => (
+                                 <motion.tr 
+                                   key={attendee._id}
+                                   initial={{ opacity: 0 }}
+                                   animate={{ opacity: 1 }}
+                                   transition={{ delay: i * 0.05 }}
+                                   onClick={() => setSelectedAttendee(attendee)}
+                                   className="hover:bg-slate-50 transition-colors group cursor-pointer"
+                                 >
+                                    <td className="px-6 py-5">
+                                       <div className="flex items-center gap-3">
+                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black border group-hover:scale-105 transition-transform ${attendee.registrationSource === 'public' ? 'bg-purple-50 text-purple-600 border-purple-100' : attendee.registrationSource === 'instant' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                                             {attendee.name.charAt(0)}
+                                          </div>
+                                          <div>
+                                             <p className="font-bold text-slate-900 text-base leading-none mb-1">{attendee.name}</p>
+                                             <p className="text-slate-500 text-xs font-medium">{attendee.company || "No Company"}</p>
+                                          </div>
                                        </div>
-                                       <div>
-                                          <p className="font-bold text-slate-900">{attendee.name}</p>
-                                          <p className="text-slate-500 text-[10px]">{attendee.company}</p>
+                                    </td>
+                                    <td className="px-6 py-5 text-slate-700">
+                                       <p className="font-medium text-xs">{attendee.email}</p>
+                                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-tighter">{attendee.phone}</p>
+                                    </td>
+                                    <td className="px-6 py-5">
+                                       <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-black uppercase ${attendee.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                                          {attendee.paymentStatus === 'paid' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                                          {attendee.paymentStatus || 'Pending'}
                                        </div>
-                                    </div>
-                                 </td>
-                                 <td className="px-6 py-5 text-xs text-slate-600">
-                                    {attendee.email}<br/><span className="text-[10px] font-bold opacity-50">{attendee.phone}</span>
-                                 </td>
-                                 <td className="px-6 py-5">
-                                    <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-black uppercase ${attendee.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                                       {attendee.paymentStatus === 'paid' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                                       {attendee.paymentStatus || 'Pending'}
-                                    </div>
-                                 </td>
-                                 <td className="px-6 py-5 font-mono text-xs font-bold text-blue-600">{attendee.passId}</td>
-                                 <td className="px-6 py-5 text-right"><ChevronRight className="w-4 h-4 ml-auto text-slate-300" /></td>
-                              </tr>
-                           ))}
+                                    </td>
+                                    <td className="px-6 py-5">
+                                       <code className="text-blue-600 font-mono text-xs font-bold tracking-tight bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
+                                          {attendee.passId}
+                                       </code>
+                                    </td>
+                                    <td className="px-6 py-5 text-right"><ChevronRight className="w-4 h-4 ml-auto text-slate-300" /></td>
+                                 </motion.tr>
+                              ))}
+                           </AnimatePresence>
                         </tbody>
                      </table>
                   </div>
                </div>
             )}
 
+            {activeTab === 'instant-badge' && (
+               <div className="bg-white border border-slate-200 p-8 md:p-16 text-center rounded-3xl shadow-sm flex flex-col items-center justify-center">
+                  <Printer className="w-16 h-16 text-blue-100 mb-6" />
+                  <h2 className="text-2xl font-black text-slate-900 mb-3">Instant Name Badge</h2>
+                  <p className="text-slate-500 max-w-md font-medium mb-8">Generate a minimal, print-friendly badge for walk-ins with no background. Automatically registers the attendee and launches the print dialog.</p>
+                  
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    setAdding(true);
+                    try {
+                      const res = await fetch("/api/register", { 
+                        method: "POST", 
+                        headers: { "Content-Type": "application/json" }, 
+                        body: JSON.stringify({ 
+                          ...newAttendee,
+                          eventSlug: slug, 
+                          passType: 'Instant Badge',
+                          registrationSource: 'instant',
+                          paymentStatus: 'paid'
+                        }) 
+                      });
+                      const d = await res.json();
+                      if (!res.ok) throw new Error(d.error);
+                      
+                      triggerPrint({ ...newAttendee, passId: d.passId, qrCodeUrl: d.qrCodeUrl });
+                      setNewAttendee({ name: "", email: "", phone: "", company: "", designation: "" });
+                      fetchData();
+                    } catch(err: any) { 
+                      alert("Failed to generate: " + err.message); 
+                    } finally { 
+                      setAdding(false); 
+                    }
+                  }} className="w-full max-w-2xl space-y-4 text-left">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input required placeholder="Name" value={newAttendee.name} onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})} className="bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                      <input required type="email" placeholder="Email" value={newAttendee.email} onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})} className="bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input required placeholder="Phone" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                      <input required placeholder="Company" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                    </div>
+                    <button type="submit" disabled={adding} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl transition-all shadow-md mt-6 disabled:opacity-50">
+                      {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Printer className="w-5 h-5 ml-2 inline"/> Generate & Print Badge</>}
+                    </button>
+                  </form>
+               </div>
+            )}
+            
             {activeTab === 'stats' && (
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* License Card */}
@@ -369,7 +553,7 @@ export default function AdminDashboard() {
                   {/* Pricing Settings Card */}
                   <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
                      <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">
-                        <Settings className="w-5 h-5 text-blue-600" /> Ticket Pricing Settings
+                        <DollarSign className="w-5 h-5 text-blue-600" /> Ticket Pricing Settings
                      </h3>
                      <div className="space-y-4">
                         <div className="flex gap-4">
@@ -387,15 +571,12 @@ export default function AdminDashboard() {
                            </div>
                            <div className="flex-1">
                               <label className="text-[10px] font-bold text-slate-500 uppercase">Base Price</label>
-                              <div className="relative mt-1">
-                                 <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                  <input 
                                    type="number" 
                                    value={priceData.ticketPrice} 
                                    onChange={(e) => setPriceData({...priceData, ticketPrice: Number(e.target.value)})}
-                                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-11 pr-4 outline-none font-bold"
+                                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none font-bold"
                                  />
-                              </div>
                            </div>
                         </div>
                         <button 
@@ -405,7 +586,6 @@ export default function AdminDashboard() {
                         >
                            {updatingPrice ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Pricing Changes'}
                         </button>
-                        <p className="text-[10px] text-slate-400 font-medium italic text-center">Note: Price changes only apply to future registrations.</p>
                      </div>
                   </div>
                </div>
@@ -416,7 +596,7 @@ export default function AdminDashboard() {
       {/* Detail View Modal */}
       <AnimatePresence>
         {selectedAttendee && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 text-slate-900">
              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedAttendee(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" />
              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative z-10 bg-white w-full max-w-4xl rounded-[40px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[500px]">
                 <div className="w-full md:w-2/5 bg-slate-50 border-r border-slate-100 p-10 flex flex-col items-center justify-center text-center">
@@ -437,7 +617,7 @@ export default function AdminDashboard() {
                       <div className="grid grid-cols-2 gap-8">
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Payment ID</p><p className="font-bold text-slate-900 break-all">{selectedAttendee.razorpayPaymentId || 'N/A'}</p></div>
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Amount Received</p><p className="font-bold text-slate-900">{priceData.currency} {selectedAttendee.amountPaid || 0}</p></div>
-                         <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Email</p><p className="font-bold text-slate-900">{selectedAttendee.email}</p></div>
+                         <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Email</p><p className="font-bold text-slate-900 text-xs">{selectedAttendee.email}</p></div>
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Phone</p><p className="font-bold text-slate-900">{selectedAttendee.phone}</p></div>
                       </div>
                       <div className="pt-8 border-t border-slate-100 flex justify-between">
@@ -450,4 +630,55 @@ export default function AdminDashboard() {
           </div>
         )}
       </AnimatePresence>
-      ...
+
+      {/* Add Attendee Modal */}
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 text-slate-900">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAddModal(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.94 }} className="relative z-10 bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
+              <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h2 className="text-xl font-black text-slate-900">{successPassId ? "Pass Generated!" : "Manual Pass Generation"}</h2>
+                <button onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} className="text-slate-500 p-2 rounded-xl border border-slate-200"><X className="w-5 h-5" /></button>
+              </div>
+
+              {successPassId ? (
+                <div className="p-8 text-center space-y-6">
+                  <CheckCircle className="w-20 h-20 text-green-500 mx-auto" />
+                  <code className="text-2xl font-mono font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 block">{successPassId}</code>
+                  <button onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">Back to Dashboard</button>
+                </div>
+              ) : (
+                <form onSubmit={handleAddAttendee} className="p-8 space-y-4">
+                  <input required placeholder="Name" value={newAttendee.name} onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <input required type="email" placeholder="Email" value={newAttendee.email} onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <input required placeholder="Phone" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <input required placeholder="Company" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <button type="submit" disabled={adding} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">{adding ? <Loader2 className="animate-spin h-5 w-5 mx-auto"/> : "Generate Manual Pass"}</button>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Hidden Print Layout */}
+      {printData && (
+        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] justify-center pt-10">
+          <div className="w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black relative">
+             <h1 className="text-3xl font-black uppercase text-black leading-tight">{printData.name}</h1>
+             {printData.company && <h2 className="text-base font-bold text-gray-800 mt-1">{printData.company}</h2>}
+             {printData.qrCodeUrl && (
+               <img 
+                 src={printData.qrCodeUrl} 
+                 alt="QR Code" 
+                 className="w-[1in] h-[1in] mt-3 mb-1 border border-gray-100 p-0.5" 
+               />
+             )}
+             <span className="text-[10px] font-mono font-bold text-black mt-1 tracking-tighter">{printData.passId}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
