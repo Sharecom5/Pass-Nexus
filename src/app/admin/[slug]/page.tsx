@@ -133,15 +133,6 @@ export default function AdminDashboard() {
           ...prev,
           attendees: prev.attendees.filter((a: any) => a._id !== id)
         }));
-        // Update stats on client side as well
-        setData((prev: any) => ({
-          ...prev,
-          stats: {
-            ...prev.stats,
-            total: prev.stats.total - 1,
-            pending: prev.stats.total - 1 - prev.stats.entered // Recalculate pending
-          }
-        }));
         if (selectedAttendee?._id === id) setSelectedAttendee(null);
       } else {
         const d = await res.json();
@@ -200,12 +191,20 @@ export default function AdminDashboard() {
   const publicFilteredAttendees = filteredAttendees?.filter((a: any) => a.registrationSource === 'public');
   const checkedInFilteredAttendees = filteredAttendees?.filter((a: any) => a.status === 'entered');
 
-   const currentPasses = activeTab === 'checked-in'
+  const currentPasses = activeTab === 'instant-log' 
+    ? instantFilteredAttendees 
+    : activeTab === 'public-log' 
+      ? publicFilteredAttendees 
+      : activeTab === 'checked-in'
         ? checkedInFilteredAttendees
         : mainFilteredAttendees;
 
-  const currentTitle = activeTab === 'checked-in'
-        ? 'Official Entry Log'
+  const currentTitle = activeTab === 'instant-log'
+    ? 'Walk-Ins Database'
+    : activeTab === 'public-log'
+      ? 'Public Registration Log'
+      : activeTab === 'checked-in'
+        ? 'Real-time Checked-In Log'
         : 'Attendee Management';
 
   const stats = data?.stats || { total: 0, entered: 0, pending: 0 };
@@ -246,10 +245,22 @@ export default function AdminDashboard() {
                <Printer className="w-4 h-4" /> Instant Badge
             </button>
             <button 
+               onClick={() => setActiveTab("instant-log")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'instant-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
+               <ClipboardList className="w-4 h-4" /> Walk-Ins Database
+            </button>
+            <button 
+               onClick={() => setActiveTab("public-log")}
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'public-log' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+            >
+               <Globe className="w-4 h-4" /> Public Registration
+            </button>
+            <button 
                onClick={() => setActiveTab("checked-in")}
                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'checked-in' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
             >
-               <UserCheck className="w-4 h-4" /> Entry Log
+               <UserCheck className="w-4 h-4" /> Checked-In Log
             </button>
             <button 
                onClick={() => setActiveTab("stats")}
@@ -379,6 +390,11 @@ export default function AdminDashboard() {
                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Pending</p>
                <p className="text-3xl font-black text-orange-500">{stats.pending || 0}</p>
             </div>
+            <div className="bg-blue-600 border border-blue-700 p-6 rounded-2xl shadow-lg relative overflow-hidden">
+               <CreditCard className="absolute -right-2 -bottom-2 w-20 h-20 text-blue-500 opacity-20" />
+               <p className="text-[10px] font-bold text-blue-100 uppercase mb-2">Event Revenue</p>
+               <p className="text-3xl font-black text-white">{priceData.currency} {totalPaidRevenue.toLocaleString()}</p>
+            </div>
          </div>
 
          {/* Section Content */}
@@ -421,7 +437,7 @@ export default function AdminDashboard() {
                            <tr className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase text-slate-500 font-bold">
                               <th className="px-6 py-4">Attendee Info</th>
                               <th className="px-6 py-4">Contact Details</th>
-                              {activeTab === 'checked-in' && <th className="px-6 py-4">Entry Time</th>}
+                              <th className="px-6 py-4">Payment</th>
                               <th className="px-6 py-4">Pass ID</th>
                               <th className="px-6 py-4 text-right">Actions</th>
                            </tr>
@@ -452,14 +468,12 @@ export default function AdminDashboard() {
                                        <p className="font-medium text-xs">{attendee.email}</p>
                                        <p className="text-[10px] font-bold opacity-50 uppercase tracking-tighter">{attendee.phone}</p>
                                     </td>
-                                    {activeTab === 'checked-in' && (
-                                       <td className="px-6 py-5">
-                                          <div className="flex items-center gap-2 text-green-600 font-black text-xs">
-                                             <Clock className="w-3 h-3" />
-                                             {attendee.enteredAt ? new Date(attendee.enteredAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just Now'}
-                                          </div>
-                                       </td>
-                                     )}
+                                    <td className="px-6 py-5">
+                                       <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-black uppercase ${attendee.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                                          {attendee.paymentStatus === 'paid' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                                          {attendee.paymentStatus || 'Pending'}
+                                       </div>
+                                    </td>
                                     <td className="px-6 py-5">
                                        <code className="text-blue-600 font-mono text-xs font-bold tracking-tight bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
                                           {attendee.passId}
@@ -531,25 +545,53 @@ export default function AdminDashboard() {
                         <BarChart3 className="w-5 h-5 text-blue-600" /> License Consumption
                      </h3>
                      <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 mb-2">
-                        <motion.div 
-                          initial={{ width: 0 }} 
-                          animate={{ width: `${(stats.total / (data?.planLimit || 100)) * 100}%` }} 
-                          className="h-full bg-blue-600" 
-                        />
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.total / 1000) * 100}%` }} className="h-full bg-blue-600" />
                      </div>
-                     <div className="flex justify-between items-center">
-                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-                           {Math.max(0, (data?.planLimit || 0) - stats.total)} Passes Remaining
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-500 text-right">
-                           {stats.total} / {data?.planLimit || '∞'} Used
-                        </p>
+                     <p className="text-xs font-bold text-slate-500 text-right">{stats.total} / 1000 Passes Used</p>
+                  </div>
+
+                  {/* Pricing Settings Card */}
+                  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                     <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <DollarSign className="w-5 h-5 text-blue-600" /> Ticket Pricing Settings
+                     </h3>
+                     <div className="space-y-4">
+                        <div className="flex gap-4">
+                           <div className="flex-1">
+                              <label className="text-[10px] font-bold text-slate-500 uppercase">Currency</label>
+                              <select 
+                                value={priceData.currency} 
+                                onChange={(e) => setPriceData({...priceData, currency: e.target.value})}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none font-bold"
+                              >
+                                 <option value="INR">INR (₹)</option>
+                                 <option value="USD">USD ($)</option>
+                                 <option value="AED">AED (د.إ)</option>
+                              </select>
+                           </div>
+                           <div className="flex-1">
+                              <label className="text-[10px] font-bold text-slate-500 uppercase">Base Price</label>
+                                 <input 
+                                   type="number" 
+                                   value={priceData.ticketPrice} 
+                                   onChange={(e) => setPriceData({...priceData, ticketPrice: Number(e.target.value)})}
+                                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none font-bold"
+                                 />
+                           </div>
+                        </div>
+                        <button 
+                          onClick={handleUpdatePrice}
+                          disabled={updatingPrice}
+                          className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center justify-center gap-2"
+                        >
+                           {updatingPrice ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Pricing Changes'}
+                        </button>
                      </div>
                   </div>
                </div>
             )}
-          </div>
-       </main>
+         </div>
+      </main>
 
       {/* Detail View Modal */}
       <AnimatePresence>
@@ -566,10 +608,15 @@ export default function AdminDashboard() {
                    <button onClick={() => setSelectedAttendee(null)} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><X className="w-6 h-6" /></button>
                    <div className="space-y-8">
                       <div>
+                         <div className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border inline-block ${selectedAttendee.paymentStatus === 'paid' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                            {selectedAttendee.paymentStatus === 'paid' ? 'Transaction Verified' : 'Payment Required'}
+                         </div>
                          <h2 className="text-4xl font-black text-slate-900 mt-2">{selectedAttendee.name}</h2>
                          <p className="text-slate-500 font-medium">{selectedAttendee.designation} at {selectedAttendee.company}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-8">
+                         <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Payment ID</p><p className="font-bold text-slate-900 break-all">{selectedAttendee.razorpayPaymentId || 'N/A'}</p></div>
+                         <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Amount Received</p><p className="font-bold text-slate-900">{priceData.currency} {selectedAttendee.amountPaid || 0}</p></div>
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Email</p><p className="font-bold text-slate-900 text-xs">{selectedAttendee.email}</p></div>
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Phone</p><p className="font-bold text-slate-900">{selectedAttendee.phone}</p></div>
                       </div>
@@ -595,59 +642,19 @@ export default function AdminDashboard() {
                 <button onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} className="text-slate-500 p-2 rounded-xl border border-slate-200"><X className="w-5 h-5" /></button>
               </div>
 
-               {successPassId ? (
-                <div className="p-10 text-center space-y-8 bg-white">
-                  <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto border-4 border-green-100 mb-2">
-                     <CheckCircle className="w-12 h-12 text-green-500" />
-                  </div>
-                  <div>
-                     <h3 className="text-2xl font-black text-slate-900">Pass Generated!</h3>
-                     <p className="text-slate-500 font-medium">The pass for {newAttendee.name || 'the attendee'} is ready to use.</p>
-                  </div>
-                  
-                  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 space-y-4">
-                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-left ml-2">Secure Pass ID</p>
-                     <code className="text-3xl font-mono font-black text-blue-600 block bg-white py-4 rounded-2xl border border-blue-100 shadow-sm">{successPassId}</code>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                     <button 
-                       onClick={() => {
-                        triggerPrint({ ...newAttendee, passId: successPassId });
-                       }}
-                       className="bg-slate-900 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-black transition-all shadow-lg active:scale-95"
-                     >
-                        <Printer className="w-5 h-5" /> Print Pass
-                     </button>
-                     <button 
-                       onClick={() => { setShowAddModal(false); setSuccessPassId(null); }}
-                       className="bg-white border-2 border-slate-200 text-slate-700 py-4 rounded-2xl font-black hover:bg-slate-50 transition-all active:scale-95"
-                     >
-                        Go Back
-                     </button>
-                  </div>
+              {successPassId ? (
+                <div className="p-8 text-center space-y-6">
+                  <CheckCircle className="w-20 h-20 text-green-500 mx-auto" />
+                  <code className="text-2xl font-mono font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 block">{successPassId}</code>
+                  <button onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">Back to Dashboard</button>
                 </div>
               ) : (
-                <form onSubmit={handleAddAttendee} className="p-10 space-y-6">
-                  <div className="space-y-4">
-                    <div className="group">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 mb-2 block group-focus-within:text-blue-600 transition-colors">Name & Organization</label>
-                       <div className="grid grid-cols-2 gap-3">
-                          <input required placeholder="Enter Name" value={newAttendee.name} onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
-                          <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
-                       </div>
-                    </div>
-                    <div className="group">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 mb-2 block group-focus-within:text-blue-600 transition-colors">Contact Information</label>
-                       <div className="grid grid-cols-2 gap-3">
-                          <input required type="email" placeholder="Email Address" value={newAttendee.email} onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
-                          <input required placeholder="Mobile Number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
-                       </div>
-                    </div>
-                  </div>
-                  <button type="submit" disabled={adding} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-                     {adding ? <Loader2 className="animate-spin h-6 w-6"/> : <><PlusCircle className="w-5 h-5"/> Generate Digital Pass</>}
-                  </button>
+                <form onSubmit={handleAddAttendee} className="p-8 space-y-4">
+                  <input required placeholder="Name" value={newAttendee.name} onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <input required type="email" placeholder="Email" value={newAttendee.email} onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <input required placeholder="Phone" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <input required placeholder="Company" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
+                  <button type="submit" disabled={adding} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">{adding ? <Loader2 className="animate-spin h-5 w-5 mx-auto"/> : "Generate Manual Pass"}</button>
                 </form>
               )}
             </motion.div>
@@ -655,45 +662,20 @@ export default function AdminDashboard() {
         )}
       </AnimatePresence>
 
-      {/* Hidden Print Layout (Strict 1-Page Calibration) */}
+      {/* Hidden Print Layout */}
       {printData && (
-        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0 overflow-hidden">
-          <style dangerouslySetInnerHTML={{ __html: `
-            @page { margin: 0; size: 3.5in 2.25in; }
-            @media print {
-              body { 
-                visibility: hidden; 
-                margin: 0 !important; 
-                padding: 0 !important; 
-                -webkit-print-color-adjust: exact;
-              }
-              .print-container { 
-                visibility: visible !important; 
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: 3.5in !important;
-                height: 2.25in !important;
-                page-break-after: avoid !important;
-                page-break-before: avoid !important;
-              }
-            }
-          `}} />
-          <div className="print-container w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black overflow-hidden m-0">
-             <h1 className="text-3xl font-black uppercase text-black leading-none mb-1 break-words max-w-full">{printData.name}</h1>
-             {printData.company && <h2 className="text-base font-bold text-gray-800 leading-tight mb-1">{printData.company}</h2>}
+        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] justify-center pt-10">
+          <div className="w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black relative">
+             <h1 className="text-3xl font-black uppercase text-black leading-tight">{printData.name}</h1>
+             {printData.company && <h2 className="text-base font-bold text-gray-800 mt-1">{printData.company}</h2>}
              {printData.qrCodeUrl && (
                <img 
-                 src={printData.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${printData.passId}`}
+                 src={printData.qrCodeUrl} 
                  alt="QR Code" 
-                 className="w-[0.9in] h-[0.9in] mt-1 mb-1 border border-gray-100 p-0.5 object-contain" 
+                 className="w-[1in] h-[1in] mt-3 mb-1 border border-gray-100 p-0.5" 
                />
              )}
-             <span className="text-[10px] font-mono font-bold text-black tracking-tighter uppercase">{printData.passId}</span>
+             <span className="text-[10px] font-mono font-bold text-black mt-1 tracking-tighter">{printData.passId}</span>
           </div>
         </div>
       )}
