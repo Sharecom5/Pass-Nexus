@@ -18,7 +18,7 @@ export default function MyEventsDashboard() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [usage, setUsage] = useState<{ plan: string; totalPasses: number; freeLimit: number; totalEvents: number; eventLimit: number; isPassLimited: boolean; isEventLimited: boolean; isLimited: boolean } | null>(null);
+  const [usage, setUsage] = useState<{ plan: string; totalPasses: number; passLimit: number; totalEvents: number; eventLimit: number; isPassLimited: boolean; isEventLimited: boolean; isLimited: boolean } | null>(null);
   const [formData, setFormData] = useState({
     name: "", slug: "", date: "", endDate: "", venue: "", description: "", checkinPin: "1234", phone: "",
     passSettings: { showName: true, showDesignation: true, showPhone: true, showCompany: true, customBackgroundUrl: "", qrPosition: 40, infoPosition: 65 }
@@ -277,15 +277,15 @@ export default function MyEventsDashboard() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className={`w-4 h-4 ${usage.isPassLimited ? 'text-red-500' : usage.totalPasses >= 7 ? 'text-orange-500' : 'text-blue-600'}`} />
+                    <TrendingUp className={`w-4 h-4 ${usage.isPassLimited ? 'text-red-500' : usage.totalPasses >= usage.passLimit * 0.8 ? 'text-orange-500' : 'text-blue-600'}`} />
                     <p className={`text-sm font-black ${usage.isPassLimited ? 'text-red-700' : 'text-slate-800'}`}>
-                      Passes: {usage.totalPasses} / {usage.freeLimit} {usage.isPassLimited ? '— Limit Reached' : ''}
+                      Passes: {usage.totalPasses} / {usage.passLimit} {usage.isPassLimited ? '— Limit Reached' : ''}
                     </p>
                   </div>
                 </div>
                 <div className="w-full bg-white rounded-full h-2 border border-slate-200">
-                  <div className={`h-2 rounded-full transition-all ${usage.isPassLimited ? 'bg-red-500' : usage.totalPasses >= 7 ? 'bg-orange-500' : 'bg-blue-500'}`}
-                    style={{ width: `${Math.min((usage.totalPasses / usage.freeLimit) * 100, 100)}%` }} />
+                  <div className={`h-2 rounded-full transition-all ${usage.isPassLimited ? 'bg-red-500' : usage.totalPasses >= usage.passLimit * 0.8 ? 'bg-orange-500' : 'bg-blue-500'}`}
+                    style={{ width: `${Math.min((usage.totalPasses / usage.passLimit) * 100, 100)}%` }} />
                 </div>
               </div>
               {(usage.isEventLimited || usage.isPassLimited) && (
@@ -323,10 +323,6 @@ export default function MyEventsDashboard() {
                   <button onClick={() => handleEditClick(event)}
                     className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 transition-all border border-blue-100" title="Edit Event">
                     <Pencil className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => handleDeleteEvent(event._id, event.name)}
-                    className="p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-all border border-red-100" title="Delete Event">
-                    <Trash2 className="w-4 h-4" />
                   </button>
                   <Link href={`/pass/${event.slug}`} target="_blank"
                     className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-all border border-slate-200" title="Public Page">
