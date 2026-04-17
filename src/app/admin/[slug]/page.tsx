@@ -133,6 +133,15 @@ export default function AdminDashboard() {
           ...prev,
           attendees: prev.attendees.filter((a: any) => a._id !== id)
         }));
+        // Update stats on client side as well
+        setData((prev: any) => ({
+          ...prev,
+          stats: {
+            ...prev.stats,
+            total: prev.stats.total - 1,
+            pending: prev.stats.total - 1 - prev.stats.entered // Recalculate pending
+          }
+        }));
         if (selectedAttendee?._id === id) setSelectedAttendee(null);
       } else {
         const d = await res.json();
@@ -588,19 +597,59 @@ export default function AdminDashboard() {
                 <button onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} className="text-slate-500 p-2 rounded-xl border border-slate-200"><X className="w-5 h-5" /></button>
               </div>
 
-              {successPassId ? (
-                <div className="p-8 text-center space-y-6">
-                  <CheckCircle className="w-20 h-20 text-green-500 mx-auto" />
-                  <code className="text-2xl font-mono font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 block">{successPassId}</code>
-                  <button onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">Back to Dashboard</button>
+               {successPassId ? (
+                <div className="p-10 text-center space-y-8 bg-white">
+                  <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto border-4 border-green-100 mb-2">
+                     <CheckCircle className="w-12 h-12 text-green-500" />
+                  </div>
+                  <div>
+                     <h3 className="text-2xl font-black text-slate-900">Pass Generated!</h3>
+                     <p className="text-slate-500 font-medium">The pass for {newAttendee.name || 'the attendee'} is ready to use.</p>
+                  </div>
+                  
+                  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 space-y-4">
+                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-left ml-2">Secure Pass ID</p>
+                     <code className="text-3xl font-mono font-black text-blue-600 block bg-white py-4 rounded-2xl border border-blue-100 shadow-sm">{successPassId}</code>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                     <button 
+                       onClick={() => {
+                        triggerPrint({ ...newAttendee, passId: successPassId });
+                       }}
+                       className="bg-slate-900 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-black transition-all shadow-lg active:scale-95"
+                     >
+                        <Printer className="w-5 h-5" /> Print Pass
+                     </button>
+                     <button 
+                       onClick={() => { setShowAddModal(false); setSuccessPassId(null); }}
+                       className="bg-white border-2 border-slate-200 text-slate-700 py-4 rounded-2xl font-black hover:bg-slate-50 transition-all active:scale-95"
+                     >
+                        Go Back
+                     </button>
+                  </div>
                 </div>
               ) : (
-                <form onSubmit={handleAddAttendee} className="p-8 space-y-4">
-                  <input required placeholder="Name" value={newAttendee.name} onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
-                  <input required type="email" placeholder="Email" value={newAttendee.email} onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
-                  <input required placeholder="Phone" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
-                  <input required placeholder="Company" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 font-bold" />
-                  <button type="submit" disabled={adding} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black">{adding ? <Loader2 className="animate-spin h-5 w-5 mx-auto"/> : "Generate Manual Pass"}</button>
+                <form onSubmit={handleAddAttendee} className="p-10 space-y-6">
+                  <div className="space-y-4">
+                    <div className="group">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 mb-2 block group-focus-within:text-blue-600 transition-colors">Name & Organization</label>
+                       <div className="grid grid-cols-2 gap-3">
+                          <input required placeholder="Enter Name" value={newAttendee.name} onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
+                          <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
+                       </div>
+                    </div>
+                    <div className="group">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 mb-2 block group-focus-within:text-blue-600 transition-colors">Contact Information</label>
+                       <div className="grid grid-cols-2 gap-3">
+                          <input required type="email" placeholder="Email Address" value={newAttendee.email} onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
+                          <input required placeholder="Mobile Number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 font-bold outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" />
+                       </div>
+                    </div>
+                  </div>
+                  <button type="submit" disabled={adding} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                     {adding ? <Loader2 className="animate-spin h-6 w-6"/> : <><PlusCircle className="w-5 h-5"/> Generate Digital Pass</>}
+                  </button>
                 </form>
               )}
             </motion.div>
