@@ -10,12 +10,14 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { PLANS } from "@/lib/plans";
 
 export default function MyEventsDashboard() {
   const router = useRouter();
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [search, setSearch] = useState("");
   const [usage, setUsage] = useState<{ plan: string; totalPasses: number; freeLimit: number; totalEvents: number; eventLimit: number; isPassLimited: boolean; isEventLimited: boolean; isLimited: boolean } | null>(null);
   const [formData, setFormData] = useState({
@@ -210,14 +212,13 @@ export default function MyEventsDashboard() {
                     style={{ width: `${Math.min((usage.totalPasses / usage.freeLimit) * 100, 100)}%` }} />
                 </div>
               </div>
-              {(usage.isEventLimited || usage.isPassLimited) && (
-                <p className="text-xs text-red-600 font-medium">Upgrade your plan to unlock unlimited events and passes.</p>
+              <p className="text-xs text-red-600 font-medium">Upgrade your plan to unlock unlimited events and passes.</p>
               )}
             </div>
-            <a href="mailto:hello@passnexus.in?subject=PassNexus Upgrade Request"
+            <button onClick={() => setShowUpgradeModal(true)}
               className="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black px-5 py-3 rounded-xl shadow-md transition-all text-sm">
               <Zap className="w-4 h-4" /> Upgrade Plan
-            </a>
+            </button>
           </div>
         )}
 
@@ -510,6 +511,92 @@ export default function MyEventsDashboard() {
                       </div>
                    </div>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Upgrade Plan Modal */}
+      <AnimatePresence>
+        {showUpgradeModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setShowUpgradeModal(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              className="relative bg-white rounded-[40px] shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto overflow-x-hidden p-8 md:p-12 z-10 font-sans">
+              
+              <button 
+                onClick={() => setShowUpgradeModal(false)}
+                className="absolute top-8 right-8 bg-slate-100 hover:bg-slate-200 p-2 rounded-xl transition-colors"
+              >
+                <X className="w-6 h-6 text-slate-500" />
+              </button>
+
+              <div className="text-center mb-12">
+                <span className="inline-block py-1 px-4 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-black uppercase tracking-widest mb-4">
+                  Pricing Plans
+                </span>
+                <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">Upgrade Your Experience</h2>
+                <p className="text-slate-500 max-w-xl mx-auto font-medium">Choose the perfect plan to grow your events. Scale from small workshops to global summits.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {Object.values(PLANS).filter(p => p.id !== 'free').map((plan: any, i: number) => (
+                  <motion.div 
+                    key={plan.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className={`relative flex flex-col p-8 rounded-[32px] border transition-all hover:shadow-2xl group ${
+                      plan.highlight ? 'bg-slate-900 border-slate-800 shadow-xl' : 'bg-white border-slate-100 hover:border-blue-200'
+                    }`}
+                  >
+                    {plan.highlight && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg">
+                        Best Value
+                      </div>
+                    )}
+                    
+                    <div className="mb-8">
+                      <h3 className={`text-xl font-black mb-2 ${plan.highlight ? 'text-white' : 'text-slate-900'}`}>{plan.name}</h3>
+                      <p className={`text-xs font-medium leading-relaxed ${plan.highlight ? 'text-slate-400' : 'text-slate-500'}`}>{plan.description}</p>
+                    </div>
+
+                    <div className="mb-8 pb-8 border-b border-slate-100/10">
+                      <div className="flex items-baseline gap-1">
+                        <span className={`text-4xl font-black ${plan.highlight ? 'text-white' : 'text-slate-900'}`}>{plan.price}</span>
+                        <span className={`text-xs font-bold uppercase tracking-widest ${plan.highlight ? 'text-slate-500' : 'text-slate-400'}`}>/ {plan.period}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 mb-10 flex-grow">
+                       {plan.features.map((feature: string, j: number) => (
+                         <div key={j} className="flex items-center gap-3">
+                           <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${plan.highlight ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
+                             <CheckCircle className="w-3 h-3" />
+                           </div>
+                           <span className={`text-xs font-bold ${plan.highlight ? 'text-slate-300' : 'text-slate-600'}`}>{feature}</span>
+                         </div>
+                       ))}
+                    </div>
+
+                    <a 
+                      href={`mailto:hello@passnexus.in?subject=Upgrade to ${plan.name} Plan`}
+                      className={`w-full py-4 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] shadow-sm ${
+                        plan.highlight ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-900'
+                      }`}
+                    >
+                      {plan.cta}
+                    </a>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-12 text-center p-8 bg-slate-50 rounded-[32px] border border-slate-200/50">
+                <p className="text-sm font-bold text-slate-500">
+                  Looking for a custom solution? <a href="mailto:hello@passnexus.in" className="text-blue-600 hover:underline">Contact our Enterprise Team</a>
+                </p>
               </div>
             </motion.div>
           </div>
