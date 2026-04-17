@@ -23,9 +23,8 @@ export default function EventPassLandingPage() {
       {/* Sticky Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-6 py-4 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/pass" className="flex items-center gap-3">
-            <img src="/logo.png" alt="PassNexus" className="w-9 h-9 object-contain" />
-            <span className="text-xl font-black tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
+          <Link href="/" className="flex items-center gap-3">
+            <img src="/logo.png" alt="PassNexus" className="h-8 w-auto object-contain min-w-[120px]" />
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/admin/login" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
@@ -171,8 +170,7 @@ export default function EventPassLandingPage() {
       <footer className="border-t border-slate-100 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="PassNexus" className="w-8 h-8 object-contain" />
-            <span className="font-black tracking-tight text-slate-900">PassNexus</span>
+            <img src="/logo.png" alt="PassNexus" className="h-6 w-auto object-contain min-w-[100px]" />
           </div>
           <p className="text-sm text-slate-400 text-center">
             A product by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
