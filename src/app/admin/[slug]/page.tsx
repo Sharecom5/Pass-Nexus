@@ -655,27 +655,45 @@ export default function AdminDashboard() {
         )}
       </AnimatePresence>
 
-      {/* Hidden Print Layout */}
+      {/* Hidden Print Layout (Strict 1-Page Calibration) */}
       {printData && (
-        <div className="hidden print:block fixed inset-0 bg-white z-[99999]">
+        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0 overflow-hidden">
           <style dangerouslySetInnerHTML={{ __html: `
             @page { margin: 0; size: 3.5in 2.25in; }
             @media print {
-              body { margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
-              .no-print { display: none !important; }
+              body { 
+                visibility: hidden; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                -webkit-print-color-adjust: exact;
+              }
+              .print-container { 
+                visibility: visible !important; 
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 3.5in !important;
+                height: 2.25in !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+              }
             }
           `}} />
-          <div className="w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black overflow-hidden m-0">
-             <h1 className="text-3xl font-black uppercase text-black leading-none mb-1">{printData.name}</h1>
-             {printData.company && <h2 className="text-base font-bold text-gray-800 leading-tight">{printData.company}</h2>}
+          <div className="print-container w-[3.5in] h-[2.25in] flex flex-col items-center justify-center text-center p-4 bg-white text-black overflow-hidden m-0">
+             <h1 className="text-3xl font-black uppercase text-black leading-none mb-1 break-words max-w-full">{printData.name}</h1>
+             {printData.company && <h2 className="text-base font-bold text-gray-800 leading-tight mb-1">{printData.company}</h2>}
              {printData.qrCodeUrl && (
                <img 
-                 src={printData.qrCodeUrl} 
+                 src={printData.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${printData.passId}`}
                  alt="QR Code" 
-                 className="w-[1in] h-[1in] mt-2 mb-1 border border-gray-100 p-0.5" 
+                 className="w-[0.9in] h-[0.9in] mt-1 mb-1 border border-gray-100 p-0.5 object-contain" 
                />
              )}
-             <span className="text-[10px] font-mono font-bold text-black tracking-tighter">{printData.passId}</span>
+             <span className="text-[10px] font-mono font-bold text-black tracking-tighter uppercase">{printData.passId}</span>
           </div>
         </div>
       )}
