@@ -24,8 +24,8 @@ export default function EventPassLandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-6 py-4 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/pass" className="flex items-center gap-3">
-            <div className="bg-blue-600 w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md">E</div>
-            <span className="text-xl font-black tracking-tight text-slate-900">Entry<span className="text-blue-600">Flow</span></span>
+            <div className="bg-blue-600 w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-md">P</div>
+            <span className="text-xl font-black tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/admin/login" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
@@ -147,7 +147,7 @@ export default function EventPassLandingPage() {
                     ))}
                   </ul>
 
-                  <Link href={plan.id === 'enterprise' ? 'mailto:contact@andinnovatech.com?subject=PassNexus Enterprise' : '/admin/signup'}
+                  <Link href={plan.id === 'enterprise' ? 'mailto:hello@passnexus.in?subject=PassNexus Enterprise' : '/admin/signup'}
                     className={`w-full py-3.5 rounded-2xl font-bold text-center transition-all block text-sm ${plan.highlight ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}`}>
                     {plan.cta}
                   </Link>
@@ -159,7 +159,7 @@ export default function EventPassLandingPage() {
           <div className="mt-12 text-center max-w-2xl mx-auto bg-blue-50 border border-blue-100 p-6 rounded-2xl">
             <p className="text-sm text-slate-600">
               <span className="font-bold text-slate-900">Need a custom quote?</span> We offer white-label reseller panels, custom licensing, and annual contracts.{" "}
-              <a href="mailto:contact@andinnovatech.com" className="text-blue-600 hover:text-blue-700 underline font-semibold">
+              <a href="mailto:hello@passnexus.in" className="text-blue-600 hover:text-blue-700 underline font-semibold">
                 Talk to our team
               </a>
             </p>
@@ -171,7 +171,7 @@ export default function EventPassLandingPage() {
       <footer className="border-t border-slate-100 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">E</div>
+            <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm">P</div>
             <span className="font-black tracking-tight text-slate-900">PassNexus</span>
           </div>
           <p className="text-sm text-slate-400 text-center">

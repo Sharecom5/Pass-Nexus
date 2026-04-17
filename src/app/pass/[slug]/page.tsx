@@ -191,7 +191,7 @@ export default function RegistrationPage() {
           <p className="text-slate-500 text-sm leading-relaxed mb-8">
             This event organizer has reached their pass limit. To resume registrations, the organizer needs to upgrade their plan.
           </p>
-          <a href="mailto:contact@andinnovatech.com" className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg transition-all mb-4">
+          <a href="mailto:hello@passnexus.in" className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg transition-all mb-4">
             Contact Organizer
           </a>
         </div>

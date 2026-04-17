@@ -214,7 +214,7 @@ export default function MyEventsDashboard() {
                 <p className="text-xs text-red-600 font-medium">Upgrade your plan to unlock unlimited events and passes.</p>
               )}
             </div>
-            <a href="mailto:contact@andinnovatech.com?subject=PassNexus Upgrade Request"
+            <a href="mailto:hello@passnexus.in?subject=PassNexus Upgrade Request"
               className="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black px-5 py-3 rounded-xl shadow-md transition-all text-sm">
               <Zap className="w-4 h-4" /> Upgrade Plan
             </a>
