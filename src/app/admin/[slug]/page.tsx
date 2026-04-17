@@ -533,9 +533,20 @@ export default function AdminDashboard() {
                         <BarChart3 className="w-5 h-5 text-blue-600" /> License Consumption
                      </h3>
                      <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200 mb-2">
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.total / 1000) * 100}%` }} className="h-full bg-blue-600" />
+                        <motion.div 
+                          initial={{ width: 0 }} 
+                          animate={{ width: `${(stats.total / (data?.planLimit || 100)) * 100}%` }} 
+                          className="h-full bg-blue-600" 
+                        />
                      </div>
-                     <p className="text-xs font-bold text-slate-500 text-right">{stats.total} / 1000 Passes Used</p>
+                     <div className="flex justify-between items-center">
+                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                           {Math.max(0, (data?.planLimit || 0) - stats.total)} Passes Remaining
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-500 text-right">
+                           {stats.total} / {data?.planLimit || '∞'} Used
+                        </p>
+                     </div>
                   </div>
 
                    </div>
