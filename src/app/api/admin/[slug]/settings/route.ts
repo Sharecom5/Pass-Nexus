@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Event } from "@/models/Event";
 
-export async function PATCH(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
     const body = await req.json();
 
     await connectDB();
