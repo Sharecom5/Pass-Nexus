@@ -47,7 +47,7 @@ export default function PublicVerificationPage() {
       
       if (res.status === 401) {
         // Invalid PIN
-        localStorage.removeItem(`entryflow_pin_${eventId}`);
+        localStorage.removeItem(`passnexus_pin_${eventId}`);
         setPinError("Invalid Check-in PIN. Please try again.");
         setShowPinScreen(true);
         setVerifying(false);
@@ -57,7 +57,7 @@ export default function PublicVerificationPage() {
       if (!res.ok) throw new Error(data.error || "Check-in failed");
       
       // Success! Update local storage with valid PIN for fast subsequent scans
-      localStorage.setItem(`entryflow_pin_${eventId}`, pin);
+      localStorage.setItem(`passnexus_pin_${eventId}`, pin);
       setVisitor(data.visitor);
       setShowPinScreen(false);
       return true;
@@ -82,7 +82,7 @@ export default function PublicVerificationPage() {
         }
 
         // It is not entered yet. Check if device has PIN saved
-        const savedPin = localStorage.getItem(`entryflow_pin_${data.eventSettings._id}`);
+        const savedPin = localStorage.getItem(`passnexus_pin_${data.eventSettings._id}`);
         
         if (!savedPin) {
           // No PIN saved, show the PIN screen
@@ -241,7 +241,7 @@ export default function PublicVerificationPage() {
               ) : (
                 <button
                    onClick={() => {
-                     const savedPin = localStorage.getItem(`entryflow_pin_${event._id}`);
+                     const savedPin = localStorage.getItem(`passnexus_pin_${event._id}`);
                      if (savedPin) {
                        attemptCheckIn(event._id, savedPin);
                      } else {

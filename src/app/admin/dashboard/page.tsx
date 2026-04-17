@@ -163,7 +163,7 @@ export default function MyEventsDashboard() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div>
             <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">My Events</h1>
-            <p className="text-slate-500">Manage your event registrations and entry flows.</p>
+            <p className="text-slate-500">Manage your event registrations and attendee access.</p>
           </div>
           <button onClick={() => setShowModal(true)}
             disabled={!!(usage?.plan === 'free' && usage?.isEventLimited)}
