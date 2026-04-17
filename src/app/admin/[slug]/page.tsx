@@ -390,11 +390,6 @@ export default function AdminDashboard() {
                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Pending</p>
                <p className="text-3xl font-black text-orange-500">{stats.pending || 0}</p>
             </div>
-            <div className="bg-blue-600 border border-blue-700 p-6 rounded-2xl shadow-lg relative overflow-hidden">
-               <CreditCard className="absolute -right-2 -bottom-2 w-20 h-20 text-blue-500 opacity-20" />
-               <p className="text-[10px] font-bold text-blue-100 uppercase mb-2">Event Revenue</p>
-               <p className="text-3xl font-black text-white">{priceData.currency} {totalPaidRevenue.toLocaleString()}</p>
-            </div>
          </div>
 
          {/* Section Content */}
@@ -437,7 +432,6 @@ export default function AdminDashboard() {
                            <tr className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase text-slate-500 font-bold">
                               <th className="px-6 py-4">Attendee Info</th>
                               <th className="px-6 py-4">Contact Details</th>
-                              <th className="px-6 py-4">Payment</th>
                               <th className="px-6 py-4">Pass ID</th>
                               <th className="px-6 py-4 text-right">Actions</th>
                            </tr>
@@ -467,12 +461,6 @@ export default function AdminDashboard() {
                                     <td className="px-6 py-5 text-slate-700">
                                        <p className="font-medium text-xs">{attendee.email}</p>
                                        <p className="text-[10px] font-bold opacity-50 uppercase tracking-tighter">{attendee.phone}</p>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                       <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-black uppercase ${attendee.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                                          {attendee.paymentStatus === 'paid' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                                          {attendee.paymentStatus || 'Pending'}
-                                       </div>
                                     </td>
                                     <td className="px-6 py-5">
                                        <code className="text-blue-600 font-mono text-xs font-bold tracking-tight bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
@@ -555,10 +543,6 @@ export default function AdminDashboard() {
              )}
           </div>
        </main>
-               </div>
-            )}
-         </div>
-      </main>
 
       {/* Detail View Modal */}
       <AnimatePresence>
@@ -575,15 +559,10 @@ export default function AdminDashboard() {
                    <button onClick={() => setSelectedAttendee(null)} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><X className="w-6 h-6" /></button>
                    <div className="space-y-8">
                       <div>
-                         <div className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border inline-block ${selectedAttendee.paymentStatus === 'paid' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-                            {selectedAttendee.paymentStatus === 'paid' ? 'Transaction Verified' : 'Payment Required'}
-                         </div>
                          <h2 className="text-4xl font-black text-slate-900 mt-2">{selectedAttendee.name}</h2>
                          <p className="text-slate-500 font-medium">{selectedAttendee.designation} at {selectedAttendee.company}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-8">
-                         <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Payment ID</p><p className="font-bold text-slate-900 break-all">{selectedAttendee.razorpayPaymentId || 'N/A'}</p></div>
-                         <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Amount Received</p><p className="font-bold text-slate-900">{priceData.currency} {selectedAttendee.amountPaid || 0}</p></div>
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Email</p><p className="font-bold text-slate-900 text-xs">{selectedAttendee.email}</p></div>
                          <div><p className="text-[10px] font-black uppercase text-slate-400 mb-1">Phone</p><p className="font-bold text-slate-900">{selectedAttendee.phone}</p></div>
                       </div>
