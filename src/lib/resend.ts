@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_for_build')
+const resend = new Resend(process.env.RESEND_API_KEY || 're_hwhUP15w_Ly5BuNgP1rWycTg3cYaEgxR4')
 
 interface PassEmailData {
   to: string
