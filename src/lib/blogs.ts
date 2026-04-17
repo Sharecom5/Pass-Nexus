@@ -224,7 +224,7 @@ For events with high walk-in expectations:
 
 ## Tracking Walk-Ins Separately
 
-All Instant Badge registrations are tagged with `registrationSource: instant`. Your Walk-Ins Database (inside the Instant Badge tab) shows all of them separately from pre-registered attendees — giving you accurate data for both groups.
+All Instant Badge registrations are tagged with \`registrationSource: instant\`. Your Walk-Ins Database (inside the Instant Badge tab) shows all of them separately from pre-registered attendees — giving you accurate data for both groups.
     `
   },
   {
