@@ -159,7 +159,7 @@ export default function PassPage() {
                 style={settings?.customBackgroundUrl ? { top: `${settings.infoPosition}%` } : {}}
               >
                 {settings?.showName !== false && (
-                  <h2 className="text-[85px] font-black text-slate-900 leading-none mb-4 tracking-tighter w-full drop-shadow-sm uppercase">{visitor.name}</h2>
+                  <h2 className="text-[64px] font-black text-slate-900 leading-none mb-4 tracking-tighter w-full drop-shadow-sm uppercase whitespace-nowrap overflow-hidden">{visitor.name}</h2>
                 )}
                 {settings?.showDesignation !== false && visitor.designation && (
                   <p className="text-blue-700 font-bold text-sm uppercase tracking-widest drop-shadow-sm">{visitor.designation}</p>

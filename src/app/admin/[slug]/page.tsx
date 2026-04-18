@@ -813,7 +813,7 @@ export default function AdminDashboard() {
           <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black overflow-hidden m-0">
              <div className="w-full flex flex-col items-center">
                {/* Name - Ultra Large */}
-               <h1 className="text-[85px] font-black uppercase text-black leading-none mb-4 tracking-tighter w-full">{printData.name}</h1>
+               <h1 className="text-[64px] font-black uppercase text-black leading-none mb-4 tracking-tighter w-full whitespace-nowrap overflow-hidden">{printData.name}</h1>
                
                {/* Designation */}
                {printData.designation && <p className="text-3xl font-bold text-slate-700 mt-2">{printData.designation}</p>}
