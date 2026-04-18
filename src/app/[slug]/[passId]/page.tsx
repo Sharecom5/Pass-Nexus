@@ -84,16 +84,10 @@ export default function PassPage() {
             margin: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
-          }
-          body * {
-            display: none !important;
+            visibility: hidden !important;
           }
           #pass-card, #pass-card * {
-            display: block !important;
             visibility: visible !important;
-          }
-          #pass-card img {
-            display: block !important;
           }
           #pass-card { 
             position: fixed !important; 
@@ -107,6 +101,7 @@ export default function PassPage() {
             border-radius: 0 !important;
             box-shadow: none !important;
             z-index: 9999999 !important;
+            background: white !important;
           }
           @page {
             size: 520px 709px !important;

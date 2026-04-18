@@ -756,15 +756,11 @@ export default function AdminDashboard() {
                 padding: 0 !important;
                 overflow: hidden !important;
                 -webkit-print-color-adjust: exact;
-              }
-              body * { 
-                display: none !important;
-              }
-              .print-container, .print-container * { 
-                display: flex !important;
-                visibility: visible !important;
+                visibility: hidden !important;
               }
               .print-container { 
+                visibility: visible !important;
+                display: flex !important;
                 position: fixed !important;
                 left: 0 !important;
                 top: 0 !important;
@@ -772,6 +768,9 @@ export default function AdminDashboard() {
                 height: 709px !important;
                 z-index: 9999999 !important;
                 background: #fff !important;
+              }
+              .print-container * { 
+                visibility: visible !important;
               }
             }
           `}} />
