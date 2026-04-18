@@ -741,7 +741,16 @@ export default function AdminDashboard() {
                       onClick={() => window.open(`/${slug}/${successPassId}`, '_blank')}
                       className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black transition-all shadow-lg flex items-center justify-center gap-2"
                     >
-                      <Ticket className="w-5 h-5" /> Open & Download Pass
+                      <Ticket className="w-5 h-5" /> Open Full Pass (Ticket)
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const attendee = data?.attendees?.find((a: any) => a.passId === successPassId);
+                        if (attendee) triggerPrint(attendee);
+                      }}
+                      className="bg-slate-900 hover:bg-black text-white py-4 rounded-2xl font-black transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <Printer className="w-5 h-5" /> Print Instant Badge
                     </button>
                     <button 
                       onClick={() => { setShowAddModal(false); setSuccessPassId(null); }}

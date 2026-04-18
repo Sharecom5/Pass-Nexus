@@ -14,7 +14,7 @@ export default function PassPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updating, setUpdating] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  const [printSimple, setPrintSimple] = useState(false);
 
   useEffect(() => {
     const fetchPass = async () => {
@@ -49,8 +49,15 @@ export default function PassPage() {
   };
 
   const downloadPass = () => {
-    // Rely on native browser print sheet which handles CORS images correctly and can "Save as PDF" natively on mobile/desktop
-    window.print();
+    setPrintSimple(false);
+    setTimeout(() => window.print(), 100);
+  };
+
+  const printThermal = () => {
+    setPrintSimple(true);
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
   if (loading) {
@@ -191,11 +198,15 @@ export default function PassPage() {
         <div className="mt-8 flex flex-wrap justify-center gap-6 print:hidden">
           <button
             onClick={downloadPass}
-            disabled={downloading}
             className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors text-sm font-bold"
           >
-            {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            SAVE PASS
+            <Download className="w-4 h-4" /> SAVE FULL PASS
+          </button>
+          <button
+            onClick={printThermal}
+            className="flex items-center gap-2 text-slate-500 hover:text-orange-600 transition-colors text-sm font-bold"
+          >
+            <QrCode className="w-4 h-4" /> PRINT THERMAL SLIP
           </button>
           <Link
             href="/pass/recover"
@@ -203,6 +214,21 @@ export default function PassPage() {
           >
             <Smartphone className="w-4 h-4" /> RECOVER PASS
           </Link>
+        </div>
+
+        {/* Hidden Thermal Slip for Printing */}
+        <div className={`hidden ${printSimple ? 'print:flex' : 'print:hidden'} fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0`}>
+           <div className="w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black">
+              <h1 className="text-4xl font-black uppercase mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{visitor.name}</h1>
+              <div className="mb-6">
+                {visitor.designation && <p className="text-lg font-bold uppercase tracking-wide leading-none mb-1">{visitor.designation}</p>}
+                {visitor.company && <p className="text-sm font-medium uppercase tracking-wider">{visitor.company}</p>}
+              </div>
+              <div className="mb-6">
+                <img src={visitor.qrCodeUrl} className="w-52 h-52 object-contain" />
+              </div>
+              <span className="text-sm font-mono font-bold text-slate-400 tracking-widest">{visitor.passId}</span>
+           </div>
         </div>
 
         <p className="mt-8 text-[10px] text-slate-400 uppercase tracking-widest font-bold print:hidden">
