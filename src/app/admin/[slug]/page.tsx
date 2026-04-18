@@ -686,7 +686,7 @@ export default function AdminDashboard() {
                    <div className="w-48 h-48 bg-white p-4 rounded-3xl shadow-xl border border-slate-200 mb-6 group relative">
                       <QrCode className="w-full h-full text-slate-900 group-hover:scale-95 transition-transform" />
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                         <button onClick={() => window.open(`/pass/${slug}/${selectedAttendee.passId}`, '_blank')} className="bg-blue-600 text-white p-3 rounded-full shadow-lg">
+                         <button onClick={() => window.open(`/${slug}/${selectedAttendee.passId}`, '_blank')} className="bg-blue-600 text-white p-3 rounded-full shadow-lg">
                             <ExternalLink className="w-5 h-5" />
                          </button>
                       </div>
@@ -855,7 +855,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex flex-col gap-3 pt-4">
                     <button 
-                      onClick={() => window.open(`/pass/${slug}/${successPassId}`, '_blank')}
+                      onClick={() => window.open(`/${slug}/${successPassId}`, '_blank')}
                       className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black transition-all shadow-lg flex items-center justify-center gap-2"
                     >
                       <Ticket className="w-5 h-5" /> Open & Download Pass

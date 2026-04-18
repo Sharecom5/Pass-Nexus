@@ -100,7 +100,7 @@ export default function PassRecoveryPage() {
               {results.map((pass) => (
                 <Link
                   key={pass.passId}
-                  href={`/pass/${pass.eventSlug || 'event'}/${pass.passId}`}
+                  href={`/${pass.eventSlug || 'event'}/${pass.passId}`}
                   className="block bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 p-6 rounded-2xl transition-all shadow-sm group"
                 >
                   <div className="flex items-center justify-between">

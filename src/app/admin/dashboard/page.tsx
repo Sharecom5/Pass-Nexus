@@ -324,7 +324,7 @@ export default function MyEventsDashboard() {
                     className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 transition-all border border-blue-100" title="Edit Event">
                     <Pencil className="w-4 h-4" />
                   </button>
-                  <Link href={`/pass/${event.slug}`} target="_blank"
+                  <Link href={`/${event.slug}`} target="_blank"
                     className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-all border border-slate-200" title="Public Page">
                     <Globe className="w-4 h-4" />
                   </Link>

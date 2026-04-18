@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
+import mongoose from "mongoose";
 import { Visitor } from "@/models/Visitor";
 import { sendPassEmail } from "@/lib/resend";
 import { generateQRCodeBase64 } from "@/lib/qrcode";
@@ -20,8 +21,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No passes found for this email" }, { status: 404 });
     }
 
-    const latestVisitor = visitors[0];
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/pass/${latestVisitor.passId}`;
+    const latestVisitor = visitors[0] as any;
+    
+    // Get the event slug
+    let eventSlug = 'event';
+    if (latestVisitor.eventId) {
+      const event = await mongoose.model('Event').findById(latestVisitor.eventId).select('slug');
+      if (event) eventSlug = event.slug;
+    }
+
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/${eventSlug}/${latestVisitor.passId}`;
     const qrCode = await generateQRCodeBase64(verificationUrl);
 
     // Send Email via Resend in the background
