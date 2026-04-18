@@ -693,6 +693,159 @@ export default function AdminDashboard() {
          </div>
       </main>
 
+      {/* Add Attendee Modal */}
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAddModal(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.94, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 20 }}
+              className="relative z-10 bg-white border border-slate-200 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <div className="p-8 pb-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">{successPassId ? "Pass Generated!" : "Manual Pass Generation"}</h2>
+                  <p className="text-slate-500 text-xs font-medium mt-1">
+                    {successPassId ? "The attendee has been registered successfully." : "Add an attendee manually from the admin panel."}
+                  </p>
+                </div>
+                <button 
+                  onClick={() => { setShowAddModal(false); setSuccessPassId(null); }} 
+                  className="bg-white hover:bg-slate-100 text-slate-500 p-2 rounded-xl transition-all border border-slate-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {successPassId ? (
+                <div className="p-8 space-y-6 text-center">
+                  <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto border-4 border-green-100 shadow-inner">
+                    <CheckCircle className="w-10 h-10 text-green-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-slate-500 font-bold text-sm">Unique Pass ID issued:</p>
+                    <code className="text-2xl font-mono font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 inline-block shadow-sm">
+                      {successPassId}
+                    </code>
+                  </div>
+                  <div className="flex flex-col gap-3 pt-4">
+                    <button 
+                      onClick={() => window.open(`/${slug}/${successPassId}`, '_blank')}
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <Ticket className="w-5 h-5" /> Open & Download Pass
+                    </button>
+                    <button 
+                      onClick={() => { setShowAddModal(false); setSuccessPassId(null); }}
+                      className="text-slate-500 hover:text-slate-800 text-xs font-bold uppercase tracking-widest pt-2 transition-colors"
+                    >
+                      Back to Dashboard
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleAddAttendee} className="p-8 space-y-5">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Full Name</label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="e.g. John Doe" 
+                        value={newAttendee.name}
+                        onChange={(e) => setNewAttendee({...newAttendee, name: e.target.value})}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Email</label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input 
+                          required
+                          type="email" 
+                          placeholder="john@example.com" 
+                          value={newAttendee.email}
+                          onChange={(e) => setNewAttendee({...newAttendee, email: e.target.value})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone</label>
+                      <div className="relative">
+                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input 
+                          required
+                          type="tel" 
+                          placeholder="+91..." 
+                          value={newAttendee.phone}
+                          onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
+                      <div className="relative">
+                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="Organization" 
+                          value={newAttendee.company}
+                          onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
+                      <div className="relative">
+                        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="Job Title" 
+                          value={newAttendee.designation}
+                          onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <button 
+                      type="submit" 
+                      disabled={adding}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : <><PlusCircle className="w-5 h-5" /> Generate Manual Pass</>}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Detail View Modal */}
       <AnimatePresence>
         {selectedAttendee && (
