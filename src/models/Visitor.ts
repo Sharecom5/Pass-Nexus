@@ -6,7 +6,7 @@ export interface IVisitor extends Document {
   email: string
   phone?: string
   company?: string
-  passType: 'VIP' | 'Speaker' | 'Press' | 'Exhibitor' | 'Visitor' | 'Instant Badge'
+  passType: 'VIP' | 'Speaker' | 'Press' | 'Exhibitor' | 'Visitor' | 'Instant Badge' | 'Walk-in Badge'
   status: 'registered' | 'entered' | 'cancelled'
   qrCodeUrl?: string
   passImageUrl?: string
@@ -36,7 +36,7 @@ const VisitorSchema = new Schema<IVisitor>({
   email:        { type: String, required: true, lowercase: true, trim: true },
   phone:        { type: String, trim: true },
   company:      { type: String, trim: true },
-  passType:     { type: String, enum: ['Visitor','Speaker','VIP','Press','Exhibitor','Instant Badge'], default: 'Visitor' },
+  passType:     { type: String, enum: ['Visitor','Speaker','VIP','Press','Exhibitor','Instant Badge', 'Walk-in Badge'], default: 'Visitor' },
   status:       { type: String, enum: ['registered','entered','cancelled'], default: 'registered' },
   qrCodeUrl:    { type: String },
   passImageUrl: { type: String },
