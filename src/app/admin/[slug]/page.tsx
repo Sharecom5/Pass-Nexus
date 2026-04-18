@@ -184,11 +184,11 @@ export default function AdminDashboard() {
   const searchResults = search.length > 1 ? filteredAttendees?.slice(0, 5) : [];
 
   const mainFilteredAttendees = filteredAttendees;
-  const instantFilteredAttendees = filteredAttendees?.filter((a: any) => a.registrationSource === 'instant' || a.passType === 'Instant Badge');
+  const instantFilteredAttendees = filteredAttendees?.filter((a: any) => a.registrationSource === 'instant' || a.passType === 'Instant Badge' || a.passType === 'Walk-in Badge');
   const publicFilteredAttendees = filteredAttendees?.filter((a: any) => a.registrationSource === 'public');
   const checkedInFilteredAttendees = filteredAttendees?.filter((a: any) => a.status === 'entered');
 
-  const currentPasses = activeTab === 'instant-log' 
+  const currentPasses = activeTab === 'instant-badge' 
     ? instantFilteredAttendees 
     : activeTab === 'public-log' 
       ? publicFilteredAttendees 
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
         ? checkedInFilteredAttendees
         : mainFilteredAttendees;
 
-  const currentTitle = activeTab === 'instant-log'
+  const currentTitle = activeTab === 'instant-badge'
     ? 'Walk-Ins Database'
     : activeTab === 'public-log'
       ? 'Public Registration Log'
