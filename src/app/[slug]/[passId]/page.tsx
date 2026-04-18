@@ -219,11 +219,23 @@ export default function PassPage() {
         {/* Hidden Thermal Slip for Printing */}
         <div className={`hidden ${printSimple ? 'print:flex' : 'print:hidden'} fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0`}>
            <div className="w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black">
-              <h1 className="text-4xl font-black uppercase mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{visitor.name}</h1>
+              {settings?.showName !== false && (
+                <h1 className="text-4xl font-black uppercase mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{visitor.name}</h1>
+              )}
               <div className="mb-6">
-                {visitor.designation && <p className="text-lg font-bold uppercase tracking-wide leading-none mb-1">{visitor.designation}</p>}
-                {visitor.company && <p className="text-sm font-medium uppercase tracking-wider">{visitor.company}</p>}
+                {(settings?.showDesignation !== false && visitor.designation) && (
+                  <p className="text-lg font-bold uppercase tracking-wide leading-none mb-1">{visitor.designation}</p>
+                )}
+                {(settings?.showCompany !== false && visitor.company) && (
+                  <p className="text-sm font-medium uppercase tracking-wider">{visitor.company}</p>
+                )}
               </div>
+              {/* VIP / WALK-IN Indicator */}
+              {(visitor.passType === 'VIP' || visitor.passType === 'Instant Badge' || visitor.passType === 'Walk-in Badge') && (
+                <div className="mb-8 px-8 py-2 bg-black text-white font-black text-3xl uppercase tracking-widest rounded-full border-4 border-white shadow-sm">
+                  {visitor.passType === 'VIP' ? 'VIP' : 'WALK-IN'}
+                </div>
+              )}
               <div className="mb-6">
                 <img src={visitor.qrCodeUrl} className="w-52 h-52 object-contain" />
               </div>

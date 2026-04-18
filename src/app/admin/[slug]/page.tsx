@@ -987,18 +987,24 @@ export default function AdminDashboard() {
           <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black overflow-hidden m-0">
              <div className="w-full flex flex-col items-center max-w-full">
                {/* Name - Professional Single Line */}
-               <h1 className="text-4xl font-black uppercase text-black mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{printData.name}</h1>
+               {data?.event?.passSettings?.showName !== false && (
+                 <h1 className="text-4xl font-black uppercase text-black mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{printData.name}</h1>
+               )}
                
-               {/* Designation & Company */}
+               {/* Designation & Company - Conditional Branding */}
                <div className="mb-6">
-                 {printData.designation && <p className="text-lg font-bold text-slate-800 uppercase tracking-wide leading-none mb-1">{printData.designation}</p>}
-                 {printData.company && <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{printData.company}</p>}
+                 {(data?.event?.passSettings?.showDesignation !== false && printData.designation) && (
+                   <p className="text-lg font-bold text-slate-800 uppercase tracking-wide leading-none mb-1">{printData.designation}</p>
+                 )}
+                 {(data?.event?.passSettings?.showCompany !== false && printData.company) && (
+                   <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{printData.company}</p>
+                 )}
                </div>
                
                {/* VIP Badge - High Visibility */}
-               {printData.passType === 'VIP' && (
+               {(printData.passType === 'VIP' || printData.passType === 'Instant Badge' || printData.passType === 'Walk-in Badge') && (
                  <div className="mb-8 px-8 py-2 bg-orange-600 text-white font-black text-3xl uppercase tracking-widest rounded-full border-4 border-white shadow-sm">
-                   VIP
+                   {printData.passType === 'VIP' ? 'VIP' : 'WALK-IN'}
                  </div>
                )}
 
