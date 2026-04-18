@@ -162,17 +162,25 @@ export default function PassPage() {
 
               {/* Attendee Info */}
               <div 
-                className={`${settings?.customBackgroundUrl ? 'absolute left-0 w-full px-6' : 'mb-8'} text-center`}
+                className={`${settings?.customBackgroundUrl ? 'absolute left-0 w-full px-4' : 'mb-8'} text-center overflow-hidden`}
                 style={settings?.customBackgroundUrl ? { top: `${settings.infoPosition}%` } : {}}
               >
+                {/* 1. Name */}
                 {settings?.showName !== false && (
-                  <h2 className="text-[64px] font-black text-slate-900 leading-none mb-4 tracking-tighter w-full drop-shadow-sm uppercase whitespace-nowrap overflow-hidden">{visitor.name}</h2>
+                  <h2 className={`${
+                    visitor.name?.length > 20 ? 'text-[22px]' :
+                    visitor.name?.length > 15 ? 'text-[26px]' : 'text-[30px]'
+                  } font-black text-slate-900 leading-tight tracking-tight w-full drop-shadow-sm uppercase break-words`}>
+                    {visitor.name}
+                  </h2>
                 )}
-                {settings?.showDesignation !== false && visitor.designation && (
-                  <p className="text-blue-700 font-bold text-sm uppercase tracking-widest drop-shadow-sm">{visitor.designation}</p>
-                )}
+                {/* 2. Company */}
                 {settings?.showCompany !== false && visitor.company && (
-                  <p className="text-slate-800 text-sm mt-1 font-semibold">{visitor.company}</p>
+                  <p className="text-slate-800 text-[13px] font-bold mt-1 break-words leading-snug uppercase tracking-wide">{visitor.company}</p>
+                )}
+                {/* 3. Designation */}
+                {settings?.showDesignation !== false && visitor.designation && (
+                  <p className="text-blue-700 font-semibold text-[12px] uppercase tracking-widest drop-shadow-sm mt-0.5">{visitor.designation}</p>
                 )}
               </div>
 
