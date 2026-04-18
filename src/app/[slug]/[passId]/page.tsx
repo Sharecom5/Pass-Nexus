@@ -67,7 +67,7 @@ export default function PassPage() {
         <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Invalid Pass</h1>
         <p className="text-slate-500 mb-6">This event pass could not be found or has been revoked.</p>
-        <button onClick={() => router.push(`/pass/${slug}`)} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold">
+        <button onClick={() => router.push(`/${slug}`)} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold">
           Register New Pass
         </button>
       </div>

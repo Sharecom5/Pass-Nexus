@@ -61,7 +61,7 @@ export default function AdminDashboard() {
   }, [slug]);
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/pass/${slug}`;
+    const url = `${window.location.origin}/${slug}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -281,7 +281,7 @@ export default function AdminDashboard() {
                       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
                         <Globe className="w-3 h-3" /> Public link:
                       </span>
-                      <a href={`/pass/${slug}`} target="_blank" rel="noreferrer" className="text-sm font-mono font-bold text-blue-600 hover:text-blue-700 hover:underline tracking-tight ml-1 mr-2">
+                      <a href={`/${slug}`} target="_blank" rel="noreferrer" className="text-sm font-mono font-bold text-blue-600 hover:text-blue-700 hover:underline tracking-tight ml-1 mr-2">
                          /{slug}
                       </a>
                       <button 
@@ -488,7 +488,7 @@ export default function AdminDashboard() {
                                             <Printer className="w-3.5 h-3.5" /> Print
                                          </button>
                                          <button 
-                                           onClick={() => window.open(`/pass/${slug}/${attendee.passId}`, '_blank')}
+                                           onClick={() => window.open(`/${slug}/${attendee.passId}`, '_blank')}
                                            className="bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-600 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm"
                                          >
                                             <Ticket className="w-3.5 h-3.5" /> View
@@ -639,7 +639,7 @@ export default function AdminDashboard() {
                                  <button onClick={() => triggerPrint(attendee)} className="bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-600 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm">
                                    <Printer className="w-3.5 h-3.5" /> Print
                                  </button>
-                                 <button onClick={() => window.open(`/pass/${slug}/${attendee.passId}`, '_blank')} className="bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-600 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm">
+                                 <button onClick={() => window.open(`/${slug}/${attendee.passId}`, '_blank')} className="bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-600 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm">
                                    <Ticket className="w-3.5 h-3.5" /> View Pass
                                  </button>
                                </div>

@@ -55,7 +55,7 @@ export default function EventPassLandingPage() {
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg hover:shadow-xl w-full sm:w-auto flex items-center justify-center gap-2 text-lg">
               Start for Free <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/event/demo-event"
+            <Link href="/demo-event"
               className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-8 py-4 rounded-2xl font-semibold transition-all w-full sm:w-auto text-lg">
               Try Live Demo
             </Link>

@@ -153,7 +153,7 @@ export default function RegistrationPage() {
       }
 
       if (!res.ok) throw new Error(data.error || "Registration failed");
-      router.push(`/pass/${slug}/${data.passId}`);
+      router.push(`/${slug}/${data.passId}`);
     } catch (err: any) {
       setError(err.message);
       setSubmitting(false);
