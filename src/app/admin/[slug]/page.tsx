@@ -1015,9 +1015,9 @@ export default function AdminDashboard() {
                 
                 <div className="flex flex-col gap-2 mb-8 text-center px-4 w-full">
                   {/* Company first */}
-                  {(data?.event as any)?.passSettings?.showCompany !== false && (
+                  {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
                     <p className="text-lg font-semibold text-slate-700 uppercase tracking-widest">
-                      {printData.company || ""}
+                      {printData.company}
                     </p>
                   )}
                   {/* Designation second */}
@@ -1060,9 +1060,9 @@ export default function AdminDashboard() {
                   
                   <div className="flex flex-col gap-3 mb-10 text-center w-full">
                     {/* Company first */}
-                    {(data?.event as any)?.passSettings?.showCompany !== false && (
+                    {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
                       <p className="text-2xl font-extrabold text-black uppercase border-b-2 border-black pb-2">
-                        {printData.company || ""}
+                        {printData.company}
                       </p>
                     )}
                     {/* Designation second */}
