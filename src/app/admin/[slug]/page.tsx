@@ -768,29 +768,34 @@ export default function AdminDashboard() {
                 height: 709px !important;
                 page-break-after: avoid !important;
                 page-break-before: avoid !important;
+                background: #fff !important;
               }
             }
           `}} />
-          <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-12 bg-white text-black overflow-hidden m-0 border border-slate-100">
-             <div className="w-full flex-1 flex flex-col items-center justify-center">
-               <h1 className="text-5xl font-black uppercase text-black leading-tight mb-4 break-words w-full px-4">{printData.name}</h1>
-               {printData.designation && <p className="text-xl font-bold text-slate-600 mb-1">{printData.designation}</p>}
-               {printData.company && <h2 className="text-2xl font-black text-blue-600 leading-tight mb-8">{printData.company}</h2>}
+          <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black overflow-hidden m-0">
+             <div className="w-full flex flex-col items-center">
+               {/* Name - Ultra Large */}
+               <h1 className="text-6xl font-black uppercase text-black leading-tight mb-2 break-words w-full px-4">{printData.name}</h1>
                
+               {/* Designation */}
+               {printData.designation && <p className="text-2xl font-bold text-slate-800 mb-1">{printData.designation}</p>}
+               
+               {/* Company */}
+               {printData.company && <h2 className="text-3xl font-black text-slate-900 leading-tight mb-10">{printData.company}</h2>}
+               
+               {/* QR Code - High Contrast */}
                {printData.qrCodeUrl && (
-                 <div className="bg-white p-6 rounded-3xl border-4 border-slate-900 shadow-xl mb-8">
+                 <div className="bg-white p-2 rounded-xl mb-6">
                    <img 
                      src={printData.qrCodeUrl}
                      alt="QR Code" 
-                     className="w-48 h-48 object-contain" 
+                     className="w-56 h-56 object-contain" 
                    />
                  </div>
                )}
                
-               <div className="mt-4">
-                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Pass Identifier</p>
-                 <span className="text-2xl font-mono font-black text-black tracking-wider uppercase bg-slate-100 px-6 py-2 rounded-xl">{printData.passId}</span>
-               </div>
+               {/* ID - Small but clear for backup */}
+               <span className="text-lg font-mono font-black text-slate-400 tracking-wider uppercase">{printData.passId}</span>
              </div>
           </div>
         </div>
