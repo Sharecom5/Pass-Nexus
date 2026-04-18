@@ -1014,14 +1014,16 @@ export default function AdminDashboard() {
                 )}
                 
                 <div className="flex flex-col gap-2 mb-8 text-center px-4 w-full">
+                  {/* Company first */}
+                  {(data?.event as any)?.passSettings?.showCompany !== false && (
+                    <p className="text-lg font-semibold text-slate-700 uppercase tracking-widest">
+                      {printData.company || ""}
+                    </p>
+                  )}
+                  {/* Designation second */}
                   {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
                     <p className="text-xl font-bold text-blue-700 uppercase tracking-wide">
                       {printData.designation}
-                    </p>
-                  )}
-                  {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
-                    <p className="text-lg font-semibold text-slate-700 uppercase tracking-widest">
-                      {printData.company}
                     </p>
                   )}
                 </div>
@@ -1057,11 +1059,15 @@ export default function AdminDashboard() {
                   )}
                   
                   <div className="flex flex-col gap-3 mb-10 text-center w-full">
-                    {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
-                      <p className="text-2xl font-extrabold text-black uppercase">{printData.designation}</p>
+                    {/* Company first */}
+                    {(data?.event as any)?.passSettings?.showCompany !== false && (
+                      <p className="text-2xl font-extrabold text-black uppercase border-b-2 border-black pb-2">
+                        {printData.company || ""}
+                      </p>
                     )}
-                    {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
-                      <p className="text-xl font-bold text-black border-t-2 border-black pt-2 uppercase">{printData.company}</p>
+                    {/* Designation second */}
+                    {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
+                      <p className="text-xl font-bold text-black uppercase">{printData.designation}</p>
                     )}
                   </div>
 
