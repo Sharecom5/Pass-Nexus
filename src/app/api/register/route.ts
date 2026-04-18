@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
 
     // Generate QR code with full verification URL
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.passnexus.in';
-    const verificationUrl = `${baseUrl}/pass/verify/${passId}`;
+    const verificationUrl = `${baseUrl}/verify/${passId}`;
     const qrCodeDataUri = await QRCode.toDataURL(verificationUrl);
 
     const newVisitor = new Visitor({

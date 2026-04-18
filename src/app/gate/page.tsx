@@ -74,10 +74,17 @@ export default function GatePage() {
     isScanning.current = true;
 
     try {
+      // Handle full URLs if scanned from a browser or direct QR
+      let extractedId = passIdStr.trim();
+      if (extractedId.includes('/')) {
+        const parts = extractedId.split('/');
+        extractedId = parts[parts.length - 1]; // Get the last part (passId)
+      }
+
       const res = await fetch('/api/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passId: passIdStr.trim() }),
+        body: JSON.stringify({ passId: extractedId }),
       });
       const data = await res.json();
       
