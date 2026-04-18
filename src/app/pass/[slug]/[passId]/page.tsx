@@ -75,7 +75,29 @@ export default function PassPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative print:bg-white print:min-h-0 print:-m-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative print:bg-white print:min-h-0 print:p-0">
+      <style jsx global>{`
+        @media print {
+          body { visibility: hidden; background: white; }
+          #pass-card { 
+            visibility: visible; 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            width: 520px !important; 
+            height: 709px !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+          }
+          @page {
+            size: 520px 709px;
+            margin: 0;
+          }
+        }
+      `}</style>
       {/* Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-4 print:hidden">
         <Link href="/pass" className="flex items-center gap-3">
@@ -84,13 +106,14 @@ export default function PassPage() {
         </Link>
       </div>
 
-      <div className="flex flex-col items-center py-12 px-6">
+      <div className="flex flex-col items-center py-12 px-6 print:p-0">
         <motion.div
           id="pass-card"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className={`w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden relative ${settings?.customBackgroundUrl ? 'aspect-[2.25/3.5]' : ''}`}
+          className={`w-full max-w-[520px] bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden relative ${settings?.customBackgroundUrl ? 'aspect-[520/709]' : ''}`}
         >
+
           {settings?.customBackgroundUrl && (
             <img 
               src={settings.customBackgroundUrl} 
