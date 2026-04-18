@@ -87,7 +87,7 @@ export default function AdminDashboard() {
         })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to add attendee");
+      if (!res.ok) throw new Error(data.message || data.error || "Registration failed");
       
       setSuccessPassId(data.passId);
       setNewAttendee({ name: "", email: "", phone: "", company: "", designation: "", passType: "Walk-in Badge" });
@@ -535,7 +535,7 @@ export default function AdminDashboard() {
                           }) 
                         });
                         const d = await res.json();
-                        if (!res.ok) throw new Error(d.error);
+                        if (!res.ok) throw new Error(d.message || d.error || "Failed to generate");
                         
                         triggerPrint({ ...newAttendee, passId: d.passId, qrCodeUrl: d.qrCodeUrl });
                         

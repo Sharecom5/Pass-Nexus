@@ -152,7 +152,7 @@ export default function RegistrationPage() {
         return;
       }
 
-      if (!res.ok) throw new Error(data.error || "Registration failed");
+      if (!res.ok) throw new Error(data.message || data.error || "Registration failed");
       router.push(`/${slug}/${data.passId}`);
     } catch (err: any) {
       setError(err.message);

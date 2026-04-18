@@ -54,10 +54,23 @@ export async function POST(req: NextRequest) {
     }
     // ─────────────────────────────────────────────────────────────────────
 
-    // Check if already registered for this event
-    const existing = await Visitor.findOne({ email: email.toLowerCase(), eventId: event._id });
+    // Check if already registered for this event (Email or Phone)
+    const existing = await Visitor.findOne({ 
+      eventId: event._id,
+      $or: [
+        { email: email.toLowerCase().trim() },
+        { phone: phone ? phone.trim() : 'N/A' }
+      ]
+    });
+
     if (existing) {
-      return NextResponse.json({ success: true, message: 'Already registered', passId: existing.passId, qrCodeUrl: existing.qrCodeUrl });
+      const matchField = existing.email === email.toLowerCase().trim() ? "email" : "phone number";
+      return NextResponse.json({ 
+        error: "ALREADY_REGISTERED",
+        message: `A pass already exists for this ${matchField}. Please use the "Recover Pass" option if you lost your ticket.`,
+        passId: existing.passId, 
+        qrCodeUrl: existing.qrCodeUrl 
+      }, { status: 400 });
     }
 
     // Generate unique passId
