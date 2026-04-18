@@ -998,6 +998,7 @@ export default function AdminDashboard() {
           `}} />
           <div className="print-container">
             {/* 1. Standard Pass */}
+            {(printData.registrationSource !== 'instant' && printData.passType !== 'Walk-in Badge' && printData.passType !== 'Instant Badge' && printData.passType !== 'VIP') && (
             <div className="badge-page">
               <div className="w-full flex flex-col items-center">
                 {(data?.event as any)?.logoUrl && (
@@ -1026,6 +1027,12 @@ export default function AdminDashboard() {
                       {printData.designation}
                     </p>
                   )}
+                  {/* Phone third */}
+                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
+                    <p className="text-md font-medium text-slate-500 tracking-widest mt-1">
+                      {printData.phone}
+                    </p>
+                  )}
                 </div>
 
                 {printData.qrCodeUrl && (
@@ -1040,8 +1047,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* 2. Instant Badge */}
+            {(printData.registrationSource === 'instant' || printData.passType === 'Walk-in Badge' || printData.passType === 'Instant Badge' || printData.passType === 'VIP') && (
             <div className="badge-page border-[12px] border-black">
               <div className="w-full h-full flex flex-col items-center justify-between py-10">
                 <div className="bg-black text-white w-full py-4 text-center">
@@ -1069,6 +1078,10 @@ export default function AdminDashboard() {
                     {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
                       <p className="text-xl font-bold text-black uppercase">{printData.designation}</p>
                     )}
+                    {/* Phone third */}
+                    {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
+                      <p className="text-lg font-semibold text-black">{printData.phone}</p>
+                    )}
                   </div>
 
                   {printData.qrCodeUrl && (
@@ -1087,6 +1100,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
       )}

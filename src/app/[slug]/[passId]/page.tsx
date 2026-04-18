@@ -182,6 +182,10 @@ export default function PassPage() {
                 {settings?.showDesignation !== false && visitor.designation && (
                   <p className="text-blue-700 font-semibold text-[12px] uppercase tracking-widest drop-shadow-sm mt-0.5">{visitor.designation}</p>
                 )}
+                {/* 4. Phone */}
+                {settings?.showPhone !== false && visitor.phone && (
+                  <p className="text-slate-600 font-medium text-[11px] tracking-widest drop-shadow-sm mt-0.5">{visitor.phone}</p>
+                )}
               </div>
 
 
