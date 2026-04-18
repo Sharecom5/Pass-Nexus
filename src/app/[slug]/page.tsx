@@ -187,8 +187,8 @@ export default function RegistrationPage() {
   const settings = event?.passSettings || { showName: true, showDesignation: true, showPhone: true, showCompany: true };
   const displayEventName = event?.name || "Event Registration";
 
-  // Show error if event could not be loaded
-  if (error || !event) {
+  // Show error if event could not be loaded (fetch failed)
+  if (!event) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 font-sans flex items-center justify-center px-6">
         <div className="bg-white border border-red-200 rounded-3xl shadow-2xl p-10 max-w-md w-full text-center">
@@ -197,7 +197,7 @@ export default function RegistrationPage() {
           </div>
           <h1 className="text-2xl font-black text-slate-900 mb-3">Event Not Found</h1>
           <p className="text-slate-500 text-sm leading-relaxed mb-8">
-            {error || "This registration link is invalid or the event no longer exists."}
+            This registration link is invalid or the event no longer exists.
           </p>
           <Link href="/" className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all">
             Go to PassNexus
