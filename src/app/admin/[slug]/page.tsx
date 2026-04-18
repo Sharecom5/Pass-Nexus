@@ -962,13 +962,13 @@ export default function AdminDashboard() {
           `}} />
           <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black overflow-hidden m-0">
              <div className="w-full flex flex-col items-center max-w-full">
-               {/* Name - Bold but safe size */}
-               <h1 className="text-6xl font-black uppercase text-black mb-2 tracking-tight whitespace-nowrap overflow-hidden w-full">{printData.name}</h1>
+               {/* Name - Professional Single Line */}
+               <h1 className="text-4xl font-black uppercase text-black mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{printData.name}</h1>
                
                {/* Designation & Company */}
-               <div className="mb-8">
-                 {printData.designation && <p className="text-2xl font-bold text-slate-800">{printData.designation}</p>}
-                 {printData.company && <p className="text-xl font-medium text-slate-500 leading-tight">{printData.company}</p>}
+               <div className="mb-6">
+                 {printData.designation && <p className="text-lg font-bold text-slate-800 uppercase tracking-wide leading-none mb-1">{printData.designation}</p>}
+                 {printData.company && <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{printData.company}</p>}
                </div>
                
                {/* VIP Badge - High Visibility */}
