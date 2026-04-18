@@ -55,10 +55,7 @@ export default function VerifyPage() {
   };
 
   const reset = () => {
-    setResult("idle");
-    setPin("");
-    setPinError("");
-    setVisitor(null);
+    window.location.href = "/gate";
   };
 
   return (
