@@ -1051,53 +1051,41 @@ export default function AdminDashboard() {
 
             {/* 2. Instant Badge */}
             {(printData.registrationSource === 'instant' || printData.passType === 'Walk-in Badge' || printData.passType === 'Instant Badge' || printData.passType === 'VIP') && (
-            <div className="badge-page border-[12px] border-black">
-              <div className="w-full h-full flex flex-col items-center justify-between py-10">
-                <div className="bg-black text-white w-full py-4 text-center">
-                  <h2 className="text-3xl font-black tracking-tighter italic">INSTANT BADGE</h2>
+            <div className="badge-page">
+              <div className="w-full h-full flex flex-col items-center justify-center py-10 px-6">
+                
+                {(data?.event as any)?.passSettings?.showName !== false && (
+                  <h1 className={`${
+                    printData.name && printData.name.length > 25 ? 'text-3xl' : 
+                    printData.name && printData.name.length > 20 ? 'text-4xl' : 'text-5xl'
+                  } font-black uppercase text-black leading-none mb-6 text-center w-full`}>
+                    {printData.name}
+                  </h1>
+                )}
+                
+                <div className="flex flex-col gap-3 mb-10 text-center w-full">
+                  {/* Company first */}
+                  {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
+                    <p className="text-2xl font-extrabold text-black uppercase">
+                      {printData.company}
+                    </p>
+                  )}
+                  {/* Designation second */}
+                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
+                    <p className="text-xl font-bold text-black uppercase">{printData.designation}</p>
+                  )}
+                  {/* Phone third */}
+                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
+                    <p className="text-lg font-semibold text-black">{printData.phone}</p>
+                  )}
                 </div>
 
-                <div className="flex-1 flex flex-col items-center justify-center w-full px-6">
-                  {(data?.event as any)?.passSettings?.showName !== false && (
-                    <h1 className={`${
-                      printData.name && printData.name.length > 25 ? 'text-3xl' : 
-                      printData.name && printData.name.length > 20 ? 'text-4xl' : 'text-5xl'
-                    } font-black uppercase text-black leading-none mb-6 text-center w-full px-2`}>
-                      {printData.name}
-                    </h1>
-                  )}
-                  
-                  <div className="flex flex-col gap-3 mb-10 text-center w-full">
-                    {/* Company first */}
-                    {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
-                      <p className="text-2xl font-extrabold text-black uppercase border-b-2 border-black pb-2">
-                        {printData.company}
-                      </p>
-                    )}
-                    {/* Designation second */}
-                    {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
-                      <p className="text-xl font-bold text-black uppercase">{printData.designation}</p>
-                    )}
-                    {/* Phone third */}
-                    {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
-                      <p className="text-lg font-semibold text-black">{printData.phone}</p>
-                    )}
+                {printData.qrCodeUrl && (
+                  <div className="mt-4">
+                    <img src={printData.qrCodeUrl} alt="QR Code" className="w-56 h-56 object-contain grayscale" />
                   </div>
-
-                  {printData.qrCodeUrl && (
-                    <div className="mb-6">
-                      <img src={printData.qrCodeUrl} alt="QR Code" className="w-44 h-44 object-contain grayscale" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="w-full px-10">
-                   <div className="h-1 bg-black w-full mb-2"></div>
-                   <div className="flex justify-between items-center text-xs font-bold font-mono text-black">
-                      <span>ID: {printData.passId}</span>
-                      <span>DATE: {new Date().toLocaleDateString()}</span>
-                   </div>
-                </div>
+                )}
+                
               </div>
             </div>
             )}
