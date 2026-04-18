@@ -177,6 +177,7 @@ export default function AdminDashboard() {
     if (filter === "all") return matchesSearch;
     if (filter === "entered") return matchesSearch && a.status === "entered";
     if (filter === "pending") return matchesSearch && a.status === "registered";
+    if (filter === "walkin") return matchesSearch && (a.registrationSource === "instant" || a.passType === "Instant Badge" || a.passType === "Walk-in Badge");
     return matchesSearch;
   });
 
@@ -413,6 +414,12 @@ export default function AdminDashboard() {
                         >
                            Pending
                         </button>
+                        <button 
+                           onClick={() => setFilter("walkin")}
+                           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === 'walkin' ? 'bg-blue-100 text-blue-700 shadow-sm border border-blue-200' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                           Walk-ins
+                        </button>
                      </div>
                   </div>
                )}
@@ -446,7 +453,7 @@ export default function AdminDashboard() {
                                  >
                                     <td className="px-6 py-5">
                                        <div className="flex items-center gap-3">
-                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black border group-hover:scale-105 transition-transform ${attendee.registrationSource === 'public' ? 'bg-purple-50 text-purple-600 border-purple-100' : attendee.registrationSource === 'instant' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black border group-hover:scale-105 transition-transform ${attendee.registrationSource === 'public' ? 'bg-purple-50 text-purple-600 border-purple-100' : attendee.registrationSource === 'instant' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
                                              {attendee.name.charAt(0)}
                                           </div>
                                           <div>
@@ -474,8 +481,8 @@ export default function AdminDashboard() {
                                     </td>
                                     {activeTab === 'attendees' && (
                                        <td className="px-6 py-5">
-                                          <div className={`text-[9px] font-black uppercase tracking-wider inline-flex px-2 py-1 rounded-md ${attendee.registrationSource === 'public' ? 'bg-purple-50 text-purple-700 border border-purple-100' : attendee.registrationSource === 'instant' ? 'bg-orange-50 text-orange-700 border border-orange-100' : 'bg-slate-50 text-slate-700 border border-slate-200'}`}>
-                                             {attendee.registrationSource || 'Manual'}
+                                          <div className={`text-[9px] font-black uppercase tracking-wider inline-flex px-2 py-1 rounded-md ${attendee.registrationSource === 'public' ? 'bg-purple-50 text-purple-700 border border-purple-100' : attendee.registrationSource === 'instant' ? 'bg-blue-50 text-blue-700 border border-blue-100' : 'bg-slate-50 text-slate-700 border border-slate-200'}`}>
+                                             {attendee.registrationSource === 'instant' ? 'Walk-in' : (attendee.registrationSource || 'Manual')}
                                           </div>
                                        </td>
                                     )}
@@ -519,7 +526,7 @@ export default function AdminDashboard() {
                  {/* Generation Form Card */}
                  <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm flex flex-col items-center text-center">
                    <Printer className="w-12 h-12 text-blue-100 mb-4" />
-                   <h2 className="text-2xl font-black text-slate-900 mb-2">Instant Name Badge</h2>
+                   <h2 className="text-2xl font-black text-slate-900 mb-2">Walk-in Name Badge</h2>
                    <p className="text-slate-500 max-w-md font-medium mb-8">Generate a print-friendly badge for walk-ins. Automatically registers the attendee and launches the print dialog.</p>
                    
                    <form onSubmit={async (e) => {
@@ -532,7 +539,7 @@ export default function AdminDashboard() {
                          body: JSON.stringify({ 
                            ...newAttendee,
                            eventSlug: slug, 
-                           passType: 'Instant Badge',
+                           passType: 'Walk-in Badge',
                            registrationSource: 'instant' 
                          }) 
                        });
