@@ -1000,11 +1000,11 @@ export default function AdminDashboard() {
             {/* 1. Standard Pass */}
             <div className="badge-page">
               <div className="w-full flex flex-col items-center">
-                {event?.logoUrl && (
-                  <img src={event.logoUrl} alt="Logo" className="w-24 h-24 object-contain mb-8 opacity-90" />
+                {(data?.event as any)?.logoUrl && (
+                  <img src={(data?.event as any).logoUrl} alt="Logo" className="w-24 h-24 object-contain mb-8 opacity-90" />
                 )}
 
-                {event?.passSettings?.showName !== false && (
+                {(data?.event as any)?.passSettings?.showName !== false && (
                   <h1 className={`${
                     printData.name && printData.name.length > 25 ? 'text-2xl' : 
                     printData.name && printData.name.length > 20 ? 'text-3xl' : 'text-4xl'
@@ -1014,12 +1014,12 @@ export default function AdminDashboard() {
                 )}
                 
                 <div className="flex flex-col gap-2 mb-8 text-center px-4 w-full">
-                  {(event?.passSettings?.showDesignation !== false && printData.designation) && (
+                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
                     <p className="text-xl font-bold text-blue-700 uppercase tracking-wide">
                       {printData.designation}
                     </p>
                   )}
-                  {(event?.passSettings?.showCompany !== false && printData.company) && (
+                  {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
                     <p className="text-lg font-semibold text-slate-700 uppercase tracking-widest">
                       {printData.company}
                     </p>
@@ -1047,7 +1047,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex-1 flex flex-col items-center justify-center w-full px-6">
-                  {event?.passSettings?.showName !== false && (
+                  {(data?.event as any)?.passSettings?.showName !== false && (
                     <h1 className={`${
                       printData.name && printData.name.length > 25 ? 'text-3xl' : 
                       printData.name && printData.name.length > 20 ? 'text-4xl' : 'text-5xl'
@@ -1057,10 +1057,10 @@ export default function AdminDashboard() {
                   )}
                   
                   <div className="flex flex-col gap-3 mb-10 text-center w-full">
-                    {(event?.passSettings?.showDesignation !== false && printData.designation) && (
+                    {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
                       <p className="text-2xl font-extrabold text-black uppercase">{printData.designation}</p>
                     )}
-                    {(event?.passSettings?.showCompany !== false && printData.company) && (
+                    {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
                       <p className="text-xl font-bold text-black border-t-2 border-black pt-2 uppercase">{printData.company}</p>
                     )}
                   </div>
