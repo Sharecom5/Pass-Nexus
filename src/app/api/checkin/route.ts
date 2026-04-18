@@ -36,16 +36,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, status: "denied", message: "Pass has been cancelled" });
     }
 
-    if (visitor.status === "entered") {
-      await ScanLog.create({ passId: visitor.passId, visitorName: visitor.name, result: "duplicate" });
-      return NextResponse.json({
-        success: false,
-        status: "duplicate",
-        message: "Already entered — duplicate scan",
-        visitor: { name: visitor.name, company: visitor.company, passType: visitor.passType, passId: visitor.passId }
-      });
-    }
-
     // Grant entry
     visitor.status = "entered";
     visitor.enteredAt = new Date();
