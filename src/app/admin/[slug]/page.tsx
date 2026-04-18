@@ -810,30 +810,45 @@ export default function AdminDashboard() {
 
                   <div className="grid grid-cols-2 gap-5">
                     <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
+                      <div className="relative">
+                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="e.g. Acme Corp" 
+                          value={newAttendee.company}
+                          onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
                       <div className="relative">
                         <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input 
                           required
                           type="text" 
-                          placeholder="Job Title" 
+                          placeholder="e.g. Director" 
                           value={newAttendee.designation}
                           onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})}
                           className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
                         />
                       </div>
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Category</label>
-                      <select 
-                        value={newAttendee.passType}
-                        onChange={(e) => setNewAttendee({...newAttendee, passType: e.target.value})}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 px-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-black text-slate-900 text-sm appearance-none"
-                      >
-                        <option value="Walk-in Badge">Standard</option>
-                        <option value="VIP">VIP PASS</option>
-                      </select>
-                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Pass Category</label>
+                    <select 
+                      value={newAttendee.passType}
+                      onChange={(e) => setNewAttendee({...newAttendee, passType: e.target.value})}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 px-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-black text-slate-900 text-sm appearance-none cursor-pointer"
+                    >
+                      <option value="Walk-in Badge">Standard Delegate</option>
+                      <option value="VIP">VIP Pass</option>
+                    </select>
                   </div>
 
                   <div className="pt-4">
