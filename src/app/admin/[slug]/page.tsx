@@ -955,69 +955,132 @@ export default function AdminDashboard() {
 
       {/* Hidden Print Layout */}
       {printData && (
-        <div className="hidden print:flex fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0 overflow-hidden">
+        <div className="hidden print:block fixed inset-0 bg-white z-[99999] p-0 m-0 overflow-visible">
           <style dangerouslySetInnerHTML={{ __html: `
-            @page { margin: 0; size: 520px 709px !important; }
+            @page { 
+              margin: 0; 
+              size: 100mm 150mm !important; 
+            }
             @media print {
               html, body {
-                height: 520px !important;
-                width: 709px !important;
+                height: 150mm !important;
+                width: 100mm !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                overflow: hidden !important;
+                overflow: visible !important;
                 -webkit-print-color-adjust: exact;
                 visibility: hidden !important;
               }
               .print-container { 
                 visibility: visible !important;
-                display: flex !important;
-                position: fixed !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 520px !important;
-                height: 709px !important;
-                z-index: 9999999 !important;
+                display: block !important;
+                width: 100mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 background: #fff !important;
+              }
+              .badge-page {
+                page-break-after: always;
+                height: 150mm !important;
+                width: 100mm !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+              }
+              .badge-page:last-child {
+                page-break-after: auto;
               }
               .print-container * { 
                 visibility: visible !important;
               }
             }
           `}} />
-          <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black overflow-hidden m-0">
-             <div className="w-full flex flex-col items-center max-w-full">
-               {/* Name - Professional Single Line */}
-               {data?.event?.passSettings?.showName !== false && (
-                 <h1 className="text-4xl font-black uppercase text-black mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{printData.name}</h1>
-               )}
-               
-               {/* Designation & Company - Conditional Branding */}
-               <div className="mb-6">
-                 {(data?.event?.passSettings?.showDesignation !== false && printData.designation) && (
-                   <p className="text-lg font-bold text-slate-800 uppercase tracking-wide leading-none mb-1">{printData.designation}</p>
-                 )}
-                 {(data?.event?.passSettings?.showCompany !== false && printData.company) && (
-                   <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{printData.company}</p>
-                 )}
-               </div>
-               
-               {/* VIP Badge - High Visibility */}
-               {(printData.passType === 'VIP' || printData.passType === 'Instant Badge' || printData.passType === 'Walk-in Badge') && (
-                 <div className="mb-8 px-8 py-2 bg-orange-600 text-white font-black text-3xl uppercase tracking-widest rounded-full border-4 border-white shadow-sm">
-                   {printData.passType === 'VIP' ? 'VIP' : 'WALK-IN'}
-                 </div>
-               )}
+          <div className="print-container">
+            {/* 1. Standard Pass */}
+            <div className="badge-page">
+              <div className="w-full flex flex-col items-center">
+                {event?.logoUrl && (
+                  <img src={event.logoUrl} alt="Logo" className="w-24 h-24 object-contain mb-8 opacity-90" />
+                )}
 
-               {/* QR Code */}
-               {printData.qrCodeUrl && (
-                 <div className="mb-6">
-                   <img src={printData.qrCodeUrl} className="w-52 h-52 object-contain" />
-                 </div>
-               )}
-               
-               {/* Compact ID */}
-               <span className="text-sm font-mono font-bold text-slate-300 tracking-widest">{printData.passId}</span>
-             </div>
+                {event?.passSettings?.showName !== false && (
+                  <h1 className={`${
+                    printData.name && printData.name.length > 25 ? 'text-2xl' : 
+                    printData.name && printData.name.length > 20 ? 'text-3xl' : 'text-4xl'
+                  } font-black uppercase text-black leading-tight w-full mb-4 px-4 text-center`}>
+                    {printData.name}
+                  </h1>
+                )}
+                
+                <div className="flex flex-col gap-2 mb-8 text-center px-4 w-full">
+                  {(event?.passSettings?.showDesignation !== false && printData.designation) && (
+                    <p className="text-xl font-bold text-blue-700 uppercase tracking-wide">
+                      {printData.designation}
+                    </p>
+                  )}
+                  {(event?.passSettings?.showCompany !== false && printData.company) && (
+                    <p className="text-lg font-semibold text-slate-700 uppercase tracking-widest">
+                      {printData.company}
+                    </p>
+                  )}
+                </div>
+
+                {printData.qrCodeUrl && (
+                  <div className="bg-white p-2 rounded-xl mb-6 shadow-sm border border-slate-100">
+                    <img src={printData.qrCodeUrl} alt="QR Code" className="w-48 h-48 object-contain" />
+                  </div>
+                )}
+                
+                <div className="mt-4 flex flex-col items-center gap-1">
+                  <span className="text-sm font-black text-slate-400 tracking-[0.3em] uppercase">{printData.passType || 'Attendee'}</span>
+                  <span className="text-xs font-mono text-slate-300 font-bold uppercase">{printData.passId}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Instant Badge */}
+            <div className="badge-page border-[12px] border-black">
+              <div className="w-full h-full flex flex-col items-center justify-between py-10">
+                <div className="bg-black text-white w-full py-4 text-center">
+                  <h2 className="text-3xl font-black tracking-tighter italic">INSTANT BADGE</h2>
+                </div>
+
+                <div className="flex-1 flex flex-col items-center justify-center w-full px-6">
+                  {event?.passSettings?.showName !== false && (
+                    <h1 className={`${
+                      printData.name && printData.name.length > 25 ? 'text-3xl' : 
+                      printData.name && printData.name.length > 20 ? 'text-4xl' : 'text-5xl'
+                    } font-black uppercase text-black leading-none mb-6 text-center w-full px-2`}>
+                      {printData.name}
+                    </h1>
+                  )}
+                  
+                  <div className="flex flex-col gap-3 mb-10 text-center w-full">
+                    {(event?.passSettings?.showDesignation !== false && printData.designation) && (
+                      <p className="text-2xl font-extrabold text-black uppercase">{printData.designation}</p>
+                    )}
+                    {(event?.passSettings?.showCompany !== false && printData.company) && (
+                      <p className="text-xl font-bold text-black border-t-2 border-black pt-2 uppercase">{printData.company}</p>
+                    )}
+                  </div>
+
+                  {printData.qrCodeUrl && (
+                    <div className="mb-6">
+                      <img src={printData.qrCodeUrl} alt="QR Code" className="w-44 h-44 object-contain grayscale" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-full px-10">
+                   <div className="h-1 bg-black w-full mb-2"></div>
+                   <div className="flex justify-between items-center text-xs font-bold font-mono text-black">
+                      <span>ID: {printData.passId}</span>
+                      <span>DATE: {new Date().toLocaleDateString()}</span>
+                   </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

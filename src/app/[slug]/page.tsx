@@ -26,12 +26,19 @@ export default function RegistrationPage() {
 
   useEffect(() => {
     const fetchEvent = async () => {
+      console.log(`[Page] Fetching event for slug: "${slug}"`);
       try {
         const res = await fetch(`/api/events/public?slug=${slug}`);
-        if (!res.ok) throw new Error("Event not found");
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          console.error(`[Page] Fetch failed: ${res.status}`, errorData);
+          throw new Error(errorData.error || "Event not found");
+        }
         const data = await res.json();
+        console.log(`[Page] Event fetched successfully:`, data.event?.name);
         setEvent(data.event);
       } catch (err: any) {
+        console.error(`[Page] Error in fetchEvent:`, err.message);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -179,6 +186,43 @@ export default function RegistrationPage() {
 
   const settings = event?.passSettings || { showName: true, showDesignation: true, showPhone: true, showCompany: true };
   const displayEventName = event?.name || "Event Registration";
+
+  // Show error if event could not be loaded
+  if (error || !event) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50 font-sans flex items-center justify-center px-6">
+        <div className="bg-white border border-red-200 rounded-3xl shadow-2xl p-10 max-w-md w-full text-center">
+          <div className="bg-red-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-200">
+            <AlertCircle className="w-10 h-10 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-black text-slate-900 mb-3">Event Not Found</h1>
+          <p className="text-slate-500 text-sm leading-relaxed mb-8">
+            {error || "This registration link is invalid or the event no longer exists."}
+          </p>
+          <Link href="/" className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all">
+            Go to PassNexus
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Show "Registration Closed" if the event is not open
+  if (event.registrationOpen === false) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 font-sans flex items-center justify-center px-6">
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-2xl p-10 max-w-md w-full text-center">
+          <div className="bg-slate-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-200">
+            <Lock className="w-10 h-10 text-slate-400" />
+          </div>
+          <h1 className="text-2xl font-black text-slate-900 mb-3">Registration Closed</h1>
+          <p className="text-slate-500 text-sm leading-relaxed">
+            Registrations for <strong>{displayEventName}</strong> are currently closed.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (planLimitReached) {
     return (
