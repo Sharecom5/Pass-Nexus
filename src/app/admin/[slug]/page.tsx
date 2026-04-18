@@ -538,6 +538,18 @@ export default function AdminDashboard() {
                         if (!res.ok) throw new Error(d.error);
                         
                         triggerPrint({ ...newAttendee, passId: d.passId, qrCodeUrl: d.qrCodeUrl });
+                        
+                        // ADD IMMEDIATE LOCAL FEEDBACK
+                        setData((prev: any) => ({
+                          ...prev,
+                          attendees: [{ ...newAttendee, passId: d.passId, _id: d.passId, status: 'registered', registrationSource: 'instant', createdAt: new Date().toISOString() }, ...prev.attendees],
+                          stats: {
+                            ...prev.stats,
+                            total: (prev.stats.total || 0) + 1,
+                            pending: (prev.stats.pending || 0) + 1
+                          }
+                        }));
+
                         setNewAttendee({ name: "", email: "", phone: "", company: "", designation: "", passType: "Walk-in Badge" });
                         fetchData();
                      } catch(err: any) { 
