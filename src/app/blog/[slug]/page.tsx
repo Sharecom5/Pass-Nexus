@@ -8,8 +8,9 @@ export async function generateStaticParams() {
   return blogs.map((b) => ({ slug: b.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const blog = blogs.find(b => b.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const blog = blogs.find(b => b.slug === slug);
   if (!blog) return { title: "Not Found" };
   return {
     title: `${blog.title} | PassNexus Blog`,
@@ -34,8 +35,9 @@ const categoryColors: Record<string, string> = {
   "Event Growth": "bg-orange-50 text-orange-700 border-orange-100",
 };
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const blog = blogs.find(b => b.slug === params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const blog = blogs.find(b => b.slug === slug);
   if (!blog) notFound();
 
   const relatedPosts = blogs.filter(b => b.slug !== blog.slug && b.category === blog.category).slice(0, 2);
