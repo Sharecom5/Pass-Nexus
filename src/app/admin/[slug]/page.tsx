@@ -747,27 +747,30 @@ export default function AdminDashboard() {
       {printData && (
         <div className="hidden print:flex fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0 overflow-hidden">
           <style dangerouslySetInnerHTML={{ __html: `
-            @page { margin: 0; size: 520px 709px; }
+            @page { margin: 0; size: 520px 709px !important; }
             @media print {
-              body { 
-                visibility: hidden !important; 
-                margin: 0 !important; 
-                padding: 0 !important; 
+              html, body {
+                height: 520px !important;
+                width: 709px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
                 -webkit-print-color-adjust: exact;
               }
+              body * { 
+                display: none !important;
+              }
+              .print-container, .print-container * { 
+                display: flex !important;
+                visibility: visible !important;
+              }
               .print-container { 
-                visibility: visible !important; 
-                position: absolute !important;
+                position: fixed !important;
                 left: 0 !important;
                 top: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
                 width: 520px !important;
                 height: 709px !important;
-                page-break-after: avoid !important;
-                page-break-before: avoid !important;
+                z-index: 9999999 !important;
                 background: #fff !important;
               }
             }

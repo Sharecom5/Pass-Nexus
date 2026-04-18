@@ -78,12 +78,27 @@ export default function PassPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative print:bg-white print:min-h-0 print:p-0">
       <style jsx global>{`
         @media print {
-          body { visibility: hidden; background: white; }
+          html, body {
+            height: 520px !important;
+            width: 709px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+          }
+          body * {
+            display: none !important;
+          }
+          #pass-card, #pass-card * {
+            display: block !important;
+            visibility: visible !important;
+          }
+          #pass-card img {
+            display: block !important;
+          }
           #pass-card { 
-            visibility: visible; 
-            position: absolute; 
-            left: 0; 
-            top: 0; 
+            position: fixed !important; 
+            left: 0 !important; 
+            top: 0 !important; 
             width: 520px !important; 
             height: 709px !important; 
             margin: 0 !important;
@@ -91,10 +106,11 @@ export default function PassPage() {
             border: none !important;
             border-radius: 0 !important;
             box-shadow: none !important;
+            z-index: 9999999 !important;
           }
           @page {
-            size: 520px 709px;
-            margin: 0;
+            size: 520px 709px !important;
+            margin: 0 !important;
           }
         }
       `}</style>
@@ -113,6 +129,7 @@ export default function PassPage() {
           animate={{ opacity: 1, scale: 1 }}
           className={`w-full max-w-[520px] bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden relative ${settings?.customBackgroundUrl ? 'aspect-[520/709]' : ''}`}
         >
+
 
           {settings?.customBackgroundUrl && (
             <img 
