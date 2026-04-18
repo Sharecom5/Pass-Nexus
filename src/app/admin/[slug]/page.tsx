@@ -801,20 +801,6 @@ export default function AdminDashboard() {
 
                   <div className="grid grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
-                      <div className="relative">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input 
-                          required
-                          type="text" 
-                          placeholder="Organization" 
-                          value={newAttendee.company}
-                          onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
                       <div className="relative">
                         <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -827,6 +813,17 @@ export default function AdminDashboard() {
                           className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
                         />
                       </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Category</label>
+                      <select 
+                        value={newAttendee.passType}
+                        onChange={(e) => setNewAttendee({...newAttendee, passType: e.target.value})}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 px-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-black text-slate-900 text-sm appearance-none"
+                      >
+                        <option value="Walk-in Badge">Standard</option>
+                        <option value="VIP">VIP PASS</option>
+                      </select>
                     </div>
                   </div>
 
@@ -964,35 +961,32 @@ export default function AdminDashboard() {
             }
           `}} />
           <div className="print-container w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black overflow-hidden m-0">
-             <div className="w-full flex flex-col items-center">
-               {/* Name - Ultra Large */}
-               <h1 className="text-[64px] font-black uppercase text-black leading-none mb-4 tracking-tighter w-full whitespace-nowrap overflow-hidden">{printData.name}</h1>
+             <div className="w-full flex flex-col items-center max-w-full">
+               {/* Name - Bold but safe size */}
+               <h1 className="text-6xl font-black uppercase text-black mb-2 tracking-tight whitespace-nowrap overflow-hidden w-full">{printData.name}</h1>
                
-               {/* Designation */}
-               {printData.designation && <p className="text-3xl font-bold text-slate-700 mt-2">{printData.designation}</p>}
+               {/* Designation & Company */}
+               <div className="mb-8">
+                 {printData.designation && <p className="text-2xl font-bold text-slate-800">{printData.designation}</p>}
+                 {printData.company && <p className="text-xl font-medium text-slate-500 leading-tight">{printData.company}</p>}
+               </div>
                
-               {/* Company */}
-               {printData.company && <h2 className="text-2xl font-medium text-slate-500 mt-1 mb-8">{printData.company}</h2>}
-               
-               {/* VIP Indicator */}
-                {printData.passType === 'VIP' && (
-                  <div className="mt-4 px-10 py-3 bg-orange-600 text-white font-black text-4xl uppercase tracking-[0.2em] rounded-full shadow-lg border-4 border-white">
-                    VIP
-                  </div>
-                )}
+               {/* VIP Badge - High Visibility */}
+               {printData.passType === 'VIP' && (
+                 <div className="mb-8 px-8 py-2 bg-orange-600 text-white font-black text-3xl uppercase tracking-widest rounded-full border-4 border-white shadow-sm">
+                   VIP
+                 </div>
+               )}
 
                {/* QR Code */}
                {printData.qrCodeUrl && (
-                 <div className="bg-white p-2 rounded-xl mb-6 mt-6">
-                   <img 
-                     src={printData.qrCodeUrl}
-                     alt="QR Code" 
-                     className="w-56 h-56 object-contain" 
-                   />
+                 <div className="mb-6">
+                   <img src={printData.qrCodeUrl} className="w-52 h-52 object-contain" />
                  </div>
                )}
                
-               <span className="text-lg font-mono font-black text-slate-400 tracking-wider uppercase">{printData.passId}</span>
+               {/* Compact ID */}
+               <span className="text-sm font-mono font-bold text-slate-300 tracking-widest">{printData.passId}</span>
              </div>
           </div>
         </div>
