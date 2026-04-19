@@ -20,7 +20,6 @@ export default function RegistrationPage() {
     email: "",
     phone: "",
     company: "",
-    address: "",
     designation: "",
   });
 
@@ -175,7 +174,6 @@ export default function RegistrationPage() {
     if (formData.phone.length !== 10) return setError("Please enter a valid 10-digit phone number.");
     if (formData.company.trim().length < 2) return setError("Please enter a valid Company Name.");
     if (settings.showDesignation && formData.designation.trim().length < 2) return setError("Please enter a valid Designation.");
-    if (formData.address.trim().length < 4) return setError("Please enter a valid Office Address.");
     
     setError("");
 
@@ -297,13 +295,7 @@ export default function RegistrationPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Office Address</label>
-              <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input type="text" required placeholder="Office Address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
-              </div>
-            </div>
+
 
             <div className={`grid grid-cols-1 ${settings.showDesignation ? 'md:grid-cols-2' : ''} gap-5`}>
               <div>
