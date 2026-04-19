@@ -10,10 +10,12 @@ import {
   Loader2, RefreshCcw, ChevronRight, LogOut, Ticket, Lock, Globe, Copy, Printer, ClipboardList, Trash2,
   ExternalLink,
   BarChart3,
-  QrCode
+  QrCode,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { PLANS } from "@/lib/plans";
 
 export default function AdminDashboard() {
   const { slug } = useParams();
@@ -34,6 +36,8 @@ export default function AdminDashboard() {
   });
   const [copied, setCopied] = useState(false);
   const [printData, setPrintData] = useState<any>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [purchasingPlan, setPurchasingPlan] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -46,6 +50,81 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePurchasePlan = async (planId: string) => {
+    if (planId === 'enterprise') {
+      window.location.href = "mailto:hello@passnexus.in?subject=PassNexus Enterprise Upgrade";
+      return;
+    }
+    try {
+      setPurchasingPlan(planId);
+      
+      const orderRes = await fetch("/api/payments/create-plan-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId }),
+      });
+      const orderData = await orderRes.json();
+      if (!orderRes.ok) throw new Error(orderData.error);
+
+      const res = await loadRazorpay();
+      if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        setPurchasingPlan(null);
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "PassNexus",
+        description: `Upgrade to ${(PLANS as any)[planId]?.name} Plan`,
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          const verifyRes = await fetch("/api/payments/verify-plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              planId: planId
+            }),
+          });
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            alert("Upgrade successful!");
+            setShowUpgradeModal(false);
+            fetchData();
+          } else {
+            alert("Payment verification failed. Please contact support.");
+          }
+        },
+        theme: { color: "#2563eb" },
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+      paymentObject.on("payment.failed", function (response: any) {
+        alert("Payment failed: " + response.error.description);
+      });
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setPurchasingPlan(null);
     }
   };
 
@@ -342,10 +421,20 @@ export default function AdminDashboard() {
                   <RefreshCcw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
                </button>
                <button 
-                 onClick={() => setShowAddModal(true)}
-                 className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
-               >
-                  <PlusCircle className="w-4 h-4" /> New Pass
+                  onClick={() => {
+                    if (data?.planLimit !== -1 && stats.total >= (data?.planLimit || 0)) {
+                      setShowUpgradeModal(true);
+                    } else {
+                      setShowAddModal(true);
+                    }
+                  }}
+                  className={`${data?.planLimit !== -1 && stats.total >= (data?.planLimit || 0) ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all`}
+                >
+                  {data?.planLimit !== -1 && stats.total >= (data?.planLimit || 0) ? (
+                    <><Zap className="w-4 h-4" /> Upgrade Required</>
+                  ) : (
+                    <><PlusCircle className="w-4 h-4" /> New Pass</>
+                  )}
                </button>
                <button 
                  onClick={handleExport}
@@ -355,6 +444,41 @@ export default function AdminDashboard() {
                </button>
             </div>
          </div>
+
+         {/* Usage Alert Banner */}
+         {data?.planLimit !== -1 && stats.total >= (data?.planLimit || 0) * 0.8 && (
+            <motion.div 
+               initial={{ opacity: 0, y: -20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className={`mb-8 p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 ${
+                 stats.total >= (data?.planLimit || 0) 
+                 ? 'bg-red-50 border-red-200 text-red-700' 
+                 : 'bg-orange-50 border-orange-200 text-orange-700'
+               }`}
+            >
+              <div className="flex items-center gap-3">
+                 <ShieldAlert className={`w-6 h-6 ${stats.total >= (data?.planLimit || 0) ? 'text-red-500' : 'text-orange-500'}`} />
+                 <div>
+                    <p className="font-black text-sm uppercase tracking-tight">
+                      {stats.total >= (data?.planLimit || 0) ? 'Pass Limit Reached!' : 'Approaching Pass Limit'}
+                    </p>
+                    <p className="text-xs font-semibold opacity-70">
+                      Current Usage: {stats.total} / {data?.planLimit} passes. Upgrade now to allow more registrations.
+                    </p>
+                 </div>
+              </div>
+              <button 
+                onClick={() => setShowUpgradeModal(true)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${
+                  stats.total >= (data?.planLimit || 0)
+                  ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg'
+                  : 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg'
+                }`}
+              >
+                <Zap className="w-4 h-4" /> Upgrade Plan
+              </button>
+            </motion.div>
+         )}
 
          {/* Stats Grid */}
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -1126,6 +1250,50 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
+      {/* Upgrade Plan Modal */}
+      <AnimatePresence>
+        {showUpgradeModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl w-full max-w-5xl overflow-hidden shadow-2xl my-auto">
+              <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                <div>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                    <Zap className="w-6 h-6 text-blue-600" /> Unlock More Value
+                  </h2>
+                </div>
+                <button onClick={() => setShowUpgradeModal(false)}
+                  className="p-2 bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-xl transition-all">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="p-8 pb-12">
+                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    {Object.values(PLANS).filter((p: any) => p.id !== 'free').map((plan: any) => (
+                      <div key={plan.id} className={`flex flex-col border rounded-3xl p-6 ${plan.highlight ? 'border-blue-600 shadow-xl bg-blue-50/20' : 'border-slate-200 shadow-sm bg-white'}`}>
+                         <h3 className="text-lg font-black text-slate-900 mb-1">{plan.name}</h3>
+                         <div className="text-2xl font-black text-slate-900 mb-4">{plan.price}</div>
+                         <ul className="space-y-3 mb-6 flex-1 text-sm font-medium text-slate-600">
+                           {plan.features.map((f: string, i: number) => (
+                             <li key={i} className="flex gap-2"><CheckCircle className="w-4 h-4 text-blue-600 shrink-0" /> {f}</li>
+                           ))}
+                         </ul>
+                         <button 
+                           onClick={() => handlePurchasePlan(plan.id)}
+                           disabled={purchasingPlan === plan.id}
+                           className={`w-full py-3 rounded-xl font-bold flex justify-center items-center gap-2 transition-all ${plan.highlight ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg' : 'bg-slate-100 hover:bg-slate-200 text-slate-900'}`}
+                         >
+                           {purchasingPlan === plan.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                           {plan.id === 'enterprise' ? 'Contact Sales' : 'Buy Now'}
+                         </button>
+                      </div>
+                    ))}
+                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
