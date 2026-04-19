@@ -7,7 +7,7 @@ import {
   Users, Search, Download, CheckCircle, Clock, 
   UserCheck, ShieldAlert, PlusCircle, X,
   Building2, Briefcase, Mail, Phone, User,
-  Loader2, RefreshCcw, ChevronRight, LogOut, Ticket, Lock, Globe, Copy, Printer, ClipboardList, Trash2,
+  Loader2, RefreshCcw, ChevronRight, ChevronLeft, LogOut, Ticket, Lock, Globe, Copy, Printer, ClipboardList, Trash2,
   ExternalLink,
   BarChart3,
   QrCode,
@@ -24,7 +24,9 @@ export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedAttendee, setSelectedAttendee] = useState<any>(null);
@@ -39,9 +41,10 @@ export default function AdminDashboard() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [purchasingPlan, setPurchasingPlan] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = async (pageNum = page, searchQuery = debouncedSearch, filterType = filter) => {
     try {
-      const res = await fetch(`/api/admin/${slug}`);
+      setRefreshing(true);
+      const res = await fetch(`/api/admin/${slug}?page=${pageNum}&search=${searchQuery}&filter=${filterType}`);
       if (!res.ok) throw new Error("Could not fetch admin data");
       const d = await res.json();
       setData(d);
@@ -128,15 +131,20 @@ export default function AdminDashboard() {
     }
   };
 
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); // Reset to first page on new search
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
   useEffect(() => {
     if (slug) {
-      fetchData();
-      const interval = setInterval(() => {
-        fetchData();
-      }, 15000);
-      return () => clearInterval(interval);
+      fetchData(page, debouncedSearch, filter);
     }
-  }, [slug]);
+  }, [slug, page, debouncedSearch, filter]);
 
   const handleCopyLink = () => {
     const url = `${window.location.origin}/${slug}`;
@@ -253,32 +261,13 @@ export default function AdminDashboard() {
     document.body.removeChild(link);
   };
   
-  const filteredAttendees = data?.attendees?.filter((a: any) => {
-    const matchesSearch = a.name.toLowerCase().includes(search.toLowerCase()) || 
-                          a.email.toLowerCase().includes(search.toLowerCase()) ||
-                          a.passId.toLowerCase().includes(search.toLowerCase());
-    
-    if (filter === "all") return matchesSearch;
-    if (filter === "entered") return matchesSearch && a.status === "entered";
-    if (filter === "pending") return matchesSearch && a.status === "registered";
-    if (filter === "walkin") return matchesSearch && (a.registrationSource === "instant" || a.passType === "Instant Badge" || a.passType === "Walk-in Badge" || a.passType === "VIP");
-    return matchesSearch;
-  });
-
-  const searchResults = search.length > 1 ? filteredAttendees?.slice(0, 5) : [];
-
-  const mainFilteredAttendees = filteredAttendees;
-  const instantFilteredAttendees = filteredAttendees?.filter((a: any) => a.registrationSource === 'instant' || a.passType === 'Instant Badge' || a.passType === 'Walk-in Badge' || a.passType === 'VIP');
-  const publicFilteredAttendees = filteredAttendees?.filter((a: any) => a.registrationSource === 'public');
-  const checkedInFilteredAttendees = filteredAttendees?.filter((a: any) => a.status === 'entered');
-
-  const currentPasses = activeTab === 'instant-badge' 
-    ? instantFilteredAttendees 
-    : activeTab === 'public-log' 
-      ? publicFilteredAttendees 
-      : activeTab === 'checked-in'
-        ? checkedInFilteredAttendees
-        : mainFilteredAttendees;
+  const attendees = data?.attendees || [];
+  const event = data?.event || {};
+  const stats = data?.stats || { total: 0, entered: 0, pending: 0 };
+  const pagination = data?.pagination || { total: 0, totalPages: 1, currentPage: 1 };
+  
+  const currentPasses = attendees; 
+  const searchResults = debouncedSearch.length > 1 ? attendees?.slice(0, 5) : [];
 
   const currentTitle = activeTab === 'instant-badge'
     ? 'Walk-Ins Database'
@@ -287,8 +276,8 @@ export default function AdminDashboard() {
       : activeTab === 'checked-in'
         ? 'Real-time Checked-In Log'
         : 'Attendee Management';
+  
 
-  const stats = data?.stats || { total: 0, entered: 0, pending: 0 };
 
   if (loading) {
     return (
@@ -640,6 +629,47 @@ export default function AdminDashboard() {
                            )}
                         </tbody>
                      </table>
+                  </div>
+
+                  {/* Pagination UI */}
+                  <div className="bg-slate-50 px-6 py-4 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                        Showing <span className="text-slate-900">{attendees.length}</span> of <span className="text-slate-900">{pagination.total}</span> attendees
+                     </p>
+                     
+                     <div className="flex items-center gap-1">
+                        <button 
+                           onClick={() => setPage(prev => Math.max(1, prev - 1))}
+                           disabled={page === 1}
+                           className="p-2 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:hover:text-slate-400 transition-all shadow-sm"
+                        >
+                           <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        
+                        <div className="flex items-center gap-1">
+                           {[...Array(Math.min(5, pagination.totalPages))].map((_, i) => {
+                              // Simple logic to show pages around current
+                              const pageNum = i + 1; 
+                              return (
+                                 <button 
+                                    key={pageNum}
+                                    onClick={() => setPage(pageNum)}
+                                    className={`w-8 h-8 rounded-lg text-xs font-black transition-all ${page === pageNum ? 'bg-blue-600 text-white shadow-lg' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                                 >
+                                    {pageNum}
+                                 </button>
+                              )
+                           })}
+                        </div>
+
+                        <button 
+                           onClick={() => setPage(prev => Math.min(pagination.totalPages, prev + 1))}
+                           disabled={page === pagination.totalPages}
+                           className="p-2 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 disabled:opacity-30 disabled:hover:text-slate-400 transition-all shadow-sm"
+                        >
+                           <ChevronRight className="w-4 h-4" />
+                        </button>
+                     </div>
                   </div>
                </div>
             )}
