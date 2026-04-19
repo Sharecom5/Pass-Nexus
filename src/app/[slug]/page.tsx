@@ -252,12 +252,20 @@ export default function RegistrationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans relative">
-      <div className="bg-white border-b border-slate-100 px-6 py-4 flex items-center gap-3">
-        <Link href="/pass" className="flex items-center gap-3 group font-sans">
-          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
-          <span className="font-black text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 font-sans relative overflow-x-hidden">
+      {/* Premium Header */}
+      <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-5 flex items-center justify-between sticky top-0 z-50">
+        <Link href="/" className="flex items-center gap-4 group">
+          <div className="flex items-center justify-center p-2.5 bg-blue-50/50 rounded-2xl group-hover:bg-blue-100/50 transition-all duration-300">
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300" />
+          </div>
+          <span className="text-2xl font-black text-slate-900 tracking-tight">
+            Pass<span className="text-blue-600 tracking-tighter">Nexus</span>
+          </span>
         </Link>
+        <div className="hidden md:block">
+           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Secure Entry Systems</span>
+        </div>
       </div>
 
       <div className="max-w-xl mx-auto pt-12 pb-20 px-6">

@@ -179,11 +179,11 @@ export default function PassPage() {
                   <p className="text-slate-800 text-[13px] font-bold mt-1 break-words leading-snug uppercase tracking-wide">{visitor.company}</p>
                 )}
                 {/* 3. Designation */}
-                {settings?.showDesignation !== false && visitor.designation && (
+                {settings?.showDesignation === true && visitor.designation && (
                   <p className="text-blue-700 font-semibold text-[12px] uppercase tracking-widest drop-shadow-sm mt-0.5">{visitor.designation}</p>
                 )}
                 {/* 4. Phone */}
-                {settings?.showPhone !== false && visitor.phone && (
+                {settings?.showPhone === true && visitor.phone && (
                   <p className="text-slate-600 font-medium text-[11px] tracking-widest drop-shadow-sm mt-0.5">{visitor.phone}</p>
                 )}
               </div>

@@ -847,7 +847,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                     </div>
-                    {(data?.event as any)?.passSettings?.showDesignation !== false && (
+                    {(data?.event as any)?.passSettings?.showDesignation === true && (
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
                         <div className="relative">
@@ -941,10 +941,10 @@ export default function AdminDashboard() {
                             {selectedAttendee.status === 'entered' ? 'Entry Confirmed' : 'Awaiting Check-in'}
                          </div>
                          <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none mt-2">{selectedAttendee.name}</h2>
-                         {((data?.event as any)?.passSettings?.showDesignation !== false || (data?.event as any)?.passSettings?.showCompany !== false) && (
+                         {((data?.event as any)?.passSettings?.showDesignation === true || (data?.event as any)?.passSettings?.showCompany !== false) && (
                            <p className="text-slate-500 text-lg font-medium mt-3">
-                             {(data?.event as any)?.passSettings?.showDesignation !== false && (selectedAttendee.designation || 'Special Guest')}
-                             {((data?.event as any)?.passSettings?.showDesignation !== false && (data?.event as any)?.passSettings?.showCompany !== false) && ' at '}
+                             {(data?.event as any)?.passSettings?.showDesignation === true && (selectedAttendee.designation || 'Special Guest')}
+                             {((data?.event as any)?.passSettings?.showDesignation === true && (data?.event as any)?.passSettings?.showCompany !== false) && ' at '}
                              {(data?.event as any)?.passSettings?.showCompany !== false && <span className="text-slate-900 font-bold">{selectedAttendee.company || 'Private Entity'}</span>}
                            </p>
                          )}
@@ -955,7 +955,7 @@ export default function AdminDashboard() {
                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email Address</p>
                             <p className="text-lg font-bold text-slate-900 flex items-center gap-2"><Mail className="w-4 h-4 opacity-30" /> {selectedAttendee.email}</p>
                          </div>
-                         {(data?.event as any)?.passSettings?.showPhone !== false && (
+                         {(data?.event as any)?.passSettings?.showPhone === true && (
                            <div className="space-y-1.5">
                               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Contact Number</p>
                               <p className="text-lg font-bold text-slate-900 flex items-center gap-2"><Phone className="w-4 h-4 opacity-30" /> {selectedAttendee.phone}</p>
@@ -1056,13 +1056,13 @@ export default function AdminDashboard() {
                     </p>
                   )}
                   {/* Designation second */}
-                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
+                  {((data?.event as any)?.passSettings?.showDesignation === true && printData.designation) && (
                     <p className="text-xl font-bold text-blue-700 uppercase tracking-wide">
                       {printData.designation}
                     </p>
                   )}
                   {/* Phone third */}
-                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
+                  {((data?.event as any)?.passSettings?.showPhone === true && printData.phone) && (
                     <p className="text-md font-medium text-slate-500 tracking-widest mt-1">
                       {printData.phone}
                     </p>
@@ -1105,11 +1105,11 @@ export default function AdminDashboard() {
                     </p>
                   )}
                   {/* Designation second */}
-                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
+                  {((data?.event as any)?.passSettings?.showDesignation === true && printData.designation) && (
                     <p className="text-xl font-bold text-black uppercase">{printData.designation}</p>
                   )}
                   {/* Phone third */}
-                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
+                  {((data?.event as any)?.passSettings?.showPhone === true && printData.phone) && (
                     <p className="text-lg font-semibold text-black">{printData.phone}</p>
                   )}
                 </div>
