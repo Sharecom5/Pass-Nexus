@@ -75,6 +75,14 @@ export default function AdminDashboard() {
 
   const handleAddAttendee = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Strict Validation
+    const settings = (data?.event as any)?.passSettings || {};
+    if (newAttendee.name.trim().length < 2) return alert("Please enter a valid Full Name.");
+    if (settings.showPhone !== false && newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
+    if (settings.showCompany !== false && newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
+    if (settings.showDesignation !== false && newAttendee.designation.trim().length < 2) return alert("Please enter a valid Designation.");
+
     setAdding(true);
     try {
       const res = await fetch("/api/register", {
@@ -86,10 +94,10 @@ export default function AdminDashboard() {
           registrationSource: 'manual'
         })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || data.error || "Registration failed");
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.message || d.error || "Registration failed");
       
-      setSuccessPassId(data.passId);
+      setSuccessPassId(d.passId);
       setNewAttendee({ name: "", email: "", phone: "", company: "", designation: "", passType: "Walk-in Badge" });
       
       setData((prev: any) => ({
@@ -523,10 +531,12 @@ export default function AdminDashboard() {
                    <form onSubmit={async (e) => {
                      e.preventDefault();
 
+                     const settings = (data?.event as any)?.passSettings || {};
                      // Strict Validation
                      if (newAttendee.name.trim().length < 2) return alert("Please enter a valid Full Name.");
-                     if (newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
-                     if (newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
+                     if (settings.showPhone !== false && newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
+                     if (settings.showCompany !== false && newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
+                     if (settings.showDesignation !== false && newAttendee.designation.trim().length < 2) return alert("Please enter a valid Designation.");
 
                      setAdding(true);
                      try {
@@ -577,21 +587,27 @@ export default function AdminDashboard() {
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                       <div>
-                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone Number *</label>
-                         <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                       </div>
-                       <div>
-                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
-                         <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                       </div>
+                       {(data?.event as any)?.passSettings?.showPhone !== false && (
+                         <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone Number *</label>
+                           <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                         </div>
+                       )}
+                       {(data?.event as any)?.passSettings?.showCompany !== false && (
+                         <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
+                           <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                         </div>
+                       )}
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
-                          <input placeholder="e.g. Director" value={newAttendee.designation} onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                        </div>
+                        {(data?.event as any)?.passSettings?.showDesignation !== false && (
+                          <div>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
+                            <input required placeholder="e.g. Director" value={newAttendee.designation} onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                          </div>
+                        )}
                         <div className="flex flex-col">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1 mb-2">Pass Category</label>
                           <div className="flex gap-2">
@@ -783,7 +799,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Email</label>
                       <div className="relative">
@@ -798,51 +814,59 @@ export default function AdminDashboard() {
                         />
                       </div>
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone</label>
-                      <div className="relative">
-                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input 
-                          required
-                          type="tel" 
-                          placeholder="+91..." 
-                          value={newAttendee.phone}
-                          onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
-                        />
+                    {(data?.event as any)?.passSettings?.showPhone !== false && (
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone</label>
+                        <div className="relative">
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input 
+                            required
+                            type="tel" 
+                            pattern="[0-9]{10}"
+                            maxLength={10}
+                            placeholder="10-digit number" 
+                            value={newAttendee.phone}
+                            onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
-                      <div className="relative">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input 
-                          required
-                          type="text" 
-                          placeholder="e.g. Acme Corp" 
-                          value={newAttendee.company}
-                          onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
-                        />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {(data?.event as any)?.passSettings?.showCompany !== false && (
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
+                        <div className="relative">
+                          <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input 
+                            required
+                            type="text" 
+                            placeholder="e.g. Acme Corp" 
+                            value={newAttendee.company}
+                            onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
-                      <div className="relative">
-                        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input 
-                          required
-                          type="text" 
-                          placeholder="e.g. Director" 
-                          value={newAttendee.designation}
-                          onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
-                        />
+                    )}
+                    {(data?.event as any)?.passSettings?.showDesignation !== false && (
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
+                        <div className="relative">
+                          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input 
+                            required
+                            type="text" 
+                            placeholder="e.g. Director" 
+                            value={newAttendee.designation}
+                            onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="space-y-1.5">
@@ -921,7 +945,13 @@ export default function AdminDashboard() {
                             {selectedAttendee.status === 'entered' ? 'Entry Confirmed' : 'Awaiting Check-in'}
                          </div>
                          <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none mt-2">{selectedAttendee.name}</h2>
-                         <p className="text-slate-500 text-lg font-medium mt-3">{selectedAttendee.designation || 'Special Guest'} at <span className="text-slate-900 font-bold">{selectedAttendee.company || 'Private Entity'}</span></p>
+                         {((data?.event as any)?.passSettings?.showDesignation !== false || (data?.event as any)?.passSettings?.showCompany !== false) && (
+                           <p className="text-slate-500 text-lg font-medium mt-3">
+                             {(data?.event as any)?.passSettings?.showDesignation !== false && (selectedAttendee.designation || 'Special Guest')}
+                             {((data?.event as any)?.passSettings?.showDesignation !== false && (data?.event as any)?.passSettings?.showCompany !== false) && ' at '}
+                             {(data?.event as any)?.passSettings?.showCompany !== false && <span className="text-slate-900 font-bold">{selectedAttendee.company || 'Private Entity'}</span>}
+                           </p>
+                         )}
                       </div>
 
                       <div className="grid grid-cols-2 gap-10">
@@ -929,10 +959,12 @@ export default function AdminDashboard() {
                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email Address</p>
                             <p className="text-lg font-bold text-slate-900 flex items-center gap-2"><Mail className="w-4 h-4 opacity-30" /> {selectedAttendee.email}</p>
                          </div>
-                         <div className="space-y-1.5">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Contact Number</p>
-                            <p className="text-lg font-bold text-slate-900 flex items-center gap-2"><Phone className="w-4 h-4 opacity-30" /> {selectedAttendee.phone}</p>
-                         </div>
+                         {(data?.event as any)?.passSettings?.showPhone !== false && (
+                           <div className="space-y-1.5">
+                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Contact Number</p>
+                              <p className="text-lg font-bold text-slate-900 flex items-center gap-2"><Phone className="w-4 h-4 opacity-30" /> {selectedAttendee.phone}</p>
+                           </div>
+                         )}
                          <div className="space-y-1.5">
                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Registration Date</p>
                             <p className="text-lg font-bold text-slate-900 flex items-center gap-2"><Clock className="w-4 h-4 opacity-30" /> {new Date(selectedAttendee.createdAt || Date.now()).toLocaleDateString()}</p>
