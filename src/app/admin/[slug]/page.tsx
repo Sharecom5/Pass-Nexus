@@ -795,7 +795,7 @@ export default function AdminDashboard() {
                        <h3 className="font-black text-slate-900 text-lg">Walk-Ins Database</h3>
                      </div>
                      <span className="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-100 px-3 py-1 rounded-full">
-                       {instantFilteredAttendees?.length || 0} badges
+                       {attendees?.length || 0} badges
                      </span>
                    </div>
                    <div className="overflow-x-auto">
@@ -809,7 +809,7 @@ export default function AdminDashboard() {
                          </tr>
                        </thead>
                        <tbody className="divide-y divide-slate-100">
-                         {instantFilteredAttendees?.length === 0 && (
+                         {attendees?.length === 0 && (
                            <tr>
                              <td colSpan={4} className="px-6 py-16 text-center">
                                <div className="flex flex-col items-center gap-3 text-slate-400">
@@ -819,7 +819,7 @@ export default function AdminDashboard() {
                              </td>
                            </tr>
                          )}
-                         {instantFilteredAttendees?.map((attendee: any, i: number) => (
+                         {attendees?.map((attendee: any, i: number) => (
                            <motion.tr
                              key={attendee._id}
                              initial={{ opacity: 0 }}
