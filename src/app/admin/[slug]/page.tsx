@@ -79,8 +79,8 @@ export default function AdminDashboard() {
     // Strict Validation
     const settings = (data?.event as any)?.passSettings || {};
     if (newAttendee.name.trim().length < 2) return alert("Please enter a valid Full Name.");
+    if (newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
     if (settings.showPhone !== false && newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
-    if (settings.showCompany !== false && newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
     if (settings.showDesignation !== false && newAttendee.designation.trim().length < 2) return alert("Please enter a valid Designation.");
 
     setAdding(true);
@@ -534,8 +534,8 @@ export default function AdminDashboard() {
                      const settings = (data?.event as any)?.passSettings || {};
                      // Strict Validation
                      if (newAttendee.name.trim().length < 2) return alert("Please enter a valid Full Name.");
+                     if (newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
                      if (settings.showPhone !== false && newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
-                     if (settings.showCompany !== false && newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
                      if (settings.showDesignation !== false && newAttendee.designation.trim().length < 2) return alert("Please enter a valid Designation.");
 
                      setAdding(true);
@@ -593,12 +593,10 @@ export default function AdminDashboard() {
                            <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
                          </div>
                        )}
-                       {(data?.event as any)?.passSettings?.showCompany !== false && (
-                         <div>
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
-                           <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                         </div>
-                       )}
+                       <div>
+                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
+                         <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                       </div>
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -835,22 +833,20 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {(data?.event as any)?.passSettings?.showCompany !== false && (
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
-                        <div className="relative">
-                          <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                          <input 
-                            required
-                            type="text" 
-                            placeholder="e.g. Acme Corp" 
-                            value={newAttendee.company}
-                            onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
-                          />
-                        </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
+                      <div className="relative">
+                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="e.g. Acme Corp" 
+                          value={newAttendee.company}
+                          onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
+                        />
                       </div>
-                    )}
+                    </div>
                     {(data?.event as any)?.passSettings?.showDesignation !== false && (
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>

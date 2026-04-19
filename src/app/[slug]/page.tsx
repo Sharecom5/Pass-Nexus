@@ -173,7 +173,7 @@ export default function RegistrationPage() {
     // Strict Validation
     if (formData.name.trim().length < 2) return setError("Please enter a valid Full Name.");
     if (formData.phone.length !== 10) return setError("Please enter a valid 10-digit phone number.");
-    if (settings.showCompany && formData.company.trim().length < 2) return setError("Please enter a valid Company Name.");
+    if (formData.company.trim().length < 2) return setError("Please enter a valid Company Name.");
     if (settings.showDesignation && formData.designation.trim().length < 2) return setError("Please enter a valid Designation.");
     if (formData.address.trim().length < 4) return setError("Please enter a valid Office Address.");
     
@@ -289,15 +289,13 @@ export default function RegistrationPage() {
               )}
             </AnimatePresence>
 
-            {settings.showCompany && (
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Company Name</label>
-                <div className="relative">
-                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input type="text" required={settings.showCompany} placeholder="Your Company" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
-                </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Company Name</label>
+              <div className="relative">
+                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input type="text" required placeholder="Your Company" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
               </div>
-            )}
+            </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Office Address</label>
