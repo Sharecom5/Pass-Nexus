@@ -61,7 +61,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ text });
   } catch (error: any) {
-    console.error("Chat Error:", error);
-    return NextResponse.json({ error: "Failed to process chat" }, { status: 500 });
+    console.error("GEMINI API ERROR:", error);
+    return NextResponse.json({ 
+      error: error.message || "Failed to process chat",
+      details: error.toString()
+    }, { status: 500 });
   }
 }

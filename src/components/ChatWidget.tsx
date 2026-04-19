@@ -47,12 +47,13 @@ export default function ChatWidget() {
       });
 
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error || data.details || "API Error");
 
       const aiMessage: Message = { role: 'model', parts: [{ text: data.text }] };
       setMessages(prev => [...prev, aiMessage]);
     } catch (err: any) {
-      const errorMessage: Message = { role: 'model', parts: [{ text: "Sorry, I'm having trouble connecting to the network. Please try again later." }] };
+      console.error("CHAT WIDGET ERROR:", err);
+      const errorMessage: Message = { role: 'model', parts: [{ text: `System Error: ${err.message}. Please restart your local server to ensure the new API key is active.` }] };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
