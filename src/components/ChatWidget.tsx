@@ -76,8 +76,8 @@ export default function ChatWidget() {
                 <Sparkles className="w-24 h-24 rotate-12" />
               </div>
               <div className="relative z-10 flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30">
-                  <Bot className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 bg-white backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30 overflow-hidden">
+                  <img src="/passnexus_logo.png" alt="PassNexus AI" className="w-7 h-7 object-contain" />
                 </div>
                 <div>
                   <h3 className="font-black text-lg tracking-tight leading-none mb-1">PassNexus AI</h3>
@@ -99,8 +99,8 @@ export default function ChatWidget() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 scrollbar-hide">
               {messages.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
-                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100 mb-2">
-                    <Sparkles className="w-8 h-8 text-blue-600" />
+                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100 mb-2 overflow-hidden p-3">
+                    <img src="/passnexus_logo.png" alt="Logo" className="w-full h-full object-contain" />
                   </div>
                   <h4 className="font-black text-slate-800 tracking-tight">How can I help you today?</h4>
                   <p className="text-sm text-slate-500 font-medium">Ask me anything about PassNexus features, pricing, or event setup.</p>

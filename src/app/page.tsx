@@ -179,7 +179,10 @@ export default function EventPassLandingPage() {
             <Link href="/admin/login" className="hover:text-blue-600 transition-colors">Organizer Login</Link>
           </div>
           <div className="flex flex-col md:flex-row w-full items-center justify-between mt-6 pt-6 border-t border-slate-100">
-            <img src="/passnexus_logo.png" alt="PassNexus" className="h-6 w-auto object-contain min-w-[100px] mb-4 md:mb-0" />
+            <Link href="/" className="flex items-center gap-2 mb-4 md:mb-0">
+              <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-black tracking-tight text-slate-900 leading-none">Pass<span className="text-blue-600">Nexus</span></span>
+            </Link>
             <p className="text-sm text-slate-400 text-center">
               A product purposefully built by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-bold" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
             </p>
