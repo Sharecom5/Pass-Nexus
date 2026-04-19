@@ -10,13 +10,17 @@ export async function GET(req: NextRequest, props: { params: Promise<{ slug: str
     const { slug } = await props.params;
     await connectDB();
 
-    // Verify event and get organizer info
-    const event = await Event.findOne({ slug }).populate('organizerId');
+    // Verify event and get organizer info safely
+    const event = await Event.findOne({ slug });
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
-    const organizer = event.organizerId as any;
+    let organizer = null;
+    if (event.organizerId && /^[0-9a-fA-F]{24}$/.test(event.organizerId.toString())) {
+      organizer = await Organizer.findById(event.organizerId);
+    }
+
     const planId = organizer?.plan || 'free';
     const plan = (PLANS as any)[planId] || PLANS.free;
     const passLimit = plan.passLimit;
