@@ -169,6 +169,16 @@ export default function RegistrationPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Strict Validation
+    if (formData.name.trim().length < 2) return setError("Please enter a valid Full Name.");
+    if (formData.phone.length !== 10) return setError("Please enter a valid 10-digit phone number.");
+    if (settings.showCompany && formData.company.trim().length < 2) return setError("Please enter a valid Company Name.");
+    if (settings.showDesignation && formData.designation.trim().length < 2) return setError("Please enter a valid Designation.");
+    if (formData.address.trim().length < 4) return setError("Please enter a valid Office Address.");
+    
+    setError("");
+
     if (event?.ticketPrice > 0) {
       handlePayment();
     } else {
@@ -321,7 +331,7 @@ export default function RegistrationPage() {
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone Number</label>
                 <div className="relative">
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input type="tel" required placeholder="+91..." value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
+                  <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
                 </div>
               </div>
               <div>

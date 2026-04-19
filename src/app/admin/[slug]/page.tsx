@@ -522,6 +522,12 @@ export default function AdminDashboard() {
                    
                    <form onSubmit={async (e) => {
                      e.preventDefault();
+
+                     // Strict Validation
+                     if (newAttendee.name.trim().length < 2) return alert("Please enter a valid Full Name.");
+                     if (newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
+                     if (newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
+
                      setAdding(true);
                      try {
                         const res = await fetch("/api/register", { 
@@ -573,7 +579,7 @@ export default function AdminDashboard() {
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                        <div>
                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone Number *</label>
-                         <input required placeholder="Contact Number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                         <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
                        </div>
                        <div>
                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
