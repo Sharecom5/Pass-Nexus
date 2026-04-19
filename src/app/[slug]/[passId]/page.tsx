@@ -119,7 +119,7 @@ export default function PassPage() {
       {/* Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-4 print:hidden">
         <Link href="/pass" className="flex items-center gap-3">
-          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+          <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain" />
           <span className="font-black text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
       </div>

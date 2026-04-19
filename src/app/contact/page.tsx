@@ -14,7 +14,7 @@ export default function ContactPage() {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain transition-transform group-hover:rotate-12" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain transition-transform group-hover:rotate-12" />
             <span className="font-black text-xl tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
           </Link>
           <div className="flex items-center gap-8 text-sm font-bold text-slate-500">
@@ -123,7 +123,7 @@ export default function ContactPage() {
       <footer className="py-20 px-6 border-t border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">
-            <img src="/icon.png" alt="PassNexus" className="w-6 h-6 object-contain" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-6 h-6 object-contain" />
             <span className="font-black text-lg tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span></span>
           </div>
           <div className="flex gap-10 text-xs font-bold text-slate-500 uppercase tracking-widest">

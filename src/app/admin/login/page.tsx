@@ -43,7 +43,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-10">
           <Link href="/pass" className="inline-flex items-center gap-3 mb-8 group font-sans">
-            <img src="/icon.png" alt="PassNexus" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
             <span className="text-2xl font-black tracking-tight text-slate-900">Pass<span className="text-blue-600">Nexus</span> <span className="text-slate-400 font-normal text-lg">Portal</span></span>
           </Link>
           <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Welcome back</h1>

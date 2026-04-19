@@ -29,7 +29,7 @@ export default function BlogListingPage() {
       <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-6 py-4 shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/icon.png" alt="PassNexus" className="w-7 h-7 object-contain" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-7 h-7 object-contain" />
             <span className="font-black text-slate-900 text-base tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
           </Link>
           <span className="text-slate-300">/</span>

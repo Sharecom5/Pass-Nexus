@@ -86,7 +86,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-6 py-4 shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center gap-2 text-sm">
           <Link href="/" className="flex items-center gap-2 font-bold text-slate-500 hover:text-blue-600 transition-colors">
-            <img src="/icon.png" alt="PassNexus" className="w-6 h-6 object-contain" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-6 h-6 object-contain" />
             PassNexus
           </Link>
           <ChevronRight className="w-3 h-3 text-slate-300" />

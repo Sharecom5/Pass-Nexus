@@ -33,7 +33,7 @@ export default function PrivacyPage() {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain" />
             <span className="font-black text-xl tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
           </Link>
           <Link href="/" className="text-xs font-bold text-slate-500 hover:text-blue-600 flex items-center gap-1 transition-colors">

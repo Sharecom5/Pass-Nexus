@@ -225,7 +225,7 @@ export default function AdminDashboard() {
       {/* Sidebar (Simple Desktop Navigation) */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col p-6 z-20 shadow-sm">
          <Link href="/pass" className="flex items-center gap-3 group font-sans mb-10 px-2">
-          <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain" />
+          <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain" />
           <span className="font-black text-slate-900 text-lg tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
 

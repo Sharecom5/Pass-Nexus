@@ -14,7 +14,7 @@ export default function AboutPage() {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <img src="/icon.png" alt="PassNexus" className="w-8 h-8 object-contain transition-transform group-hover:rotate-12" />
+            <img src="/passnexus_logo.png" alt="PassNexus" className="w-8 h-8 object-contain transition-transform group-hover:rotate-12" />
             <span className="font-black text-xl tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
           </Link>
           <div className="flex items-center gap-8 text-sm font-bold text-slate-500">
