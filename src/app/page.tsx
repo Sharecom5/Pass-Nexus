@@ -184,7 +184,7 @@ export default function EventPassLandingPage() {
               <span className="text-xl font-black tracking-tight text-slate-900 leading-none">Pass<span className="text-blue-600">Nexus</span></span>
             </Link>
             <p className="text-sm text-slate-400 text-center">
-              A product purposefully built by <a href="https://www.andinnovatech.com" className="text-blue-600 hover:underline font-bold" target="_blank" rel="noopener noreferrer">AnD Innovatech</a> • {new Date().getFullYear()}
+              A product purposefully built by <span className="text-blue-600 font-bold">AnD Innovatech</span> • {new Date().getFullYear()}
             </p>
           </div>
         </div>
