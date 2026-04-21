@@ -81,7 +81,7 @@ export default function SignupPage() {
 
             <div className="grid grid-cols-2 gap-4">
               {[{ label: "Full Name", icon: User, placeholder: "John Doe", field: "name", type: "text", required: true },
-                { label: "Company", icon: Building2, placeholder: "(Optional)", field: "companyName", type: "text", required: false }
+                { label: "Company Name", icon: Building2, placeholder: "Your Company Ltd", field: "companyName", type: "text", required: true }
               ].map(({ label, icon: Icon, placeholder, field, type, required }) => (
                 <div key={field} className="space-y-2">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">{label}</label>

@@ -58,13 +58,17 @@ export default function InvoicePage() {
          </button>
       </div>
 
-      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-12 print:shadow-none print:p-0 print:rounded-none">
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-12 print:shadow-none print:p-0 print:rounded-none relative z-0">
         
+        {/* Background Watermark */}
+        <div className="absolute inset-0 z-[-1] flex items-center justify-center opacity-[0.04] pointer-events-none print:opacity-[0.05]">
+           <img src="/passnexus_logo.png" className="w-[500px] h-[500px] object-contain grayscale" alt="" />
+        </div>
+
         {/* Header Section */}
         <div className="flex justify-between items-start mb-16">
           <div>
-            <div className="text-3xl font-black tracking-tight text-slate-900 flex items-center gap-3">
-               <img src="/passnexus_logo.png" alt="PassNexus Logo" className="w-10 h-10 object-contain grayscale" />
+            <div className="text-4xl font-black tracking-tight text-slate-900 flex items-center gap-3">
                PassNexus
             </div>
             <p className="text-slate-500 text-sm mt-3 leading-relaxed">
@@ -92,7 +96,7 @@ export default function InvoicePage() {
            <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Billed To</p>
               <h3 className="text-lg font-bold text-slate-900 mb-1">{organizer.name}</h3>
-              {organizer.companyName && <p className="text-slate-600 mb-1 font-medium">{organizer.companyName}</p>}
+              {organizer.companyName && organizer.companyName !== organizer.name && <p className="text-slate-600 mb-1 font-medium">{organizer.companyName}</p>}
               <p className="text-slate-500 text-sm">{organizer.email}</p>
            </div>
            
