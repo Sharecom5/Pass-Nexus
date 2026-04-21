@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Calendar, MapPin, Globe, Settings, Loader2, Search,
   PlusCircle, LayoutDashboard, LogOut, ChevronRight, Camera, X, AlertCircle, Upload, Image as ImageIcon,
-  Zap, TrendingUp, Pencil, Trash2, Smartphone, CheckCircle, Phone
+  Zap, TrendingUp, Pencil, Trash2, Smartphone, CheckCircle, Phone, CreditCard
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -226,8 +226,13 @@ export default function MyEventsDashboard() {
           <span className="font-black text-slate-900 text-lg tracking-tight">Pass<span className="text-blue-600">Nexus</span></span>
         </Link>
         <div className="flex items-center gap-6">
-          <div className="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+          <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest">
+              <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+            </div>
+            <Link href="/admin/dashboard/billing" className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 uppercase tracking-widest transition-colors">
+              <CreditCard className="w-3.5 h-3.5" /> Billing
+            </Link>
           </div>
           <button onClick={() => signOut({ callbackUrl: '/admin/login' })} title="Sign Out"
             className="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-colors text-sm font-bold">
