@@ -64,13 +64,13 @@ export default function InvoicePage() {
         <div className="flex justify-between items-start mb-16">
           <div>
             <div className="text-3xl font-black tracking-tight text-slate-900 flex items-center gap-3">
-               <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold print:border print:border-slate-800 print:text-black">P</div>
+               <img src="/passnexus_logo.png" alt="PassNexus Logo" className="w-10 h-10 object-contain grayscale" />
                PassNexus
             </div>
             <p className="text-slate-500 text-sm mt-3 leading-relaxed">
-              Tresub Media Pvt Ltd<br/>
-              A-12, Sector 63<br/>
-              Noida, UP 201301<br/>
+              455 Capitol Mall<br/>
+              Suite 1150A<br/>
+              Sacramento, California (CA) 95814<br/>
               hello@passnexus.in
             </p>
           </div>

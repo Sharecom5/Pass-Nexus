@@ -56,23 +56,12 @@ export default function ContactPage() {
 
                <div className="flex items-start gap-6 group">
                   <div className="w-12 h-12 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center shrink-0 group-hover:border-blue-400 group-hover:shadow-lg transition-all">
-                    <Phone className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-slate-900">Call Us</h3>
-                    <p className="text-slate-500 text-sm mb-1">Available Mon-Fri, 9am - 6pm</p>
-                    <p className="text-slate-900 font-bold">+91 98765 43210</p>
-                  </div>
-               </div>
-
-               <div className="flex items-start gap-6 group">
-                  <div className="w-12 h-12 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center shrink-0 group-hover:border-blue-400 group-hover:shadow-lg transition-all">
                     <MapPin className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
                     <h3 className="font-black text-slate-900">Headquarters</h3>
-                    <p className="text-slate-500 text-sm mb-1">Visit our innovation hub</p>
-                    <p className="text-slate-900 font-bold max-w-xs">AnD Innovatech, Tech Park Sector 62, Noida, India</p>
+                    <p className="text-slate-500 text-sm mb-1">Visit our headquarters</p>
+                    <p className="text-slate-900 font-bold max-w-xs">455 Capitol Mall, Suite 1150A, Sacramento, CA 95814</p>
                   </div>
                </div>
             </div>
@@ -131,7 +120,7 @@ export default function ContactPage() {
             <Link href="/privacy" className="hover:text-blue-600 transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-blue-600 transition-colors">Terms</Link>
           </div>
-          <p className="text-slate-400 text-xs font-medium">© 2026 AnD Innovatech</p>
+          <p className="text-slate-400 text-xs font-medium">© 2026 PassNexus</p>
         </div>
       </footer>
     </div>
