@@ -14,7 +14,27 @@ export async function GET(req: NextRequest) {
     console.log(`[API] Fetching public event with slug: "${slug}"`);
     await connectDB();
 
-    const event = await Event.findOne({ slug }).lean();
+    let event = await Event.findOne({ slug }).lean();
+
+    if (!event && slug === 'demo-event') {
+      console.log(`[API] Creating missing demo-event on the fly`);
+      const newEvent = await Event.create({ 
+        name: 'Demo Event', 
+        slug: 'demo-event', 
+        venue: 'Virtual/Local Venue', 
+        date: '2026-12-31',
+        passTypes: ['Visitor', 'VIP', 'Exhibitor'],
+        passSettings: {
+          showName: true,
+          showDesignation: true,
+          showCompany: true,
+          showPhone: true,
+          infoPosition: 60,
+          qrPosition: 15
+        }
+      });
+      event = newEvent.toObject();
+    }
 
     if (!event) {
       console.warn(`[API] Event not found for slug: "${slug}"`);
