@@ -579,6 +579,7 @@ export default function MyEventsDashboard() {
                                <div className="text-[9px] font-black text-slate-800 truncate text-center">{formData.name || 'Attendee Name'}</div>
                                {formData.passSettings.showDesignation && <div className="text-[8px] text-slate-500 text-center">Designation</div>}
                                {formData.passSettings.showCompany && <div className="text-[8px] text-slate-400 text-center">Company</div>}
+                               {formData.passSettings.showPhone && <div className="text-[8px] text-slate-400 text-center">+91 98765 43210</div>}
                              </div>
                          </div>
                       </div>
