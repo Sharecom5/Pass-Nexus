@@ -13,6 +13,7 @@ import {
   QrCode,
   Zap
 } from "lucide-react";
+import { toPng } from "html-to-image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { PLANS } from "@/lib/plans";
@@ -40,6 +41,7 @@ export default function AdminDashboard() {
   const [printData, setPrintData] = useState<any>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [purchasingPlan, setPurchasingPlan] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
 
   const fetchData = async (pageNum = page, searchQuery = debouncedSearch, filterType = filter) => {
     try {
@@ -160,15 +162,47 @@ export default function AdminDashboard() {
     }, 100);
   };
 
+  const triggerDownload = async (attendee: any) => {
+    setPrintData(attendee);
+    setDownloading(true);
+    
+    // Give time for state to update and print-container to populate
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const container = document.querySelector(".print-container");
+    if (!container) {
+      setDownloading(false);
+      return;
+    }
+
+    try {
+      const dataUrl = await toPng(container as HTMLElement, {
+        quality: 1.0,
+        pixelRatio: 3,
+        cacheBust: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const link = document.createElement("a");
+      link.download = `Pass_${attendee.name.replace(/\s+/g, '_')}_${attendee.passId}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Download failed:", err);
+      alert("Failed to download pass as image.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   const handleAddAttendee = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Strict Validation
-    const settings = (data?.event as any)?.passSettings || {};
     if (newAttendee.name.trim().length < 2) return alert("Please enter a valid Full Name.");
     if (newAttendee.company.trim().length < 2) return alert("Please enter a valid Company Name.");
-    if (settings.showPhone !== false && newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
-    if (settings.showDesignation !== false && newAttendee.designation.trim().length < 2) return alert("Please enter a valid Designation.");
+    if (newAttendee.phone.length !== 10) return alert("Please enter exactly a 10-digit phone number.");
+    if (newAttendee.designation.trim().length < 2) return alert("Please enter a valid Designation.");
 
     setAdding(true);
     try {
@@ -607,6 +641,12 @@ export default function AdminDashboard() {
                                              <Printer className="w-3.5 h-3.5" /> Print
                                          </button>
                                          <button 
+                                           onClick={() => triggerDownload(attendee)}
+                                           className="bg-white hover:bg-slate-50 text-slate-600 hover:text-orange-600 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm"
+                                         >
+                                             <Download className="w-3.5 h-3.5" /> Download
+                                         </button>
+                                         <button 
                                            onClick={() => window.open(`/${slug}/${attendee.passId}`, '_blank')}
                                            className="bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-600 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm"
                                          >
@@ -741,25 +781,21 @@ export default function AdminDashboard() {
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                       {(data?.event as any)?.passSettings?.showPhone !== false && (
-                         <div>
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone Number *</label>
-                           <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                         </div>
-                       )}
-                       <div>
-                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
-                         <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                       </div>
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone Number *</label>
+                          <input type="tel" pattern="[0-9]{10}" maxLength={10} required placeholder="10-digit number" value={newAttendee.phone} onChange={(e) => setNewAttendee({...newAttendee, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company *</label>
+                          <input required placeholder="Organization" value={newAttendee.company} onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                        </div>
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(data?.event as any)?.passSettings?.showDesignation !== false && (
-                          <div>
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
-                            <input required placeholder="e.g. Director" value={newAttendee.designation} onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
-                          </div>
-                        )}
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation *</label>
+                          <input required placeholder="e.g. Director" value={newAttendee.designation} onChange={(e) => setNewAttendee({...newAttendee, designation: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 mt-1 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900" />
+                        </div>
                         <div className="flex flex-col">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1 mb-2">Pass Category</label>
                           <div className="flex gap-2">
@@ -966,9 +1002,9 @@ export default function AdminDashboard() {
                         />
                       </div>
                     </div>
-                    {(data?.event as any)?.passSettings?.showPhone !== false && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Phone *</label>
                         <div className="relative">
                           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <input 
@@ -983,27 +1019,8 @@ export default function AdminDashboard() {
                           />
                         </div>
                       </div>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Company</label>
-                      <div className="relative">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input 
-                          required
-                          type="text" 
-                          placeholder="e.g. Acme Corp" 
-                          value={newAttendee.company}
-                          onChange={(e) => setNewAttendee({...newAttendee, company: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-slate-900 text-sm"
-                        />
-                      </div>
-                    </div>
-                    {(data?.event as any)?.passSettings?.showDesignation === true && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation</label>
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Designation *</label>
                         <div className="relative">
                           <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <input 
@@ -1016,7 +1033,7 @@ export default function AdminDashboard() {
                           />
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
 
                   <div className="space-y-1.5">
@@ -1143,7 +1160,7 @@ export default function AdminDashboard() {
 
       {/* Hidden Print Layout */}
       {printData && (
-        <div className="hidden print:block fixed inset-0 bg-white z-[99999] p-0 m-0 overflow-visible">
+        <div className={`print:block fixed inset-0 bg-white z-[99999] p-0 m-0 overflow-visible ${downloading ? 'block opacity-0 pointer-events-none' : 'hidden'}`}>
           <style dangerouslySetInnerHTML={{ __html: `
             @page { 
               margin: 0; 
@@ -1210,13 +1227,13 @@ export default function AdminDashboard() {
                     </p>
                   )}
                   {/* Designation second */}
-                  {((data?.event as any)?.passSettings?.showDesignation === true && printData.designation) && (
+                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
                     <p className="text-xl font-bold text-blue-700 uppercase tracking-wide">
                       {printData.designation}
                     </p>
                   )}
                   {/* Phone third */}
-                  {((data?.event as any)?.passSettings?.showPhone === true && printData.phone) && (
+                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
                     <p className="text-md font-medium text-slate-500 tracking-widest mt-1">
                       {printData.phone}
                     </p>
@@ -1242,6 +1259,10 @@ export default function AdminDashboard() {
             <div className="badge-page">
               <div className="w-full h-full flex flex-col items-center justify-center py-10 px-6">
                 
+                {(data?.event as any)?.logoUrl && (
+                  <img src={(data?.event as any).logoUrl} alt="Logo" className="w-20 h-20 object-contain mb-8 grayscale opacity-80" />
+                )}
+
                 {(data?.event as any)?.passSettings?.showName !== false && (
                   <h1 className={`${
                     printData.name && printData.name.length > 25 ? 'text-3xl' : 
@@ -1259,18 +1280,18 @@ export default function AdminDashboard() {
                     </p>
                   )}
                   {/* Designation second */}
-                  {((data?.event as any)?.passSettings?.showDesignation === true && printData.designation) && (
+                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
                     <p className="text-xl font-bold text-black uppercase">{printData.designation}</p>
                   )}
                   {/* Phone third */}
-                  {((data?.event as any)?.passSettings?.showPhone === true && printData.phone) && (
+                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
                     <p className="text-lg font-semibold text-black">{printData.phone}</p>
                   )}
                 </div>
 
                 {printData.qrCodeUrl && (
                   <div className="mt-4">
-                    <img src={printData.qrCodeUrl} alt="QR Code" className="w-56 h-56 object-contain grayscale" />
+                    <img src={printData.qrCodeUrl} alt="QR Code" crossOrigin="anonymous" className="w-56 h-56 object-contain grayscale" />
                   </div>
                 )}
                 

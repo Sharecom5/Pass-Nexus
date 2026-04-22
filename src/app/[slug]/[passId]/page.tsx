@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, User, Building2, MapPin, Calendar, Loader2, AlertCircle, Download, Smartphone, QrCode, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { toPng } from "html-to-image";
 
 export default function PassPage() {
   const { slug, passId } = useParams();
@@ -15,6 +16,7 @@ export default function PassPage() {
   const [error, setError] = useState("");
   const [updating, setUpdating] = useState(false);
   const [printSimple, setPrintSimple] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const fetchPass = async () => {
@@ -24,7 +26,7 @@ export default function PassPage() {
         const data = await res.json();
         setVisitor(data.visitor);
         const ev = data.eventSettings;
-        setSettings(ev ? { ...ev.passSettings, endDate: ev.endDate } : null);
+        setSettings(ev ? { ...ev.passSettings, logoUrl: ev.logoUrl, endDate: ev.endDate } : null);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -48,9 +50,32 @@ export default function PassPage() {
     }
   };
 
-  const downloadPass = () => {
-    setPrintSimple(false);
-    setTimeout(() => window.print(), 100);
+  const downloadPass = async () => {
+    const card = document.getElementById("pass-card");
+    if (!card) return;
+
+    setDownloading(true);
+    try {
+      // Small delay to ensure any dynamic content is ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const dataUrl = await toPng(card, {
+        quality: 1.0,
+        pixelRatio: 3, // Higher quality
+        cacheBust: true,
+      });
+
+      const link = document.createElement("a");
+      link.download = `Pass_${visitor.name.replace(/\s+/g, '_')}_${passId}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Failed to download pass:", err);
+      // Fallback to print if image capture fails
+      window.print();
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const printThermal = () => {
@@ -157,7 +182,12 @@ export default function PassPage() {
                 className={`${settings?.customBackgroundUrl ? 'absolute left-1/2 -translate-x-1/2 bg-white p-3 rounded-2xl border-4' : 'bg-white p-4 rounded-2xl border-4 mb-6'} ${visitor.status === 'entered' ? 'border-green-500 shadow-lg shadow-green-200' : settings?.customBackgroundUrl ? 'border-slate-100 shadow-lg' : 'border-blue-500 shadow-lg shadow-blue-200'}`}
                 style={settings?.customBackgroundUrl ? { top: `${settings.qrPosition}%` } : {}}
               >
-                <img src={visitor.qrCodeUrl} alt="QR Code" className={`${settings?.customBackgroundUrl ? 'w-32 h-32 md:w-36 md:h-36' : 'w-48 h-48 md:w-56 md:h-56'}`} />
+                <img 
+                  src={visitor.qrCodeUrl} 
+                  alt="QR Code" 
+                  crossOrigin="anonymous"
+                  className={`${settings?.customBackgroundUrl ? 'w-32 h-32 md:w-36 md:h-36' : 'w-48 h-48 md:w-56 md:h-56'}`} 
+                />
               </div>
 
               {/* Attendee Info */}
@@ -179,11 +209,11 @@ export default function PassPage() {
                   <p className="text-slate-800 text-[13px] font-bold mt-1 break-words leading-snug uppercase tracking-wide">{visitor.company}</p>
                 )}
                 {/* 3. Designation */}
-                {settings?.showDesignation === true && visitor.designation && (
+                {settings?.showDesignation !== false && visitor.designation && (
                   <p className="text-blue-700 font-semibold text-[12px] uppercase tracking-widest drop-shadow-sm mt-0.5">{visitor.designation}</p>
                 )}
                 {/* 4. Phone */}
-                {settings?.showPhone === true && visitor.phone && (
+                {settings?.showPhone !== false && visitor.phone && (
                   <p className="text-slate-600 font-medium text-[11px] tracking-widest drop-shadow-sm mt-0.5">{visitor.phone}</p>
                 )}
               </div>
@@ -210,9 +240,14 @@ export default function PassPage() {
         <div className="mt-8 flex flex-wrap justify-center gap-6 print:hidden">
           <button
             onClick={downloadPass}
-            className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors text-sm font-bold"
+            disabled={downloading}
+            className={`flex items-center gap-2 transition-colors text-sm font-bold ${downloading ? 'text-blue-600' : 'text-slate-500 hover:text-blue-600'}`}
           >
-            <Download className="w-4 h-4" /> SAVE FULL PASS
+            {downloading ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> SAVING...</>
+            ) : (
+              <><Download className="w-4 h-4" /> SAVE FULL PASS</>
+            )}
           </button>
           <button
             onClick={printThermal}
@@ -231,6 +266,9 @@ export default function PassPage() {
         {/* Hidden Thermal Slip for Printing */}
         <div className={`hidden ${printSimple ? 'print:flex' : 'print:hidden'} fixed inset-0 bg-white z-[99999] items-center justify-center p-0 m-0`}>
            <div className="w-[520px] h-[709px] flex flex-col items-center justify-center text-center p-8 bg-white text-black">
+              {settings?.logoUrl && (
+                <img src={settings.logoUrl} alt="Logo" className="w-20 h-20 object-contain mb-4 grayscale" />
+              )}
               {settings?.showName !== false && (
                 <h1 className="text-4xl font-black uppercase mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{visitor.name}</h1>
               )}
