@@ -131,9 +131,13 @@ export default function EventRegistrationPage() {
                   <div className="flex justify-between items-start mb-6 border-b border-white/10 pb-6">
                     <div>
                       <span className="bg-blue-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">{success.passType || 'Visitor'}</span>
-                      <h4 className="text-3xl font-black mt-4 mb-1">{success.name}</h4>
-                      {success.designation && <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{success.designation}</p>}
-                      {success.company && <p className="text-slate-300 text-[11px] font-bold mb-2">{success.company}</p>}
+                      {event?.passSettings?.showName !== false ? (
+                        <h4 className="text-3xl font-black mt-4 mb-1">{success.name}</h4>
+                      ) : (
+                         <div className="h-4"></div>
+                      )}
+                      {(event?.passSettings?.showDesignation !== false && success.designation) && <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{success.designation}</p>}
+                      {(event?.passSettings?.showCompany !== false && success.company) && <p className="text-slate-300 text-[11px] font-bold mb-2">{success.company}</p>}
                       <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{success.eventName || 'Event Entry'}</p>
                     </div>
                     <div className="bg-white p-2 rounded-2xl flex-shrink-0 shadow-lg">

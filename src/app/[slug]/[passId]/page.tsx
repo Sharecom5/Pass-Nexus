@@ -196,25 +196,27 @@ export default function PassPage() {
                 style={settings?.customBackgroundUrl ? { top: `${settings.infoPosition}%` } : {}}
               >
                 {/* 1. Name */}
-                <h2 className={`${
-                  visitor.name?.length > 20 ? 'text-[22px]' :
-                  visitor.name?.length > 15 ? 'text-[26px]' : 'text-[30px]'
-                } font-black text-slate-900 leading-tight tracking-tight w-full drop-shadow-sm uppercase break-words`}>
-                  {visitor.name}
-                </h2>
+                {settings?.showName !== false && (
+                  <h2 className={`${
+                    visitor.name?.length > 20 ? 'text-[22px]' :
+                    visitor.name?.length > 15 ? 'text-[26px]' : 'text-[30px]'
+                  } font-black text-slate-900 leading-tight tracking-tight w-full drop-shadow-sm uppercase break-words`}>
+                    {visitor.name}
+                  </h2>
+                )}
 
                 {/* 2. Company */}
-                {visitor.company && (
+                {settings?.showCompany !== false && visitor.company && (
                   <p className="text-slate-800 text-[13px] font-bold mt-1 break-words leading-snug uppercase tracking-wide">{visitor.company}</p>
                 )}
 
                 {/* 3. Designation */}
-                {visitor.designation && (
+                {settings?.showDesignation !== false && visitor.designation && (
                   <p className="text-blue-700 font-semibold text-[12px] uppercase tracking-widest drop-shadow-sm mt-0.5">{visitor.designation}</p>
                 )}
 
                 {/* 4. Phone */}
-                {visitor.phone && (
+                {settings?.showPhone !== false && visitor.phone && (
                   <p className="text-slate-600 font-medium text-[11px] tracking-widest drop-shadow-sm mt-0.5">{visitor.phone}</p>
                 )}
               </div>
@@ -270,12 +272,14 @@ export default function PassPage() {
               {settings?.logoUrl && (
                 <img src={settings.logoUrl} alt="Logo" className="w-20 h-20 object-contain mb-4 grayscale" />
               )}
-              <h1 className="text-4xl font-black uppercase mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{visitor.name}</h1>
+              {settings?.showName !== false && (
+                <h1 className="text-4xl font-black uppercase mb-1 tracking-tight whitespace-nowrap overflow-hidden w-full">{visitor.name}</h1>
+              )}
               <div className="mb-6">
-                {visitor.designation && (
+                {(settings?.showDesignation !== false && visitor.designation) && (
                   <p className="text-lg font-bold uppercase tracking-wide leading-none mb-1">{visitor.designation}</p>
                 )}
-                {visitor.company && (
+                {(settings?.showCompany !== false && visitor.company) && (
                   <p className="text-sm font-medium uppercase tracking-wider">{visitor.company}</p>
                 )}
               </div>
