@@ -33,6 +33,13 @@ const categoryColors: Record<string, string> = {
   "Compliance": "bg-slate-50 text-slate-700 border-slate-200",
   "Event Planning": "bg-indigo-50 text-indigo-700 border-indigo-100",
   "Event Growth": "bg-orange-50 text-orange-700 border-orange-100",
+  "Event Management": "bg-cyan-50 text-cyan-700 border-cyan-100",
+  "Platform Comparisons": "bg-violet-50 text-violet-700 border-violet-100",
+  "How-to Guides": "bg-emerald-50 text-emerald-700 border-emerald-100",
+  "Use Cases": "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100",
+  "Corporate Events": "bg-sky-50 text-sky-700 border-sky-100",
+  "Conference Management": "bg-yellow-50 text-yellow-700 border-yellow-100",
+  "Pricing & Budgeting": "bg-lime-50 text-lime-700 border-lime-100",
 };
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
