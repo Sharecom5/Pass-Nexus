@@ -1225,30 +1225,25 @@ export default function AdminDashboard() {
                   <img src={(data?.event as any).logoUrl} alt="Logo" className="w-24 h-24 object-contain mb-8 opacity-90" />
                 )}
 
-                {(data?.event as any)?.passSettings?.showName !== false && (
-                  <h1 className={`${
-                    printData.name && printData.name.length > 25 ? 'text-2xl' : 
-                    printData.name && printData.name.length > 20 ? 'text-3xl' : 'text-4xl'
-                  } font-black uppercase text-black leading-tight w-full mb-4 px-4 text-center`}>
-                    {printData.name}
-                  </h1>
-                )}
+                <h1 className={`${
+                  printData.name && printData.name.length > 25 ? 'text-2xl' : 
+                  printData.name && printData.name.length > 20 ? 'text-3xl' : 'text-4xl'
+                } font-black uppercase text-black leading-tight w-full mb-4 px-4 text-center`}>
+                  {printData.name}
+                </h1>
                 
                 <div className="flex flex-col gap-2 mb-8 text-center px-4 w-full">
-                  {/* Company first */}
-                  {((data?.event as any)?.passSettings?.showCompany !== false && printData.company) && (
+                  {printData.company && (
                     <p className="text-lg font-semibold text-slate-700 uppercase tracking-widest">
                       {printData.company}
                     </p>
                   )}
-                  {/* Designation second */}
-                  {((data?.event as any)?.passSettings?.showDesignation !== false && printData.designation) && (
+                  {printData.designation && (
                     <p className="text-xl font-bold text-blue-700 uppercase tracking-wide">
                       {printData.designation}
                     </p>
                   )}
-                  {/* Phone third */}
-                  {((data?.event as any)?.passSettings?.showPhone !== false && printData.phone) && (
+                  {printData.phone && (
                     <p className="text-md font-medium text-slate-500 tracking-widest mt-1">
                       {printData.phone}
                     </p>

@@ -577,9 +577,9 @@ export default function MyEventsDashboard() {
                          >
                              <div className={`${formData.passSettings.customBackgroundUrl ? 'bg-white/90 backdrop-blur-sm rounded-xl shadow border border-slate-100' : 'bg-white/80 rounded-xl border border-slate-100'} px-3 py-2`}>
                                <div className="text-[9px] font-black text-slate-800 truncate text-center">{formData.name || 'Attendee Name'}</div>
-                               {formData.passSettings.showDesignation && <div className="text-[8px] text-slate-500 text-center">Designation</div>}
-                               {formData.passSettings.showCompany && <div className="text-[8px] text-slate-400 text-center">Company</div>}
-                               {formData.passSettings.showPhone && <div className="text-[8px] text-slate-400 text-center">+91 98765 43210</div>}
+                               <div className="text-[8px] text-slate-500 text-center">Designation</div>
+                               <div className="text-[8px] text-slate-400 text-center">Company</div>
+                               <div className="text-[8px] text-slate-400 text-center">+91 98765 43210</div>
                              </div>
                          </div>
                       </div>
