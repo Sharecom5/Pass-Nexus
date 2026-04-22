@@ -24,11 +24,12 @@ export default function ChatWidget() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
+  const handleSend = async (e?: React.FormEvent, overrideInput?: string) => {
+    if (e) e.preventDefault();
+    const textToSend = overrideInput || input;
+    if (!textToSend.trim() || loading) return;
 
-    const userMessage = input.trim();
+    const userMessage = textToSend.trim();
     setInput("");
     
     // Update UI with user message
@@ -113,16 +114,8 @@ export default function ChatWidget() {
                     ].map((q) => (
                       <button 
                         key={q}
-                        onClick={() => {
-                          setInput(q);
-                          // We need a way to trigger handleSend. 
-                          // Since we can't call it directly with the new input easily without a ref or state update, 
-                          // we'll modify handleSend to accept an optional message.
-                          setTimeout(() => {
-                            const btn = document.getElementById('chat-submit-btn');
-                            btn?.click();
-                          }, 50);
-                        }} 
+                        type="button"
+                        onClick={() => handleSend(undefined, q)} 
                         className="text-xs font-bold text-blue-600 bg-white border border-blue-100 p-3 rounded-xl hover:bg-blue-50 transition-all text-left shadow-sm flex items-center justify-between group"
                       >
                         {q}
