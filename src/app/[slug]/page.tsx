@@ -173,7 +173,7 @@ export default function RegistrationPage() {
     if (formData.name.trim().length < 2) return setError("Please enter a valid Full Name.");
     if (formData.phone.length !== 10) return setError("Please enter a valid 10-digit phone number.");
     if (formData.company.trim().length < 2) return setError("Please enter a valid Company Name.");
-    if (settings.showDesignation && formData.designation.trim().length < 2) return setError("Please enter a valid Designation.");
+    if (settings.showDesignation !== false && formData.designation.trim().length < 2) return setError("Please enter a valid Designation.");
     
     setError("");
 
@@ -296,29 +296,29 @@ export default function RegistrationPage() {
             </AnimatePresence>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Company Name</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Company / Organization *</label>
               <div className="relative">
                 <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input type="text" required placeholder="Your Company" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
+                <input type="text" required placeholder="Organization Name" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
               </div>
             </div>
 
 
 
-            <div className={`grid grid-cols-1 ${settings.showDesignation ? 'md:grid-cols-2' : ''} gap-5`}>
+            <div className={`grid grid-cols-1 ${settings.showDesignation !== false ? 'md:grid-cols-2' : ''} gap-5`}>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Contact Person</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full Name *</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input type="text" required placeholder="Full Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
+                  <input type="text" required placeholder="Your Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
                 </div>
               </div>
-              {settings.showDesignation && (
+              {settings.showDesignation !== false && (
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Designation</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Designation *</label>
                   <div className="relative">
                     <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <input type="text" required={settings.showDesignation} placeholder="Job Title" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
+                    <input type="text" required={settings.showDesignation !== false} placeholder="Job Title" value={formData.designation} onChange={(e) => setFormData({ ...formData, designation: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900" />
                   </div>
                 </div>
               )}

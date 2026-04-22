@@ -47,12 +47,21 @@ export async function POST(req: Request) {
     }
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: SYSTEM_PROMPT
+      model: "gemini-pro",
     });
 
     const chat = model.startChat({
-      history: history || [],
+      history: [
+        {
+          role: "user",
+          parts: [{ text: SYSTEM_PROMPT }],
+        },
+        {
+          role: "model",
+          parts: [{ text: "Understood. I am the PassNexus Intelligent Assistant, ready to help." }],
+        },
+        ...(history || []),
+      ],
     });
 
     const result = await chat.sendMessage(message);

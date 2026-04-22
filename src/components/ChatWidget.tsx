@@ -105,9 +105,30 @@ export default function ChatWidget() {
                   <h4 className="font-black text-slate-800 tracking-tight">How can I help you today?</h4>
                   <p className="text-sm text-slate-500 font-medium">Ask me anything about PassNexus features, pricing, or event setup.</p>
                   <div className="grid grid-cols-1 gap-2 w-full pt-4">
-                    <button onClick={() => setInput("What are the pricing plans?")} className="text-xs font-bold text-blue-600 bg-white border border-blue-100 p-3 rounded-xl hover:bg-blue-50 transition-all text-left shadow-sm">What are the pricing plans?</button>
-                    <button onClick={() => setInput("How do I create an event?")} className="text-xs font-bold text-blue-600 bg-white border border-blue-100 p-3 rounded-xl hover:bg-blue-50 transition-all text-left shadow-sm">How do I create an event?</button>
-                    <button onClick={() => setInput("How can I contact support?")} className="text-xs font-bold text-blue-600 bg-white border border-blue-100 p-3 rounded-xl hover:bg-blue-50 transition-all text-left shadow-sm">Contact Support</button>
+                    {[
+                      "What are the pricing plans?",
+                      "How do I create an event?",
+                      "Tell me about QR passes",
+                      "How can I contact support?"
+                    ].map((q) => (
+                      <button 
+                        key={q}
+                        onClick={() => {
+                          setInput(q);
+                          // We need a way to trigger handleSend. 
+                          // Since we can't call it directly with the new input easily without a ref or state update, 
+                          // we'll modify handleSend to accept an optional message.
+                          setTimeout(() => {
+                            const btn = document.getElementById('chat-submit-btn');
+                            btn?.click();
+                          }, 50);
+                        }} 
+                        className="text-xs font-bold text-blue-600 bg-white border border-blue-100 p-3 rounded-xl hover:bg-blue-50 transition-all text-left shadow-sm flex items-center justify-between group"
+                      >
+                        {q}
+                        <Send className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -151,6 +172,7 @@ export default function ChatWidget() {
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-4 pr-14 outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-slate-800"
                 />
                 <button 
+                  id="chat-submit-btn"
                   type="submit"
                   disabled={!input.trim() || loading}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white rounded-xl shadow-lg transition-all"
