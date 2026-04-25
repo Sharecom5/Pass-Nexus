@@ -40,7 +40,7 @@ export default function EventPassLandingPage() {
 
       {/* Hero */}
       <section className="pt-36 pb-24 px-6 max-w-7xl mx-auto text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto">
+        <motion.div initial={{ opacity: 1, y: 20 }} animate={{ y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="max-w-4xl mx-auto">
           <span className="inline-block py-1.5 px-4 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-semibold tracking-wide mb-6">
             ✨ Smart Event Management, Simplified
           </span>
@@ -85,14 +85,14 @@ export default function EventPassLandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="bg-white border border-slate-100 p-8 rounded-3xl hover:border-blue-200 hover:shadow-lg transition-all group">
+              <div key={i} 
+                className="bg-white border border-slate-100 p-8 rounded-3xl hover:border-blue-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group">
                 <div className="bg-blue-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 group-hover:bg-blue-100 transition-colors">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
                 <p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
