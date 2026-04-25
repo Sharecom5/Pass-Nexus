@@ -314,7 +314,7 @@ export default function MyEventsDashboard() {
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event, i) => (
-            <motion.div key={event._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+            <motion.div key={event._id} initial={{ opacity: 1, y: 20 }} animate={{ y: 0 }} transition={{ delay: i * 0.05, ease: "easeOut" }}
               className="bg-white border border-slate-200 rounded-3xl p-6 hover:border-blue-300 hover:shadow-lg transition-all group">
               <div className="flex justify-between items-start mb-5">
                 <div className="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center border border-blue-100 text-blue-600 font-black text-lg group-hover:scale-110 transition-transform">
