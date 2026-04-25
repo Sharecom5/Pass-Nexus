@@ -269,7 +269,7 @@ export default function RegistrationPage() {
       </div>
 
       <div className="max-w-xl mx-auto pt-12 pb-20 px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-slate-200 p-8 md:p-10 rounded-3xl shadow-xl">
+        <motion.div initial={{ opacity: 1, y: 20 }} animate={{ y: 0 }} transition={{ duration: 0.5, ease: "easeOut" }} className="bg-white border border-slate-200 p-8 md:p-10 rounded-3xl shadow-xl">
           <div className="text-center mb-10">
             <div className="bg-blue-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-100">
               <Ticket className="w-10 h-10 text-blue-600" />
