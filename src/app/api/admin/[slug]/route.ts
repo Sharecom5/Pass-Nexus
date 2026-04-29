@@ -56,7 +56,10 @@ export async function GET(req: NextRequest, props: { params: Promise<{ slug: str
           { name: searchRegex },
           { email: searchRegex },
           { passId: searchRegex },
-          { company: searchRegex }
+          { company: searchRegex },
+          { phone: searchRegex },
+          { designation: searchRegex },
+          { passType: searchRegex }
         ]
       };
       

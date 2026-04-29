@@ -300,7 +300,7 @@ export default function AdminDashboard() {
   const stats = data?.stats || { total: 0, entered: 0, pending: 0 };
   const pagination = data?.pagination || { total: 0, totalPages: 1, currentPage: 1 };
   
-  const currentPasses = attendees; 
+  const currentPasses = activeTab === 'checked-in' ? attendees?.filter((a: any) => a.status === 'entered') : attendees; 
   const searchResults = debouncedSearch.length > 1 ? attendees?.slice(0, 5) : [];
 
   const currentTitle = activeTab === 'instant-badge'
@@ -333,7 +333,7 @@ export default function AdminDashboard() {
 
          <nav className="space-y-1">
             <button 
-               onClick={() => setActiveTab("attendees")}
+               onClick={() => { setActiveTab("attendees"); if (activeTab !== "attendees") { setFilter("all"); setPage(1); } }}
                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'attendees' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
             >
                <Users className="w-4 h-4" /> Attendees
@@ -345,7 +345,7 @@ export default function AdminDashboard() {
                <Printer className="w-4 h-4" /> Instant Badge
             </button>
             <button 
-               onClick={() => setActiveTab("checked-in")}
+               onClick={() => { setActiveTab("checked-in"); if (activeTab !== "checked-in") { setFilter("entered"); setPage(1); } }}
                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'checked-in' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
             >
                <UserCheck className="w-4 h-4" /> Entry Log

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Calendar, MapPin, Globe, Settings, Loader2, Search,
   PlusCircle, LayoutDashboard, LogOut, ChevronRight, Camera, X, AlertCircle, Upload, Image as ImageIcon,
-  Zap, TrendingUp, Pencil, Trash2, Smartphone, CheckCircle, Phone, CreditCard
+  Zap, TrendingUp, Pencil, Trash2, Smartphone, CheckCircle, Phone, CreditCard, Scan
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -230,6 +230,9 @@ export default function MyEventsDashboard() {
             <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest">
               <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
             </div>
+            <Link href="/admin/scan" className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 uppercase tracking-widest transition-colors">
+              <Scan className="w-3.5 h-3.5" /> Global Scanner
+            </Link>
             <Link href="/admin/dashboard/billing" className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-600 uppercase tracking-widest transition-colors">
               <CreditCard className="w-3.5 h-3.5" /> Billing
             </Link>
