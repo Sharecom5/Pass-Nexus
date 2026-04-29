@@ -15,31 +15,51 @@ export default function ScanVerificationPage() {
   const [loading, setLoading] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [scanMode, setScanMode] = useState<'camera' | 'hardware'>('camera');
+  const [hardwareInput, setHardwareInput] = useState('');
+  const hardwareInputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 }, false);
+    let scanner: Html5QrcodeScanner | null = null;
+    let timer: NodeJS.Timeout;
+    
+    if (scanMode === 'camera' && isScanning) {
+      timer = setTimeout(() => {
+        try {
+          scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 }, false);
 
-    const onScanSuccess = async (decodedText: string) => {
-      let passId = "";
-      if (decodedText.includes('/')) {
-        const cleanUrl = decodedText.endsWith('/') ? decodedText.slice(0, -1) : decodedText;
-        passId = cleanUrl.split('/').pop() || "";
-      } else if (decodedText.includes('ID:')) {
-        const match = decodedText.match(/ID:\s*([\w-]+)/);
-        passId = match ? match[1] : "";
-      } else {
-        passId = decodedText;
-      }
-      if (passId && isScanning) { 
-        scanner.pause(); 
-        setIsScanning(false); 
-        handleVerification(passId); 
+          const onScanSuccess = async (decodedText: string) => {
+            let passId = "";
+            if (decodedText.includes('/')) {
+              const cleanUrl = decodedText.endsWith('/') ? decodedText.slice(0, -1) : decodedText;
+              passId = cleanUrl.split('/').pop() || "";
+            } else if (decodedText.includes('ID:')) {
+              const match = decodedText.match(/ID:\s*([\w-]+)/);
+              passId = match ? match[1] : "";
+            } else {
+              passId = decodedText;
+            }
+            if (passId) { 
+              scanner?.pause(); 
+              setIsScanning(false); 
+              handleVerification(passId); 
+            }
+          };
+
+          scanner.render(onScanSuccess, () => {});
+        } catch (e) {
+          console.error(e);
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      if (scanner) {
+        scanner.clear().catch(console.error);
       }
     };
-
-    scanner.render(onScanSuccess, () => {});
-    return () => { scanner.clear().catch(console.error); };
-  }, [slug]);
+  }, [slug, scanMode, isScanning]);
 
   const handleVerification = async (passId: string) => {
     setLoading(true);
@@ -60,7 +80,15 @@ export default function ScanVerificationPage() {
     }
   };
 
-  const resetScanner = () => { setResult(null); setError(null); setIsScanning(true); window.location.reload(); };
+  const resetScanner = () => { 
+    setResult(null); 
+    setError(null); 
+    setHardwareInput("");
+    setIsScanning(true); 
+    if (scanMode === 'hardware') {
+      setTimeout(() => hardwareInputRef.current?.focus(), 100);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#020617] text-white font-sans flex flex-col items-center p-6 relative overflow-hidden">
@@ -93,33 +121,84 @@ export default function ScanVerificationPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative"
+              className="relative w-full"
             >
-              <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-4 shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
-                
-                {/* Camera Container with Target Brackets */}
-                <div className="relative rounded-[2rem] overflow-hidden bg-black/50 border border-white/5 aspect-square flex items-center justify-center">
-                  
-                  {/* Target Brackets */}
-                  <div className="absolute inset-6 z-10 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-blue-500 rounded-tl-3xl opacity-80" />
-                    <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-blue-500 rounded-tr-3xl opacity-80" />
-                    <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-blue-500 rounded-bl-3xl opacity-80" />
-                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-blue-500 rounded-br-3xl opacity-80" />
-                  </div>
-                  
-                  <div id="reader" className="w-[150%] h-[150%] -ml-[25%] -mt-[25%] scale-[0.7]"></div>
-                </div>
-
-                <div className="mt-8 text-center pb-4">
-                  <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 font-bold mb-3 text-xs tracking-widest uppercase">
-                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                    Camera Active
-                  </div>
-                  <p className="text-sm text-slate-400">Align QR code within the frame</p>
-                </div>
+              {/* Scan Mode Toggle */}
+              <div className="flex gap-2 mb-4 bg-white/5 p-1.5 rounded-2xl border border-white/10 shadow-lg relative z-20">
+                 <button onClick={() => setScanMode('camera')} className={`flex-1 py-2.5 rounded-xl text-xs uppercase tracking-wider font-bold transition-all ${scanMode === 'camera' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'text-slate-400 hover:text-white'}`}>Camera</button>
+                 <button onClick={() => { setScanMode('hardware'); setTimeout(() => hardwareInputRef.current?.focus(), 100); }} className={`flex-1 py-2.5 rounded-xl text-xs uppercase tracking-wider font-bold transition-all ${scanMode === 'hardware' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'text-slate-400 hover:text-white'}`}>Device</button>
               </div>
+
+              {scanMode === 'camera' ? (
+                <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-4 shadow-2xl overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
+                  
+                  {/* Camera Container with Target Brackets */}
+                  <div className="relative rounded-[2rem] overflow-hidden bg-black/50 border border-white/5 aspect-square flex items-center justify-center">
+                    
+                    {/* Target Brackets */}
+                    <div className="absolute inset-6 z-10 pointer-events-none">
+                      <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-blue-500 rounded-tl-3xl opacity-80" />
+                      <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-blue-500 rounded-tr-3xl opacity-80" />
+                      <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-blue-500 rounded-bl-3xl opacity-80" />
+                      <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-blue-500 rounded-br-3xl opacity-80" />
+                    </div>
+                    
+                    <div id="reader" className="w-[150%] h-[150%] -ml-[25%] -mt-[25%] scale-[0.7]"></div>
+                  </div>
+
+                  <div className="mt-8 text-center pb-4">
+                    <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 font-bold mb-3 text-xs tracking-widest uppercase">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                      Camera Active
+                    </div>
+                    <p className="text-sm text-slate-400">Align QR code within the frame</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl relative flex flex-col items-center py-16">
+                   <div className="w-24 h-24 bg-blue-500/10 rounded-full flex items-center justify-center mb-6 border border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.15)] relative">
+                      <Scan className="w-12 h-12 text-blue-400" />
+                      <div className="absolute inset-0 bg-blue-400 blur-xl opacity-20" />
+                   </div>
+                   <h3 className="text-2xl font-black text-white mb-2 tracking-tight">Hardware Scanner</h3>
+                   <p className="text-slate-400 text-sm text-center mb-10">Ensure your cursor is in the field below, then scan a pass.</p>
+                   
+                   <input 
+                      ref={hardwareInputRef}
+                      autoFocus
+                      type="text"
+                      value={hardwareInput}
+                      onChange={e => setHardwareInput(e.target.value)}
+                      placeholder="Waiting for input..."
+                      className="bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-center text-white w-full outline-none focus:border-blue-500 focus:bg-black/60 transition-all font-mono tracking-widest shadow-inner"
+                      onKeyDown={(e) => {
+                         if (e.key === 'Enter' && hardwareInput.trim()) {
+                            let passId = "";
+                            const decodedText = hardwareInput.trim();
+                            if (decodedText.includes('/')) {
+                              const cleanUrl = decodedText.endsWith('/') ? decodedText.slice(0, -1) : decodedText;
+                              passId = cleanUrl.split('/').pop() || "";
+                            } else if (decodedText.includes('ID:')) {
+                              const match = decodedText.match(/ID:\s*([\w-]+)/);
+                              passId = match ? match[1] : "";
+                            } else {
+                              passId = decodedText;
+                            }
+                            if (passId) {
+                               setIsScanning(false);
+                               handleVerification(passId);
+                            }
+                         }
+                      }}
+                      onBlur={() => {
+                        if (isScanning && scanMode === 'hardware') {
+                          setTimeout(() => hardwareInputRef.current?.focus(), 500);
+                        }
+                      }}
+                   />
+                </div>
+              )}
             </motion.div>
           ) : (
             <motion.div
